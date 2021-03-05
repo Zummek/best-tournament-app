@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:4.4.4
+    container_name: mongodb
+    ports:
+      - 27017-27019:27017-27019
+    volumes:
+      - ./mongo-volume:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: best-tournament-app
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
