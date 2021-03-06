@@ -2,13 +2,17 @@
 
 It's the best tournament application for make fun in companies
 
-### Install the dependencies in subfolders
+## Getting started
+
+### 1. In server folder copy `.env.example` to `.env` file and change the settings for yourself
+
+### 2. Install the dependencies in subfolders
 
 ```bash
 yarn
 ```
 
-#### Start the app in development mode (hot-code reloading, error reporting, etc.)
+#### 3. Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
 # web application

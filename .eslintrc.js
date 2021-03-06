@@ -14,14 +14,14 @@ module.exports = {
     // Needed to make the parser take into account 'vue' files
     extraFileExtensions: ['.vue'],
     parser: '@typescript-eslint/parser',
-    project: resolve(__dirname, './tsconfig.json'),
+    project: resolve(__dirname, './web-app/tsconfig.json'),
     tsconfigRootDir: __dirname,
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module' // Allows for the use of imports
+    sourceType: 'module', // Allows for the use of imports
   },
 
   env: {
-    browser: true
+    browser: true,
   },
 
   // Rules order is important, please avoid shuffling them
@@ -46,7 +46,7 @@ module.exports = {
     // usage with Prettier, provided by 'eslint-config-prettier'.
     'prettier',
     'prettier/@typescript-eslint',
-    'prettier/vue'
+    'prettier/vue',
   ],
 
   plugins: [
@@ -68,7 +68,7 @@ module.exports = {
     __statics: true,
     process: true,
     Capacitor: true,
-    chrome: true
+    chrome: true,
   },
 
   // add your custom rules here
@@ -81,6 +81,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
-}
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+  },
+};

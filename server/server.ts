@@ -1,23 +1,11 @@
-import dotenv from "dotenv";
-// import mongoose from "mongoose";
+require('dotenv').config()
 
-dotenv.config({ path: "./config.env" });
+
 
 // eslint-disable-next-line import/first
 import app from "./app";
 
-const port = process.env.PORT || 4000;
-
-// mongoose
-//   .connect(process.env.DATABASE!, {
-//     useNewUrlParser: true,
-//     useCreateIndex: true,
-//     useFindAndModify: false,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => {
-//     console.log("DB connection succesful");
-//   });
+const port = process.env.PORT || 3000;
 
 // eslint-disable-next-line no-unused-vars
 const server = app.listen(port, () => {
