@@ -6,7 +6,7 @@ export interface Team {
   members: User[];
 }
 
-export interface XDDDD {
+export interface Match {
   id: string;
   rivals: {
     teamA: Team;
@@ -23,5 +23,5 @@ export default interface Tournament {
   name: string;
   owner: User;
   participants: Team[];
-  matches: XDDDD[];
+  matches: Match[];
 }
