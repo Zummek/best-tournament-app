@@ -1,7 +1,13 @@
-import ITournament from '../../../shared/types/Tournament';
+import { catchAsync } from '../../utils/catchAsync';
 
-const createTournament = async (newTournament: ITournament) => {
-  // todo: waiting for tournament database model
-}
+const createTournament = catchAsync(
+  (req, res, next) => {
+    req;
+    res;
+    next;
+
+    // waiting for database models
+  }
+);
 
 export default createTournament;
