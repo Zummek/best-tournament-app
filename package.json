@@ -1,0 +1,6 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "lintAll": "yarn --cwd ./server lint && yarn --cwd ./web-app lint"
+  }
+}

@@ -15,7 +15,7 @@ export const connectDatabase = () => {
     .then(() => {
       console.log('DB connection succesful');
     })
-    .catch((error) => {
+    .catch(error => {
       console.log('DB connection error', error);
     });
 };

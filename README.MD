@@ -9,17 +9,18 @@ It's the best tournament application for make fun in companies
 2\. Install the dependencies in subfolders:
 
 ```bash
-yarn
+./server$ yarn
+./web-app$ yarn
 ```
 
 3\. Start the app in development mode (hot-code reloading, error reporting, etc.):
 
 ```bash
-# web application
-quasar dev
-
 #server
-yarn dev
+./server$ yarn dev
+
+# web application
+./web-app$ quasar dev
 ```
 
 ## Commands
@@ -27,27 +28,32 @@ yarn dev
 Lint the files:
 
 ```bash
-yarn lint
+# lint server and web application
+$ yarn lintAll
+
+# lint server
+./server$ yarn lint
+
+# lint web application
+./web-app$ yarn lint
 ```
 
 Build the app for production:
 
 ```bash
-# web application
-quasar build
-
 #server
-yarn build
-```
+./server$ yarn build
 
----
+# web application
+./web-app$ quasar build
+```
 
 ## Docker
 
-#### Default users
+#### Configuration
 
 ```bash
-# root user
+# database root user
   username: root
   password: secret
 ```

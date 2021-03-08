@@ -12,7 +12,7 @@ app.use(express.json({ limit: '10kb' }));
 
 app.use('/api/v1/users', userRouter);
 
-app.all('*', (_req, res, _next) => {
+app.all('*', (_req, res) => {
   res.status(404).json({
     status: 'error',
     err: "This path doesn't exist for now!",
