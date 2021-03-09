@@ -15,7 +15,7 @@ app.use('/api/v1/users', userRouter);
 app.all('*', (_req, res) => {
   res.status(404).json({
     status: 'error',
-    err: "This path doesn't exist for now!",
+    err: 'This path doesn\'t exist for now!',
   });
 });
 

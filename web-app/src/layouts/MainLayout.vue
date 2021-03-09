@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from '../components/EssentialLink.vue'
+import EssentialLink from '../components/EssentialLink.vue';
 
 const linksData = [
   {
@@ -89,15 +89,15 @@ const linksData = [
     icon: 'favorite',
     link: 'https://awesome.quasar.dev',
   },
-]
+];
 
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator';
 
 @Component({
   components: { EssentialLink },
 })
 export default class MainLayout extends Vue {
-  leftDrawerOpen = false
-  essentialLinks = linksData
+  leftDrawerOpen = false;
+  essentialLinks = linksData;
 }
 </script>
