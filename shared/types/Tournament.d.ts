@@ -1,13 +1,13 @@
 import User from "./User";
 
 export interface Team {
-  _id?: string;
+  id: number;
   name: string;
   members: User[];
 }
 
 export interface Match {
-  id: string;
+  id: number;
   rivals: {
     teamA: Team;
     teamB: Team;
@@ -16,11 +16,12 @@ export interface Match {
     teamA: number | null;
     teamB: number | null;
   };
+  date: Date | null;
 }
 
 export default interface Tournament {
   name: string;
   owner: User;
-  participants: Team[];
+  teams: Team[];
   matches: Match[];
 }
