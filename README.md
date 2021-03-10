@@ -74,7 +74,9 @@ Start the database (mongodb) via docker. Use `-d` to run in background:
 $ sudo docker-compose up -d
 ```
 
-See logs from database:
+Use GUI for quickly inspect database, open in browser [localhost:8081](localhost:8081).
+
+See logs from container(database):
 
 ```bash
 $ sudo docker logs mongodb

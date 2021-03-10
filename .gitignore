@@ -34,7 +34,7 @@ yarn-error.log*
 *.sln
 
 # docker 
-/mongo-volume
+/mongo-data
 
 # env's files
 .env
