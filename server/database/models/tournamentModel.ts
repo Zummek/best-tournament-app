@@ -4,39 +4,37 @@ import userRouter from "../../routes/api/userRoutes";
 import Tournament from "./../../../shared/types/Tournament";
 import User from "./../../../shared/types/User";
 
-
+// https://github.com/Appsilon/styleguide/wiki/mongoose-typescript-models
+// https://medium.com/@agentwhs/complete-guide-for-typescript-for-mongoose-for-node-js-8cc0a7e470c1
+// https://mongoosejs.com/docs/subdocs.html
 
 const UserSchema = new Schema({
-  _id: String,
+  id: String,
 });
 
 const TeamSchema = new Schema({
-  _id: Number,
   name: String,
   members: [UserSchema],
 });
 
 const MatchSchema = new Schema({
-  _id: Number,
   rivals: { teamA: TeamSchema, teamB: TeamSchema },
   score: { teamA: Number, teamB: Number},
   date: Date
 });
 
 const TournamentSchema = new Schema({
-  _id: Number,
   name: String,
   owner: UserSchema,
   teams: [TeamSchema],
   matches: [MatchSchema]
 });
 
-//https://stackoverflow.com/questions/37926481/mongoose-typescript-exporting-model-interface
-export interface TournamentModel extends Tournament, Document{
-  _id: number;
-}
+export interface TournamentModel extends Tournament, Document{};
 
-
-// Exports the model and returns TournamentModel interface
-const Tournament =  mongoose.model<TournamentModel>('Tournament', TournamentSchema);
+// Exports the model (I suppose that every import will create model) <- that's wrong
+const Tournament = mongoose.model<TournamentModel>('Tournament', TournamentSchema);
 export default Tournament;
+
+
+
