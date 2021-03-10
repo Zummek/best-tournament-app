@@ -30,11 +30,11 @@ const TournamentSchema = new Schema({
   matches: [MatchSchema]
 });
 
-export interface TournamentModel extends Tournament, Document{};
+export interface TournamentDocument extends Tournament, Document{};
 
 // Exports the model (I suppose that every import will create model) <- that's wrong
-const Tournament = mongoose.model<TournamentModel>('Tournament', TournamentSchema);
-export default Tournament;
+const TournamentModel = mongoose.model<TournamentDocument>('Tournament', TournamentSchema);
+export default TournamentModel;
 
 
 
