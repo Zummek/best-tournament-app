@@ -1,13 +1,13 @@
 import User from "./User";
 
 export interface Team {
-  id: number;
+  _id: number;
   name: string;
   members: User[];
 }
 
 export interface Match {
-  id: number;
+  _id: number;
   rivals: {
     teamA: Team;
     teamB: Team;
