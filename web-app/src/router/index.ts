@@ -20,7 +20,21 @@ export default route<Store<StateInterface>>(function({ Vue }) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     mode: process.env.VUE_ROUTER_MODE,
-    base: process.env.VUE_ROUTER_BASE
+    base: process.env.VUE_ROUTER_BASE,
+  });
+
+  Router.beforeEach((to, from, next) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (to.meta.public === true) {
+      next();
+    } else {
+      next({
+        path: '/login',
+        query: {
+          next: to.path,
+        },
+      });
+    }
   });
 
   return Router;
