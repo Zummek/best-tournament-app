@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import catchAsync from "../utils/catchAsync";
 import * as msal from "@azure/msal-node";
+import writeResponse from "../utils/writeResponse";
 
 const config = {
   auth: {
@@ -28,11 +29,14 @@ export const login = catchAsync(
       redirectUri: "http://localhost:8080/",
     };
 
-    const response = await loggingSession.getAuthCodeUrl(authCodeUrlParameters);
-    console.log(response);
-    res.status(200).json({
+    const authSessionURL = await loggingSession.getAuthCodeUrl(
+      authCodeUrlParameters
+    );
+    console.log(authSessionURL);
+    writeResponse(res, {
+      statusCode: 200,
       status: "success",
-      session: response,
+      data: authSessionURL,
     });
   }
 );
@@ -46,11 +50,11 @@ export const getToken = catchAsync(
     };
 
     loggingSession.acquireTokenByCode(tokenRequest).then((response: any) => {
-      console.log("\nResponse: \n:", response);
       //[TO DO] adding cookies here
-      res.status(200).json({
+      writeResponse(res, {
+        statusCode: 200,
         status: "success",
-        token: response,
+        data: response,
       });
     });
   }
