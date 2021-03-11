@@ -26,48 +26,31 @@ export const login = catchAsync(
       scopes: ["user.read"],
       redirectUri: "http://localhost:8080/",
     };
-    try {
-      const response = await loggingSession.getAuthCodeUrl(
-        authCodeUrlParameters
-      );
-      console.log(response);
-      res.status(200).json({
-        status: "success",
-        session: response,
-      });
-    } catch (err) {
-      console.log(JSON.stringify(err));
-      res.status(500).json({
-        status: "failed",
-        message: "Logging error",
-      });
-    }
+
+    const response = await loggingSession.getAuthCodeUrl(authCodeUrlParameters);
+    console.log(response);
+    res.status(200).json({
+      status: "success",
+      session: response,
+    });
   }
 );
 
-export const getToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const tokenRequest = {
-    code: req.query.code as string,
-    scopes: ["user.read"],
-    redirectUri: "http://localhost:8080/",
-  };
+export const getToken = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const tokenRequest = {
+      code: req.query.code as string,
+      scopes: ["user.read"],
+      redirectUri: "http://localhost:8080/",
+    };
 
-  loggingSession
-    .acquireTokenByCode(tokenRequest)
-    .then((response: any) => {
+    loggingSession.acquireTokenByCode(tokenRequest).then((response: any) => {
       console.log("\nResponse: \n:", response);
       // res.cookie('jwt', cookieOptions);
       res.status(200).json({
         status: "success",
         token: response,
       });
-    })
-    .catch((error: Error) => {
-      console.log(error);
-      res.status(500).send(error);
     });
-};
+  }
+);
