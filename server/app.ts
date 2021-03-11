@@ -3,6 +3,8 @@ import morgan from 'morgan';
 import userRouter from './routes/api/userRoutes';
 import cors from 'cors';
 
+import * as errorController from './controllers/errorController'
+
 const app = express();
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
@@ -22,5 +24,8 @@ app.all('*', (_req, res) => {
     err: 'This path doesn\'t exist for now!',
   });
 });
+
+//global error handler
+app.use(errorController.globalErrorHandler);
 
 export default app;

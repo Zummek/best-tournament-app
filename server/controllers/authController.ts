@@ -18,6 +18,7 @@ const config = {
     },
   },
 };
+
 const loggingSession = new msal.ConfidentialClientApplication(config);
 
 export const login = catchAsync(
@@ -46,7 +47,7 @@ export const getToken = catchAsync(
 
     loggingSession.acquireTokenByCode(tokenRequest).then((response: any) => {
       console.log("\nResponse: \n:", response);
-      // res.cookie('jwt', cookieOptions);
+      //[TO DO] adding cookies here
       res.status(200).json({
         status: "success",
         token: response,
