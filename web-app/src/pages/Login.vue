@@ -32,14 +32,15 @@
   </q-page>
 </template>
 
-<script>
-export default {
-  methods: {
-    loginWithMS() {
-      console.log('login');
-    },
-  },
-};
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+
+@Component
+export default class Login extends Vue {
+  loginWithMS() {
+    console.log('login');
+  }
+}
 </script>
 
 <style lang="scss" scoped>

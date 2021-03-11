@@ -6,10 +6,11 @@
   </q-layout>
 </template>
 
-<script>
-export default {
-  name: 'NonAppLayout',
-};
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+
+@Component
+export default class NonAppLayout extends Vue {}
 </script>
 
 <style lang="scss" scoped>
