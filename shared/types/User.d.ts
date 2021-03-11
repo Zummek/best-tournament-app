@@ -1,3 +1,4 @@
 export default interface User {
-  id: string;
+  microsoftId: string;
+  alias: string;
 }

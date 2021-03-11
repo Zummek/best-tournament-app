@@ -1,4 +1,5 @@
 import User from "./User";
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface Team {
   name: string;
@@ -11,15 +12,15 @@ export interface Match {
     teamB: Team;
   };
   score: {
-    teamA: number | null;
-    teamB: number | null;
+    teamA: number;
+    teamB: number;
   };
-  date: Date | null;
+  date: Date;
 }
 
-export default interface Tournament {
+export default interface Tournament  {
   name: string;
-  owner: User;
+  ownerMicrosoftId: string;
   teams: Team[];
   matches: Match[];
 }

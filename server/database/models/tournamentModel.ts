@@ -1,40 +1,38 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { normalize } from "node:path";
-import userRouter from "../../routes/api/userRoutes";
-import Tournament from "./../../../shared/types/Tournament";
-import User from "./../../../shared/types/User";
+import mongoose, { Schema, Document } from 'mongoose';
+import Tournament from '../../../shared/types/Tournament';
 
-// https://github.com/Appsilon/styleguide/wiki/mongoose-typescript-models
-// https://medium.com/@agentwhs/complete-guide-for-typescript-for-mongoose-for-node-js-8cc0a7e470c1
-// https://mongoosejs.com/docs/subdocs.html
-
-const UserSchema = new Schema({
-  id: String,
-});
-
-const TeamSchema = new Schema({
-  name: String,
-  members: [UserSchema],
-});
+const { Types } = Schema;
 
 const MatchSchema = new Schema({
-  rivals: { teamA: TeamSchema, teamB: TeamSchema },
-  score: { teamA: Number, teamB: Number},
-  date: Date
+  rivals: {
+    teamA: { type: Types.ObjectId, ref: 'Team' },
+    teamB: { type: Types.ObjectId, ref: 'Team' },
+  },
+  score: {
+    teamA: Number,
+    teamB: Number,
+  },
+  date: Date,
 });
 
 const TournamentSchema = new Schema({
   name: String,
-  owner: UserSchema,
-  teams: [TeamSchema],
-  matches: [MatchSchema]
+  ownerMicrosoftId: String,
+  teams: [{ type: Types.ObjectId, ref: 'Team' }],
+  matches: [MatchSchema],
 });
 
-export interface TournamentDocument extends Tournament, Document{};
-
-// Exports the model (I suppose that every import will create model) <- that's wrong
+interface TournamentDocument extends Tournament, Document{}
 const TournamentModel = mongoose.model<TournamentDocument>('Tournament', TournamentSchema);
+
 export default TournamentModel;
 
+// middleware that allows to save match entry (in tournament document)
+// only with teams associated with this particular tournament
+TournamentSchema.pre<TournamentDocument>('save', function (next) {
+  const err = new Error(`Particular team is not present on this tournament
+therefore it can't play matches`);
+  this.name = 'to do';
 
-
+  next(err);
+});
