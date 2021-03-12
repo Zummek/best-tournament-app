@@ -1,13 +1,12 @@
-import { catchAsync } from '../../utils/catchAsync';
+import catchAsync from '../../utils/catchAsync';
+import writeResponse from '../../utils/writeResponse';
 
 const createTournament = catchAsync(
-  (req, res, next) => {
-    req;
-    res;
-    next;
-
-    // waiting for database models
-  }
+  (req, res) => {
+    writeResponse(res, {
+      httpStatus: 204,
+    });
+  },
 );
 
 export default createTournament;
