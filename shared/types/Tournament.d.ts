@@ -1,26 +1,27 @@
 import User from "./User";
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
+
 
 export interface Team {
   name: string;
-  members: User[];
+  members: Array<User>; 
 }
 
 export interface Match {
   rivals: {
-    teamA: Team;
-    teamB: Team;
+    teamA: Types.ObjectId | Team;
+    teamB: Types.ObjectId | Team;
   };
   score: {
-    teamA: number;
-    teamB: number;
+    teamA: number | null;
+    teamB: number | null;
   };
   date: Date;
 }
 
-export default interface Tournament  {
+export default interface Tournament {
   name: string;
   ownerMicrosoftId: string;
-  teams: Team[];
-  matches: Match[];
+  teams: Array<Types.ObjectId> |  Array<Team>;
+  matches: Array<Match>;
 }

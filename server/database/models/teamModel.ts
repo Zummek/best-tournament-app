@@ -1,17 +1,20 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Model, Types } from 'mongoose';
 import { Team } from '../../../shared/types/Tournament';
+import User from '../../../shared/types/User';
 
 const UserSchema = new Schema({
   microsoftId: String,
   alias: String,
 });
 
-const TeamSchema = new Schema({
+const TeamSchema = new Schema <TeamDocument, TeamModel>({
   name: String,
   members: [UserSchema],
 });
 
-interface TeamDocument extends Team, Document{}
-const TeamModel = mongoose.model<TeamDocument>('Team', TeamSchema);
+export interface TeamDocument extends Team, mongoose.Document {
+  members: Types.Array<User>;
+}
+export type TeamModel = Model<TeamDocument>;
 
-export default TeamModel;
+export default mongoose.model <TeamDocument, TeamModel>('Team', TeamSchema);
