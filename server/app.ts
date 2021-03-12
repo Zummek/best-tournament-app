@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import * as errorController from './controllers/errorController';
 import indexRouter from './routes';
@@ -11,9 +12,14 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.use(express.static(`${__dirname}/public`));
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  exposedHeaders: ['set-cookie'],
+}));
 
 app.use(express.json({ limit: '10kb' }));
+
+app.use(cookieParser());
 
 app.use('/', indexRouter);
 

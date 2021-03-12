@@ -1,6 +1,21 @@
 import { Request, Response } from 'express';
 import * as msal from '@azure/msal-node';
 import catchAsync from '../utils/catchAsync';
+import { CookieOptions } from '../../shared/types/CookieOptions';
+
+const cookieOptions: CookieOptions = {
+  expires: new Date(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    Date() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000,
+  ),
+  httpOnly: true,
+};
+
+const placeTokenInCookie = (token: msal.AuthenticationResult, req: Request, res: Response) => {
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; }
+
+  res.cookie('jwt', token.accessToken, cookieOptions);
+};
 
 const config = {
   auth: {
@@ -42,16 +57,15 @@ export const login = catchAsync(
 export const getToken = catchAsync(
   async (req: Request, res: Response) => {
     const tokenRequest = {
-      code: req.query.code as string,
+      code: req.body.code as string,
       scopes: ['user.read'],
       redirectUri: 'http://localhost:8080/',
     };
 
-    loggingSession.acquireTokenByCode(tokenRequest).then((response: unknown) => {
-      // [TO DO] adding cookies here
-      res.status(200).json({
-        data: response,
-      });
-    });
+    const token = await loggingSession.acquireTokenByCode(tokenRequest);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    placeTokenInCookie(token!, req, res);
+
+    res.status(200).end();
   },
 );

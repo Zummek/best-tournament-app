@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import AppError from '../utils/appError';
 
-// handlers for production
 const handleDuplicateFieldsDB = () => {
   const message = 'Duplicate fields';
   return new AppError(message, 400);
@@ -21,7 +20,7 @@ const handleValidationErrorDB = (err: mongoose.Error.ValidationError) => {
 
 const handleCastErrorDB = (err: mongoose.Error.CastError) => {
   const message = `Invalid ${err.path}: ${err.value}`;
-  return new AppError(message, 400); // 400 - bad request
+  return new AppError(message, 400);
 };
 
 const sendErrorDev = (err: AppError, req: Request, res: Response) => {
