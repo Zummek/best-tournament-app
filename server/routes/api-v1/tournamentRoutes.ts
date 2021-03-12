@@ -1,8 +1,8 @@
 import express from 'express';
-import tournamentController from '../../controllers/tournament/';
+import tournamentController from '../../controllers/tournament';
 
-const router = express.Router();
+const tournamentRouter = express.Router();
 
-router.post('', tournamentController.create);
+tournamentRouter.post('', tournamentController.create);
 
-export default router;
+export default tournamentRouter;
