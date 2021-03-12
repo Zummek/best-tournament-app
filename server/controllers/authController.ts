@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import catchAsync from "../utils/catchAsync";
-import * as msal from "@azure/msal-node";
-import writeResponse from "../utils/writeResponse";
+import { Request, Response } from 'express';
+import * as msal from '@azure/msal-node';
+import catchAsync from '../utils/catchAsync';
 
 const config = {
   auth: {
@@ -11,7 +10,8 @@ const config = {
   },
   system: {
     loggerOptions: {
-      loggerCallback(_loglevel: any, message: string, _containsPii: any) {
+      loggerCallback(_loglevel: unknown, message: string) {
+        // eslint-disable-next-line no-console
         console.log(message);
       },
       piiLoggingEnabled: false,
@@ -23,39 +23,35 @@ const config = {
 const loggingSession = new msal.ConfidentialClientApplication(config);
 
 export const login = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const authCodeUrlParameters = {
-      scopes: ["user.read"],
-      redirectUri: "http://localhost:8080/",
+      scopes: ['user.read'],
+      redirectUri: 'http://localhost:8080/',
     };
 
     const authSessionURL = await loggingSession.getAuthCodeUrl(
-      authCodeUrlParameters
+      authCodeUrlParameters,
     );
-    console.log(authSessionURL);
-    writeResponse(res, {
-      statusCode: 200,
-      status: "success",
+
+    res.status(200).json({
       data: authSessionURL,
     });
-  }
+  },
 );
 
 export const getToken = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const tokenRequest = {
       code: req.query.code as string,
-      scopes: ["user.read"],
-      redirectUri: "http://localhost:8080/",
+      scopes: ['user.read'],
+      redirectUri: 'http://localhost:8080/',
     };
 
-    loggingSession.acquireTokenByCode(tokenRequest).then((response: any) => {
-      //[TO DO] adding cookies here
-      writeResponse(res, {
-        statusCode: 200,
-        status: "success",
+    loggingSession.acquireTokenByCode(tokenRequest).then((response: unknown) => {
+      // [TO DO] adding cookies here
+      res.status(200).json({
         data: response,
       });
     });
-  }
+  },
 );
