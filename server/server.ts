@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
-
-import app from './app';
 import { connectDatabase } from './database';
 
 dotenv.config();
+
+// eslint-disable-next-line import/first
+import app from './app';
 
 const port = process.env.PORT || 3000;
 connectDatabase();
