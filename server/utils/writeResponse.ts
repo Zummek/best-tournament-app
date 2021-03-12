@@ -1,15 +1,15 @@
 import { Response } from 'express';
 
 interface ResponseData {
-  httpStatus?: number;
+  httpStatus: number;
   messageKey?: string;
-  data: never;
+  data?: unknown;
 }
 
 function writeResponse(res: Response, responseData: ResponseData) {
   const response = {
     messageKey: responseData.messageKey,
-    data: responseData.data || undefined,
+    data: responseData.data,
   };
 
   res
