@@ -1,55 +1,71 @@
 import mongoose, { Schema, Types, Model } from 'mongoose';
-import Tournament, { Match, Team } from '../../../shared/types/Tournament';
+import ITournament, { Match as IMatch, Team } from '../../../shared/types/Tournament';
 import { TeamDocument } from './teamModel';
 
+export interface Match extends Omit<IMatch, 'sideA' | 'sideB'> {
+  sideA : { team: Team | Types.ObjectId };
+  sideB : { team: Team | Types.ObjectId };
+}
+
+export interface Tournament extends Omit<ITournament, 'teams' | 'matches'>{
+  teams: Array<Team> | Array<Types.ObjectId>;
+  matches: Array<Match>;
+}
+
 const MatchSchema = new Schema({
-  rivals: {
-    teamA: { type: Types.ObjectId, ref: 'Team' },
-    teamB: { type: Types.ObjectId, ref: 'Team' },
+  sideA: {
+    team: {
+      type: Schema.Types.ObjectId,
+      ref: 'Team',
+      required: true,
+    },
+    score: {
+      a: Schema.Types.Number,
+      b: Schema.Types.Number,
+    },
   },
-  score: {
-    teamA: Number,
-    teamB: Number,
+  sideB: {
+    team: {
+      type: Schema.Types.ObjectId,
+      ref: 'Team',
+      required: true,
+    },
+    score: {
+      a: Schema.Types.Number,
+      b: Schema.Types.Number,
+    },
   },
   date: Date,
 });
 
 const TournamentSchema = new Schema<TournamentDocument, TournamentModel>({
-  name: String,
-  ownerMicrosoftId: String,
-  teams: [{ type: Types.ObjectId, ref: 'Team' }],
+  name: Schema.Types.String,
+  ownerMicrosoftId: Schema.Types.String,
+  teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],
 });
 
 interface TournamentBaseDocument extends Tournament, mongoose.Document {
-  teams: Types.Array<Types.ObjectId> | Types.Array<Team>;
+  teams: Types.Array<Team> | Types.Array<Types.ObjectId> ;
   matches: Types.Array<Match>;
 }
 
 export interface TournamentDocument extends TournamentBaseDocument {
   teams: Types.Array<TeamDocument['_id']>
   matches: Types.Array<{
-    rivals:{
-      teamA: TeamDocument['_id'],
-      teamB: TeamDocument['_id'], },
-    score: {
-      teamA: number,
-      teamB: number, },
-    date: Date;
-  }>
+    sideA: { team: TeamDocument['_id'] };
+    sideB: { team: TeamDocument['_id'] };
+    date: Date,
+  }>,
 }
 
 export interface TournamentPopulatedDocument extends TournamentBaseDocument {
   teams: Types.Array<TeamDocument>;
   matches: Types.Array<{
-    rivals:{
-      teamA: TeamDocument,
-      teamB: TeamDocument, },
-    score: {
-      teamA: number,
-      teamB: number, };
-    date: Date;
-  }>
+    sideA: { team: TeamDocument };
+    sideB: { team: TeamDocument };
+    date: Date,
+  }>,
 }
 
 export type TournamentModel = Model<TournamentDocument>;

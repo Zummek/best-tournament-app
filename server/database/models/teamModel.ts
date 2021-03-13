@@ -3,12 +3,12 @@ import { Team } from '../../../shared/types/Tournament';
 import User from '../../../shared/types/User';
 
 const UserSchema = new Schema({
-  microsoftId: String,
-  alias: String,
+  microsoftId: Schema.Types.String,
+  alias: Schema.Types.String,
 });
 
 const TeamSchema = new Schema <TeamDocument, TeamModel>({
-  name: String,
+  name: Schema.Types.String,
   members: [UserSchema],
 });
 
