@@ -4,6 +4,8 @@ It's the best tournament application for make fun in companies
 
 ## Getting started
 
+> **_NOTE:_** it's recommended to use yarn in `./web-app` by quasar and required by CI/CL. In the end `yarn.lock` or `package-lock.json` must by up to date for CI/CL function properly.
+
 1\. In server folder copy `.env.example` to `.env` file and change the settings for yourself:
 
 2\. Install quasar globally:
