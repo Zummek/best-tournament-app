@@ -73,6 +73,7 @@ module.exports = {
 
   // add your custom rules here
   rules: {
+    'no-unsafe-assignment': 'off',
     'prefer-promise-reject-errors': 'off',
 
     // TypeScript
