@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
+import log from '../utils/logger';
 
 // eslint-disable-next-line import/prefer-default-export
 export const connectDatabase = () => {
@@ -15,9 +16,9 @@ export const connectDatabase = () => {
       useUnifiedTopology: true,
     })
     .then(() => {
-      console.log('DB connection succesful');
+      log.info('Database connection succesful');
     })
     .catch((error) => {
-      console.log('DB connection error', error);
+      log.error('Database connection error', { error });
     });
 };

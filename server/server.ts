@@ -1,15 +1,16 @@
+/* eslint-disable import/first */
 import dotenv from 'dotenv';
-import { connectDatabase } from './database';
 
 dotenv.config();
 
-// eslint-disable-next-line import/first
+import colors from 'colors';
+import { connectDatabase } from './database';
 import app from './app';
+import logger from './utils/logger';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || '3000';
 connectDatabase();
 
 app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`App running on port ${port}...`);
+  logger.info(`Server is listening on port ${colors.yellow(port)}`);
 });

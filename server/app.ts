@@ -1,14 +1,14 @@
 import express from 'express';
-import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import * as errorController from './controllers/errorController';
 import indexRouter from './routes';
+import httpLogger from './utils/httpLogger';
 
 const app = express();
 
-if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') app.use(httpLogger());
 
 app.use(express.static(`${__dirname}/public`));
 

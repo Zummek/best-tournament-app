@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as msal from '@azure/msal-node';
 import catchAsync from '../utils/catchAsync';
+import logger from '../utils/logger';
 
 interface CookieOptions {
   expires: Date;
@@ -33,8 +34,7 @@ const config = {
   system: {
     loggerOptions: {
       loggerCallback(_loglevel: unknown, message: string) {
-        // eslint-disable-next-line no-console
-        console.log(message);
+        logger.info(message);
       },
       piiLoggingEnabled: false,
       logLevel: msal.LogLevel.Verbose,
