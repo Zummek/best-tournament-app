@@ -42,10 +42,30 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import axios, { AxiosResponse } from 'axios';
+
 @Component
 export default class Login extends Vue {
-  loginWithMS() {
-    console.log('login');
+  private async loginWithMS() {
+    const authUrlResponse: AxiosResponse = await axios({
+      method: 'POST',
+      url: 'http://localhost:3000/v1/users/login',
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    window.location = authUrlResponse.data.data as Location;
+  }
+  private async mounted() {
+    if (this.$route.query.code) {
+      axios.defaults.withCredentials = true;
+
+      await axios({
+        method: 'POST',
+        url: 'http://localhost:3000/v1/users/logged',
+        data: {
+          code: this.$route.query.code,
+        },
+      });
+    }
   }
 }
 </script>
