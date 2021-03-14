@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { get, isNil } from 'lodash';
 import { Notify } from 'quasar';
 import internalApi from './internalApi';
@@ -8,32 +8,14 @@ const api = {
 };
 
 export default api;
-export const jc = axios.create({
+export const axiosInstance = axios.create({
   headers: {},
   baseURL: process.env.BACKEND_API_URL,
 });
 
-jc.interceptors.request.use(request => addToken(request));
-
-const addToken = (config: AxiosRequestConfig) => {
-  // TODO: get cookie 2x
-  if (
-    'TokenManager.getAccessToken() - get from cookie' &&
-    config.url !== 'refresh'
-  ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    config.headers['Authorization'] =
-      'Bearer ' + 'TokenManager.getAccessToken()';
-  }
-  return config;
-};
-
-jc.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   response => response,
-  async error => {
-    // TODO: auth refresh token - needed in msal?
-    return handleResponseErrors(error);
-  }
+  async error => handleResponseErrors(error)
 );
 
 const handleResponseErrors = (request: AxiosResponse) => {

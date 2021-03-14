@@ -70,15 +70,12 @@ export default class Login extends Vue {
           code: this.$route.query.code,
         },
       });
-      const response = await api.internalApi.auth.loginWithMS();
-      window.location = response.data;
+      // private async mounted() {
+      //   if (this.$route.query.code) {
+      //     await api.internalApi.auth.getToken(String(this.$route.query.code));
+      //   }
+      // }
     }
-
-    // private async mounted() {
-    //   if (this.$route.query.code) {
-    //     await api.internalApi.auth.getToken(String(this.$route.query.code));
-    //   }
-    // }
   }
 }
 </script>
