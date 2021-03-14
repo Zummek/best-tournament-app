@@ -20,7 +20,7 @@ const cookieOptions: CookieOptions = {
 };
 
 const placeTokenInCookie = (token: msal.AuthenticationResult, req: Request, res: Response) => {
-  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; }
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; } else cookieOptions.secure = false;
 
   res.cookie('jwt', token.accessToken, cookieOptions);
 };
