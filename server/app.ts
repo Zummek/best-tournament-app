@@ -14,7 +14,12 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use(cors({
   credentials: true,
-  exposedHeaders: ['set-cookie'],
+  origin: true,
+}));
+
+app.options('*', () => cors({
+  credentials: true,
+  origin: true,
 }));
 
 app.use(express.json({ limit: '10kb' }));

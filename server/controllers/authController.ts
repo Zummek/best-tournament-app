@@ -6,13 +6,14 @@ import { CookieOptions } from '../../shared/types/CookieOptions';
 const cookieOptions: CookieOptions = {
   expires: new Date(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    Date() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000,
+    Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000,
   ),
   httpOnly: true,
+  sameSite: 'strict',
 };
 
 const placeTokenInCookie = (token: msal.AuthenticationResult, req: Request, res: Response) => {
-  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; }
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; } else cookieOptions.secure = false;
 
   res.cookie('jwt', token.accessToken, cookieOptions);
 };
@@ -65,7 +66,8 @@ export const getToken = catchAsync(
     const token = await loggingSession.acquireTokenByCode(tokenRequest);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     placeTokenInCookie(token!, req, res);
-
-    res.status(200).end();
+    res.status(200).json({
+      status: 'success',
+    });
   },
 );
