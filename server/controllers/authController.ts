@@ -41,7 +41,7 @@ export const login = catchAsync(
   async (req: Request, res: Response) => {
     const authCodeUrlParameters = {
       scopes: ['user.read'],
-      redirectUri: 'http://localhost:8080/',
+      redirectUri: 'http://localhost:8080/login',
     };
 
     const authSessionURL = await loggingSession.getAuthCodeUrl(
@@ -59,7 +59,7 @@ export const getToken = catchAsync(
     const tokenRequest = {
       code: req.body.code as string,
       scopes: ['user.read'],
-      redirectUri: 'http://localhost:8080/',
+      redirectUri: 'http://localhost:8080/login',
     };
 
     const token = await loggingSession.acquireTokenByCode(tokenRequest);
