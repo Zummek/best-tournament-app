@@ -1,42 +1,45 @@
 <template>
   <q-page class="pageStyle flex flex-center">
     <div class="row full-width justify-center">
-      <q-card-section
-        horizontal
-        align="around"
-        class="loginSection col-8 justify-center"
-      >
-        <q-card class="mobile-hide col-md-4">
-          <q-img src="https://placeimg.com/500/300/nature" height="100%" />
-        </q-card>
-        <q-card-section class="col-8">
-          <q-card-section class="row justify-center">
-            <div class="col-9 text-center">
-              <q-icon name="emoji_events" size="4.4em" />
-              <div class="text-h6">
-                Welcome to <br />
-                best tournament application!
+      <q-card class="col-sm-9 col-md-7 col-xl-5">
+        <q-card-section horizontal>
+          <q-img
+            v-if="$q.screen.gt.md"
+            style="flex: 2"
+            src="https://placeimg.com/500/300/nature"
+          />
+
+          <q-card-section style="flex: 3">
+            <q-card-section class="row justify-center">
+              <div class="text-center">
+                <q-icon name="emoji_events" size="4.4em" />
+                <div class="text-h6">
+                  Welcome to <br />
+                  best tournament application!
+                </div>
+                <div class="text-subtitle2" style="margin-top: 20px">
+                  Sign in via Microsoft Office account and enjoy company fun
+                </div>
               </div>
-              <div class="text-subtitle2" style="margin-top: 20px">
-                Sign in via Microsoft Office account and enjoy company fun
-              </div>
-            </div>
-          </q-card-section>
-          <q-card-section class="row justify-center">
-            <q-btn
-              color="primary"
-              icon="mail"
-              label="Login with Microsoft"
-              @click="loginWithMS"
-            />
-          </q-card-section>
-          <q-card-section class="row justify-center authors text-weight-light">
-            Authors: <br />
-            Adam Jędryka, Przemysław Rychter <br />
-            Kuba Pawleniak, Kamil Zaborowski
+            </q-card-section>
+            <q-card-section class="row justify-center">
+              <q-btn
+                color="primary"
+                icon="mail"
+                label="Login with Microsoft"
+                @click="loginWithMS"
+              />
+            </q-card-section>
+            <q-card-section
+              class="row justify-center authors text-weight-light"
+            >
+              Authors: <br />
+              Adam Jędryka, Przemysław Rychter <br />
+              Kuba Pawleniak, Kamil Zaborowski
+            </q-card-section>
           </q-card-section>
         </q-card-section>
-      </q-card-section>
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -75,10 +78,7 @@ export default class Login extends Vue {
 .authors {
   color: gray;
 }
-.loginSection {
-  background-color: white;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
+
 .pageStyle {
   background-color: #ede7e7;
   background-image: linear-gradient(19deg, #ede7e7 0%, #e7e2f7 100%);
