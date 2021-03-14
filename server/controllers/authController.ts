@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import * as msal from '@azure/msal-node';
 import catchAsync from '../utils/catchAsync';
-import { CookieOptions } from '../../shared/types/CookieOptions';
+
+interface CookieOptions {
+  expires: Date;
+  httpOnly: boolean;
+  sameSite?: 'lax' | 'none' | 'strict' | undefined | boolean;
+  secure?: boolean;
+}
 
 const cookieOptions: CookieOptions = {
   expires: new Date(
