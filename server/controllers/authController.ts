@@ -13,7 +13,7 @@ const cookieOptions: CookieOptions = {
 };
 
 const placeTokenInCookie = (token: msal.AuthenticationResult, req: Request, res: Response) => {
-  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; } else cookieOptions.secure = false;
+  if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; }
 
   res.cookie('jwt', token.accessToken, cookieOptions);
 };
@@ -66,8 +66,6 @@ export const getToken = catchAsync(
     const token = await loggingSession.acquireTokenByCode(tokenRequest);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     placeTokenInCookie(token!, req, res);
-    res.status(200).json({
-      status: 'success',
-    });
+    res.status(200).end();
   },
 );
