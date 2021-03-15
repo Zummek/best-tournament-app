@@ -7,4 +7,6 @@ userRouter.post('/login', authController.login);
 
 userRouter.post('/logged', authController.getToken);
 
+userRouter.get('/logo', authController.getApplicationLogo);
+
 export default userRouter;

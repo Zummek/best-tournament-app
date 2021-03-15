@@ -3,11 +3,13 @@
     <div class="row full-width justify-center">
       <q-card class="col-sm-9 col-md-7 col-xl-5">
         <q-card-section horizontal>
-          <q-img
+          <img
             v-if="$q.screen.gt.md"
-            style="flex: 2"
-            src="https://placeimg.com/500/300/nature"
+            class="image__logo"
+            style="flex: 2; max-width: 100%; height: auto;"
+            :src="logoUrl"
           />
+          <q-separator inset size="0.13em" vertical />
 
           <q-card-section style="flex: 3">
             <q-card-section class="row justify-center">
@@ -51,6 +53,8 @@ import axios, { AxiosResponse } from 'axios';
 
 @Component
 export default class Login extends Vue {
+  private logoUrl: unknown = '';
+
   private async loginWithMS() {
     const authUrlResponse: AxiosResponse = await axios({
       method: 'POST',
@@ -60,9 +64,15 @@ export default class Login extends Vue {
     window.location = authUrlResponse.data.data as Location;
   }
   private async mounted() {
+    const logoResponse = await axios({
+      method: 'GET',
+      url: 'http://localhost:3000/v1/users/logo',
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    this.logoUrl = logoResponse.data.logo;
+
     if (this.$route.query.code) {
       axios.defaults.withCredentials = true;
-
       await axios({
         method: 'POST',
         url: 'http://localhost:3000/v1/users/logged',
@@ -87,5 +97,6 @@ export default class Login extends Vue {
 
 .container {
   background: linear-gradient($orange-1, $orange-2, $accent);
+  // background: linear-gradient(19deg, #ede7e7 0%, #e7e2f7 100%);
 }
 </style>
