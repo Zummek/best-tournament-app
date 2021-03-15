@@ -47,7 +47,8 @@ const loggingSession = new msal.ConfidentialClientApplication(config);
 export const login = catchAsync(
   async (req: Request, res: Response) => {
     const authCodeUrlParameters = {
-      scopes: ['user.read'],
+      scopes: ['user.read', 'user.readbasic.all', 'user.readwrite', 'user.read.all',
+        'user.readwrite.all', 'directory.read.all', 'directory.accessasuser.all'],
       redirectUri: 'http://localhost:8080/login',
     };
 

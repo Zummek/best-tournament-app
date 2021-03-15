@@ -1,5 +1,5 @@
 <template>
-  <q-page class="pageStyle flex flex-center">
+  <q-page class="container flex flex-center">
     <div class="row full-width justify-center">
       <q-card class="col-sm-9 col-md-7 col-xl-5">
         <q-card-section horizontal>
@@ -24,7 +24,7 @@
             </q-card-section>
             <q-card-section class="row justify-center">
               <q-btn
-                color="primary"
+                color="accent"
                 icon="mail"
                 label="Login with Microsoft"
                 @click="loginWithMS"
@@ -79,8 +79,7 @@ export default class Login extends Vue {
   color: gray;
 }
 
-.pageStyle {
-  background-color: #ede7e7;
-  background-image: linear-gradient(19deg, #ede7e7 0%, #e7e2f7 100%);
+.container {
+  background: linear-gradient($orange-1, $orange-2, $accent);
 }
 </style>
