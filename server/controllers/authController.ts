@@ -1,14 +1,21 @@
 import { Request, Response } from 'express';
 import * as msal from '@azure/msal-node';
 import catchAsync from '../utils/catchAsync';
-import { CookieOptions } from '../../shared/types/CookieOptions';
+
+interface CookieOptions {
+  expires: Date;
+  httpOnly: boolean;
+  sameSite?: 'lax' | 'none' | 'strict' | undefined | boolean;
+  secure?: boolean;
+}
 
 const cookieOptions: CookieOptions = {
   expires: new Date(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    Date() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000,
+    Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN_HOURS! * 60 * 60 * 1000,
   ),
   httpOnly: true,
+  sameSite: 'strict',
 };
 
 const placeTokenInCookie = (token: msal.AuthenticationResult, req: Request, res: Response) => {
@@ -40,8 +47,9 @@ const loggingSession = new msal.ConfidentialClientApplication(config);
 export const login = catchAsync(
   async (req: Request, res: Response) => {
     const authCodeUrlParameters = {
-      scopes: ['user.read'],
-      redirectUri: 'http://localhost:8080/',
+      scopes: ['user.read', 'user.readbasic.all', 'user.readwrite', 'user.read.all',
+        'user.readwrite.all', 'directory.read.all', 'directory.accessasuser.all'],
+      redirectUri: 'http://localhost:8080/login',
     };
 
     const authSessionURL = await loggingSession.getAuthCodeUrl(
@@ -59,13 +67,12 @@ export const getToken = catchAsync(
     const tokenRequest = {
       code: req.body.code as string,
       scopes: ['user.read'],
-      redirectUri: 'http://localhost:8080/',
+      redirectUri: 'http://localhost:8080/login',
     };
 
     const token = await loggingSession.acquireTokenByCode(tokenRequest);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     placeTokenInCookie(token!, req, res);
-
     res.status(200).end();
   },
 );
