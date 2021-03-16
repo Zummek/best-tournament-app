@@ -2,29 +2,27 @@
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title class="text-center lt-sm">
-          <q-icon name="emoji_events" />
-          Best tournament app
-        </q-toolbar-title>
-        <q-toolbar-title class="gt-xs">
-          <q-icon name="emoji_events" />
-          Best tournament app
-        </q-toolbar-title>
-
-        <div class="row gt-xs">
-          <!-- <q-item-label header>Options</q-item-label> -->
-          <MenuElement
+        <div class="row col-3 gt-xs">
+          <HeaderMenuElement
             v-for="link in menuLinks"
             :key="link.title"
             v-bind="link"
           />
+        </div>
 
-          <!-- <q-btn-group>
-            <q-btn stretch dense flat label="My Tournaments" />
-          </q-btn-group> -->
+        <q-toolbar-title class="lt-sm">
+          <q-icon name="emoji_events" />
+          Best tournament app
+        </q-toolbar-title>
+        <q-toolbar-title class="gt-xs text-center">
+          <q-icon name="emoji_events" />
+          Best tournament app
+        </q-toolbar-title>
+
+        <div class="row col-3 gt-xs justify-end">
           <div>
             <!-- Test -->
-            <q-btn round class="q-ma-sm">
+            <q-btn round class="q-ma-sm ">
               <q-avatar size="50px">
                 <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
               </q-avatar>
@@ -96,7 +94,7 @@
                 <div class="row  q-pa-md">
                   <div class="column items-center">
                     <div class="text-h6 q-mb-md">Settings</div>
-                    It's me mario here. I will provide some setting later.
+                    It's me Mario here. I will provide some setting later.
                   </div>
                 </div>
               </q-menu>
@@ -106,19 +104,16 @@
       </q-toolbar>
     </q-header>
 
-    <q-footer bordered class="bg-blue text-primary lt-sm">
+    <q-footer bordered class="bg-primary text-primary lt-sm">
       <q-tabs
-        no-caps
-        active-color="primary"
-        indicator-color="transparent"
-        class="text-grey"
         v-model="tab"
+        indicator-color="transparent"
+        active-color="white"
+        class="bg-primary text-grey-5 shadow-2"
       >
-        <q-tab
-          v-for="link in menuLinks"
-          :label="link.title"
-          :name="link.title"
-        />
+        <q-tab label="Tab1" name="Tab1" />
+        <q-separator vertical class="q-mx-xs" />
+        <q-tab label="Tab2" name="Tab2" />
       </q-tabs>
     </q-footer>
 
@@ -129,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import MenuElement from '../components/MenuElement.vue';
+import HeaderMenuElement from '../components/HeaderMenuElement.vue';
 
 const linksData = [
   {
@@ -145,7 +140,7 @@ const linksData = [
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component({
-  components: { MenuElement },
+  components: { HeaderMenuElement },
 })
 export default class MainLayout extends Vue {
   leftDrawerOpen = false;
