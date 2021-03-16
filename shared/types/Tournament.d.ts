@@ -20,6 +20,7 @@ export interface Match {
       b: number;  
     },
   },
+  isFinished: boolean;
   date: Date;
 }
 

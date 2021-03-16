@@ -1,16 +1,25 @@
 import mongoose, { Schema } from 'mongoose';
-import { Team } from '../../../shared/types/Tournament';
+import Team from '../../models/team';
+import User from '../../models/user';
 
 const UserSchema = new Schema({
   microsoftId: Schema.Types.String,
-  alias: Schema.Types.String,
+  alias: {
+    type: Schema.Types.String,
+    maxLength: 20,
+  },
 });
 
 const TeamSchema = new Schema({
-  name: Schema.Types.String,
+  name: {
+    type: Schema.Types.String,
+    minLength: 3,
+    maxLength: 40,
+  },
   members: [UserSchema],
 });
 
-interface TeamDocument extends Team, mongoose.Document {}
+UserSchema.loadClass(User);
+TeamSchema.loadClass(Team);
 
-export default mongoose.model <TeamDocument>('Team', TeamSchema);
+export default mongoose.model('Team', TeamSchema);
