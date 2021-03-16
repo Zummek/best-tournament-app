@@ -18,8 +18,8 @@ axiosInstance.interceptors.response.use(
   async error => handleResponseErrors(error)
 );
 
-const handleResponseErrors = (request: AxiosResponse) => {
-  const status = get(request, 'response.status', 'no_status') as
+const handleResponseErrors = (response: AxiosResponse) => {
+  const status = get(response, 'response.status', 'no_status') as
     | string
     | number;
 
@@ -52,5 +52,5 @@ const handleResponseErrors = (request: AxiosResponse) => {
     default:
       break;
   }
-  return Promise.reject(request);
+  return Promise.reject(response);
 };
