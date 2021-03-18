@@ -1,14 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import { get, isNil } from 'lodash';
 import { Notify } from 'quasar';
-import internalApi from './internalApi';
 
-const api = {
-  internalApi,
-};
-
-export default api;
-export const axiosInstance = axios.create({
+const axiosInstance = axios.create({
   headers: {},
   baseURL: process.env.BACKEND_API_URL,
 });
@@ -54,3 +48,5 @@ const handleResponseErrors = (response: AxiosResponse) => {
   }
   return Promise.reject(response);
 };
+
+export default axiosInstance;

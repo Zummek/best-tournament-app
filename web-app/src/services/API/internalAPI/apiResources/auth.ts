@@ -1,4 +1,4 @@
-import { axiosInstance } from '../../http';
+import axiosInstance from './../axiosInstance';
 import * as types from './types';
 
 export const loginWithMS = async () => {
