@@ -1,20 +1,22 @@
 import User from "./User";
  
 export interface Team {
+  id?: string;
   name: string;
   members: Array<User>; 
 }
 
 export interface Match {
+  id?: string;
   sideA: {
-    team: Team; 
+    team: Team | string; 
     score: {
       a: number;
       b: number;  
     },
   },
   sideB: {
-    team: Team;  
+    team: Team | string;  
     score: {
       a: number;
       b: number;  
@@ -25,8 +27,9 @@ export interface Match {
 }
 
 export default interface Tournament {
+  id?: string;
   name: string;
-  ownerMicrosoftId: string;
-  teams:  Array<Team>; 
+  ownerMId: string;
+  teams:  Array<Team | string>; 
   matches: Array<Match>;
 }
