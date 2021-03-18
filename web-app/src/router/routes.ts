@@ -8,7 +8,7 @@ const routes: RouteConfig[] = [
       {
         path: '',
         component: () => import('pages/Index.vue'),
-        meta: { public: false },
+        meta: { public: true },
       },
     ],
   },

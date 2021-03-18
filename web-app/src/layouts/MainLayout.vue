@@ -1,41 +1,124 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+        <div class="row col-4 gt-xs">
+          <q-item
+            v-for="link in menuLinks"
+            clickable
+            tag="a"
+            target="_blank"
+            :href="link.link"
+            :key="link.label"
+          >
+            <q-item-section>
+              <q-item-label>{{ link.label }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </div>
 
-        <q-toolbar-title>
-          Quasar App
+        <q-toolbar-title
+          :class="$q.screen.gt.xs ? 'text-center gt-xs' : ''"
+          style="overflow:visible"
+        >
+          <q-icon name="emoji_events" />
+          Best tournament app
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div class="row col-4 gt-xs justify-end">
+          <q-btn round class="q-ma-sm ">
+            <q-avatar size="50px">
+              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            </q-avatar>
+
+            <q-menu anchor="bottom right" self="top right">
+              <div class="row no-wrap q-pa-md">
+                <div class="column" style="flex: 2">
+                  <div class="text-h6 q-mb-md">Settings</div>
+                  It's me mario here.<br />
+                  I will provide some setting here later.
+                </div>
+
+                <q-separator vertical inset class="q-mx-lg" />
+
+                <div class="column items-center" style="flex: 1">
+                  <q-avatar size="72px">
+                    <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                  </q-avatar>
+
+                  <div class="text-subtitle1 q-mt-md">Adam Kowalski</div>
+                  <div class="text-weight-light q-mb-md">
+                    mailkowalskiego@la.pl
+                  </div>
+
+                  <q-btn
+                    color="primary"
+                    label="Logout"
+                    push
+                    size="sm"
+                    v-close-popup
+                  />
+                </div>
+              </div>
+            </q-menu>
+          </q-btn>
+        </div>
+
+        <div class="column lt-sm">
+          <div>
+            <q-btn round class="q-ma-sm">
+              <q-avatar size="40px">
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              </q-avatar>
+
+              <q-menu anchor="bottom right" self="top right">
+                <div class="row no-wrap q-pa-md justify-center">
+                  <div class="column items-center">
+                    <q-avatar size="72px">
+                      <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                    </q-avatar>
+
+                    <div class="text-subtitle1 q-mt-md">Adam Kowalski</div>
+                    <div class="text-weight-light q-mb-md">
+                      mailkowalskiego@la.pl
+                    </div>
+
+                    <q-btn
+                      color="primary"
+                      label="Logout"
+                      push
+                      size="sm"
+                      v-close-popup
+                    />
+                  </div>
+                </div>
+                <q-separator horizontal class="q-mx-xs" />
+                <div class="row  q-pa-md">
+                  <div class="column items-center">
+                    <div class="text-h6 q-mb-md">Settings</div>
+                    It's me Mario here. I will provide some setting later.
+                  </div>
+                </div>
+              </q-menu>
+            </q-btn>
+          </div>
+        </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label header class="text-grey-8">
-          Essential Links
-        </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
+    <q-footer bordered class="bg-primary text-primary lt-sm">
+      <q-tabs
+        v-model="tab"
+        align="justify"
+        indicator-color="transparent"
+        active-color="white"
+        class="bg-primary text-grey-5 shadow-2"
+      >
+        <q-tab label="News" name="News" class="row col-6" />
+        <q-separator vertical class="q-mx-xs" />
+        <q-tab label="Tournaments" name="Tournaments" class="row col-6" />
+      </q-tabs>
+    </q-footer>
 
     <q-page-container>
       <router-view />
@@ -44,60 +127,21 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from '../components/EssentialLink.vue';
-
 const linksData = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    label: 'News',
+    link: '#',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
+    label: 'Tournaments',
+    link: '#',
   },
 ];
 
 import { Vue, Component } from 'vue-property-decorator';
 
-@Component({
-  components: { EssentialLink },
-})
+@Component
 export default class MainLayout extends Vue {
-  leftDrawerOpen = false;
-  essentialLinks = linksData;
+  menuLinks = linksData;
 }
 </script>
