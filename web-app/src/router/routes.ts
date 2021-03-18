@@ -6,8 +6,13 @@ const routes: RouteConfig[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
+        path: '/index',
         component: () => import('pages/Index.vue'),
+        meta: { public: true },
+      },
+      {
+        path: '/tournamentsList',
+        component: () => import('pages/TournamentsList.vue'),
         meta: { public: true },
       },
     ],
