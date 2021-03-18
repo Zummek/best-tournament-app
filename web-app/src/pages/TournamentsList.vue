@@ -1,9 +1,10 @@
-<template> </template>
-<script>
-import { defineComponent } from '@vue/composition-api';
+<template>
+  <q-page> HEY </q-page>
+</template>
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
 
-export default defineComponent({
-  setup() {},
-});
+@Component
+export default class TournamentsList extends Vue {}
 </script>
 <style></style>
