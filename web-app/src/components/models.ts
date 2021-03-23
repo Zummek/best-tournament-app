@@ -1,3 +1,4 @@
+import User from './User';
 export interface Todo {
   id: number;
   content: string;
