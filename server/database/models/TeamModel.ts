@@ -7,13 +7,15 @@ const UserSchema = new Schema({
     type: Schema.Types.String,
     maxLength: 20,
   },
+  avatarURL: Schema.Types.String,
 });
 
 const TeamSchema = new Schema({
   name: {
     type: Schema.Types.String,
-    minLength: 3,
-    maxLength: 40,
+    required: [true, 'No team name was specified'],
+    minLength: [3, 'Team name should be at least 3 characters long'],
+    maxLength: [40, 'Team name cannot exceed 40 characters'],
   },
   members: [UserSchema],
 });

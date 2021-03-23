@@ -21,7 +21,7 @@ const MatchSchema = new Schema({
 });
 
 const TournamentSchema = new Schema({
-  name: Schema.Types.String,
+  name: { type: Schema.Types.String, unique: true },
   ownerMId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],

@@ -14,7 +14,7 @@ export default async function dbTests() {
       for (let i = 0; i < 8; i += 1) {
         TeamRepository.insert({
           name: `Kozy ${i}`,
-          members: [{ mId: 'microsoftIdentifier', alias: 'Koza' }],
+          members: [{ mId: 'microsoftIdentifier', alias: 'Koza', avatarURL: '' }],
         });
       }
     })
@@ -24,15 +24,15 @@ export default async function dbTests() {
 
   await TeamRepository.insert({
     name: 'Kozleta',
-    members: [{ mId: 'microsoftIdentifier', alias: 'Koza' }],
+    members: [{ mId: 'microsoftIdentifier', alias: 'Koza', avatarURL: '' }],
   });
 
   TeamRepository.insertMany([{
     name: 'aligatory',
-    members: [{ mId: 'alek', alias: 'zawodnik' }, { mId: 'franek', alias: 'szybki' }],
+    members: [{ mId: 'alek', alias: 'zawodnik', avatarURL: '' }, { mId: 'franek', alias: 'szybki', avatarURL: '' }],
   }, {
     name: 'jagnię',
-    members: [{ mId: 'nabuchodonozor', alias: 'zawodnik' }, { mId: 'russelWe3trbrook', alias: 'szybki' }],
+    members: [{ mId: 'nabuchodonozor', alias: 'zawodnik', avatarURL: '' }, { mId: 'russelWe3trbrook', alias: 'szybki', avatarURL: '' }],
   }]).catch((err) => {
     console.log(err);
   });

@@ -16,14 +16,10 @@ export default class TournamentRepository {
   };
 
   public static insertTeam = async (tournament: Tournament | string, team : Team | string) => {
-    let tournamentDoc : (Document & Tournament) | null;
     // Does tournament exist?
-    if (typeof tournament === 'string') {
-      tournamentDoc = await TournamentModel.findById(tournament).exec();
-    } else { // typeof tournament : Tournament
-      tournamentDoc = await TournamentModel.findById(tournament.id).exec();
-    }
-    if (tournamentDoc === null) { throw new Error('Tournament has not been found'); }
+    let tournamentDoc : (Document & Tournament) | null;
+    // eslint-disable-next-line prefer-const
+    tournamentDoc = await TournamentRepository.exist(tournament);
     // Does team exist?
     let teamDoc: (Document & Team) | null;
     if (typeof team === 'string') {
@@ -41,5 +37,49 @@ export default class TournamentRepository {
       throw new Error(err);
     }
     return savedTournament;
+  };
+
+  public static getAll = async () => {
+    const tournaments : Tournament[] = await TournamentModel.find()
+      .populate('teams')
+      .populate('matches.sideA.team')
+      .populate('matches.sideB.team')
+      .exec();
+    return tournaments;
+  };
+
+  public static getByName = async (nameSearch: string) => {
+    const tournament : Tournament | null = await TournamentModel.findOne({ name: `${nameSearch}` }).exec();
+    if (tournament === null) { throw new Error('No such tournament in DB'); } else { return tournament; }
+  };
+
+  public static insertManyTeams =
+  async (tournament: Tournament | string, teams : Array<Team | string>) => {
+    const promises : Promise<Tournament>[] = [];
+    for (let i = 0; i < teams.length; i += 1) {
+      promises.push(TournamentRepository.insertTeam(tournament, teams[i]));
+    }
+    await Promise.all(promises);
+    return promises;
+  };
+
+  // public static insertMatch =
+  // async (tournament: Tournament | string, match : Match | string) => {
+  //   let tournamentDoc : (Document & Tournament) | null;
+  //   // eslint-disable-next-line prefer-const
+  //   tournamentDoc = await TournamentRepository.exist(tournament);
+  //   if()
+  // };
+
+  private static exist = async (tournament: Tournament | string) => {
+    let tournamentDoc : (Document & Tournament) | null;
+    // Does tournament exist?
+    if (typeof tournament === 'string') {
+      tournamentDoc = await TournamentModel.findOne({ name: `${tournament}` }).exec();
+    } else { // typeof tournament : Tournament
+      tournamentDoc = await TournamentModel.findOne({ name: `${tournament.name}` }).exec();
+    }
+    if (tournamentDoc === null) { throw new Error('Tournament has not been found'); }
+    return tournamentDoc;
   };
 }
