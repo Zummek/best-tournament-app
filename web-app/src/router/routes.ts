@@ -12,7 +12,7 @@ const routes: RouteConfig[] = [
       },
       {
         path: '/tournamentsList',
-        component: () => import('pages/TournamentsList.vue'),
+        component: () => import('src/pages/tournament/TournamentsList.vue'),
         meta: { public: true },
       },
     ],
