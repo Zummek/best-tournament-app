@@ -66,7 +66,7 @@ export default class Login extends Vue {
   private async mounted() {
     const logoResponse = await axios({
       method: 'GET',
-      url: 'http://localhost:3000/v1/users/logo',
+      url: 'http://localhost:3000/v1/organization/logo',
     });
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     this.logoUrl = logoResponse.data.logo;
