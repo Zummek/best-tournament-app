@@ -79,7 +79,7 @@ export const getToken = catchAsync(
   },
 );
 
-export const getApplicationLogo = catchAsync(async (req: Request, res: Response) => {
+export const getAzureADApplicationLogo = catchAsync(async (req: Request, res: Response) => {
   const applicationToken = await axios({
     method: 'POST',
     url: `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`,
