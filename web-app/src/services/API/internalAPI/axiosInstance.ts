@@ -18,9 +18,8 @@ const handleResponseErrors = (response: AxiosResponse) => {
     | number;
 
   // TODO: check cookie
-  const currentlyLoggedIn = !isNil(
-    'TokenManager.getAccessToken() - check cookie here'
-  );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const currentlyLoggedIn = !isNil(response.headers['set-cookie']);
 
   // We want to catch only "ugly" errors here. Resource errors (validation errors etc) should
   // be caught directly in the view.
@@ -36,7 +35,8 @@ const handleResponseErrors = (response: AxiosResponse) => {
       break;
     case 401:
       if (currentlyLoggedIn) {
-        // TODO: remove here cookie
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        response.headers['set-cookie'] = undefined;
         Notify.create({
           color: 'positive',
           message: 'You were automatically logged out.',

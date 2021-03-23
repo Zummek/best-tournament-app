@@ -1,13 +1,14 @@
 import axiosInstance from './../axiosInstance';
 import * as types from './types';
 
-export const loginWithMS = async () => {
+export const getLoginUrl = async () => {
   const response = await axiosInstance.post<types.AuthLoginResponse>(
     'v1/users/login'
   );
-  return response.data;
+  return response.data.data;
 };
 
 export const getCookieToken = async (code: string) => {
+  axiosInstance.defaults.withCredentials = true;
   await axiosInstance.post('v1/users/logged', { code });
 };
