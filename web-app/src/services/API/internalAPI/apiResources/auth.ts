@@ -9,6 +9,9 @@ export const getLoginUrl = async () => {
 };
 
 export const getCookieToken = async (code: string) => {
-  axiosInstance.defaults.withCredentials = true;
-  await axiosInstance.post('v1/users/logged', { code });
+  await axiosInstance.post(
+    'v1/users/logged',
+    { code },
+    { withCredentials: true }
+  );
 };
