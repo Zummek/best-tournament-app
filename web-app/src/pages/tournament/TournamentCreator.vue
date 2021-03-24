@@ -69,9 +69,10 @@
             :pagination="pagination"
           />
         </div>
-        <q-page-sticky position="bottom-right" :offset="[36, 18]">
-          <q-btn color="primary" type="submit" icon="add">
-            Create tournament
+        <q-page-sticky v-if="teams.length" position="bottom-right" :offset="[36, 18]">
+          <q-btn padding="sm" color="primary" type="submit">
+            <q-icon class="q-mx-none" name="add" />
+            Create
           </q-btn>
         </q-page-sticky>
       </q-form>
