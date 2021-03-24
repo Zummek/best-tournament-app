@@ -21,7 +21,7 @@
               ]"
             />
           </div>
-          <div class="gt-xs col-6 q-pr-lg">
+          <!-- <div class="gt-xs col-6 q-pr-lg">
             <div class="row justify-end">Type of tournament</div>
             <div class="row justify-end">
               <q-radio v-model="tournamentMode" val="type1" label="Type1" />
@@ -44,7 +44,7 @@
                 label="Type2"
               />
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="gt-xs row justify-between">
           <div class="col-6" style="max-width: 600px">
@@ -69,7 +69,11 @@
             :pagination="pagination"
           />
         </div>
-        <q-page-sticky v-if="teams.length" position="bottom-right" :offset="[36, 18]">
+        <q-page-sticky
+          v-if="teams.length"
+          position="bottom-right"
+          :offset="[36, 18]"
+        >
           <q-btn padding="sm" color="primary" type="submit">
             <q-icon class="q-mx-none" name="add" />
             Create
