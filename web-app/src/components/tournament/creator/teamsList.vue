@@ -57,14 +57,13 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { IPagination, IColumns, Team } from 'src/components/models';
 
 @Component
-export default class ClassComponent extends Vue {
+export default class teamsList extends Vue {
   @Prop({ type: Object, required: true }) readonly pagination!: IPagination;
   @Prop({ type: Array, required: true }) readonly columns!: IColumns;
   @Prop({ type: String, default: () => '' }) readonly expanded!: string;
   @Prop({ type: Array, default: () => [] }) readonly data!: Team[];
 
   private deleteTeam(team: Team) {
-    console.log('nothing here');
     this.data.splice(this.data.indexOf(team), 1);
   }
 }
