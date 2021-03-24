@@ -10,6 +10,12 @@ const routes: RouteConfig[] = [
         component: () => import('pages/Index.vue'),
         meta: { public: true },
       },
+      {
+        name: 'TournamentDetails',
+        path: 'tournament/:id',
+        component: () => import('pages/tournament/Details.vue'),
+        meta: { public: true }, // TODO: change to false
+      },
     ],
   },
   {
