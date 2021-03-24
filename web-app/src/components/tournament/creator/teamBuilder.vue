@@ -14,6 +14,7 @@
           :rules="[val => (val && val.length > 0) || 'Name cannot be blank!']"
         />
         <q-select
+          clearable
           filled
           v-model="player1"
           ref="teamMember1"
@@ -22,13 +23,24 @@
           option-label="firstName"
           label="Captain"
           emit-value
-          map-options
           :rules="[
             val =>
               (val.firstName && val.firstName.length > 0) ||
               'Name cannot be blank!',
           ]"
         >
+          <template v-slot:selected-item>
+            <q-item v-if="player1" class="q-pa-none">
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="player1.avatarSrc" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                {{ player1.firstName }} {{ player1.lastName }}
+              </q-item-section>
+            </q-item>
+          </template>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">
@@ -60,12 +72,23 @@
           option-label="firstName"
           label="Team member"
           emit-value
-          map-options
           :rules="[
             val =>
               val !== player1 || val.length === 0 || 'Choose another player',
           ]"
         >
+          <template v-slot:selected-item>
+            <q-item v-if="player2" class="q-pa-none">
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="player2.avatarSrc" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                {{ player2.firstName }} {{ player2.lastName }}
+              </q-item-section>
+            </q-item>
+          </template>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">
@@ -100,7 +123,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { IPagination, IColumns, Team } from 'src/components/models';
+import { Team } from 'src/components/models';
 import User from 'src/components/User';
 @Component
 export default class teamBuilder extends Vue {
@@ -127,10 +150,6 @@ export default class teamBuilder extends Vue {
     this.teamName = '';
     this.player1 = null;
     this.player2 = null;
-
-    // this.teamNameRef.resetValidation();
-    // this.teamMember1.resetValidation();
-    // this.teamMember2.resetValidation();
   }
 }
 </script>
