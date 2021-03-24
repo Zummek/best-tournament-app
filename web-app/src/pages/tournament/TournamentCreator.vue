@@ -81,9 +81,9 @@
 
 <script lang="ts">
 import User from 'src/components/User';
-import { Vue, Component, Ref } from 'vue-property-decorator';
-import teamsList from '../../components/tournament/creator/teamsList.vue';
-import teamBuilder from '../../components/tournament/creator/teamBuilder.vue';
+import { Vue, Component } from 'vue-property-decorator';
+import teamsList from '../../components/tournament/creator/TeamsList.vue';
+import teamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
 import { Team } from 'src/components/models';
 // import { QInput, QSelect } from 'quasar';
 
