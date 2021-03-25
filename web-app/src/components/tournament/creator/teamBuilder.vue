@@ -13,15 +13,18 @@
           label="Team name"
           :rules="[val => (val && val.length > 0) || 'Name cannot be blank!']"
         />
+
+        <!-- @filter="filterFn" -->
         <q-select
           clearable
           filled
+          use-input
           v-model="player1"
           ref="teamMember1"
           :options="data"
           option-value="val"
-          option-label="firstName"
           label="Captain"
+          
           emit-value
           :rules="[
             val =>
@@ -29,6 +32,7 @@
               'Name cannot be blank!',
           ]"
         >
+        
           <template v-slot:selected-item>
             <q-item v-if="player1" class="q-pa-none">
               <q-item-section avatar>
@@ -69,7 +73,6 @@
           ref="teamMember2"
           :options="data"
           option-value="val"
-          option-label="firstName"
           label="Team member"
           emit-value
           :rules="[
@@ -146,10 +149,27 @@ export default class teamBuilder extends Vue {
 
     this.$emit('team-added', teamToAdd);
 
-    // ERROR HERE (players going null)
+    // CONSOLE ERROR HERE (players going null)
     this.teamName = '';
     this.player1 = null;
     this.player2 = null;
   }
+  // Change options in select !!
+  // private filterOptions: User[] | null = null;
+  // private filterFn(val, update) {
+  //   if (val === '') {
+  //     update(() => {
+  //       this.filterOptions = this.data;
+  //     });
+  //     return;
+  //   }
+
+  //   update(() => {
+  //     const needle = val.toLowerCase();
+  //     this.filterOptions = this.data.filter(
+  //       v => v.firstName.toLowerCase().indexOf(needle) > -1
+  //     );
+  //   });
+  // }
 }
 </script>
