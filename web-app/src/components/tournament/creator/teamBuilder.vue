@@ -232,5 +232,22 @@ export default class TeamBuilder extends Vue {
       this.filterOptions = this.users;
     });
   }
+  // Change options in select !!
+  // private filterOptions: User[] | null = null;
+  // private filterFn(val, update) {
+  //   if (val === '') {
+  //     update(() => {
+  //       this.filterOptions = this.data;
+  //     });
+  //     return;
+  //   }
+
+  //   update(() => {
+  //     const needle = val.toLowerCase();
+  //     this.filterOptions = this.data.filter(
+  //       v => v.firstName.toLowerCase().indexOf(needle) > -1
+  //     );
+  //   });
+  // }
 }
 </script>
