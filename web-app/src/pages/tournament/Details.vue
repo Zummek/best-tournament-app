@@ -1,59 +1,51 @@
 <template>
   <q-page class="flex flex-center">
-    <q-card class="my-card q-pa-lg">
+    <q-card class="q-px-xs-none q-px-sm-md">
       <q-card-section>
-        <div class="">
-          <div class="row" style="width: 600px">
-            <div class="col">
-              <q-input
-                borderless
-                readonly
-                v-model="tournament.name"
-                label="Nazwa turnieju"
-              />
-            </div>
-            <div class="col">
-              <q-field borderless label="Organizator" stack-label>
-                <template v-slot:control>
-                  <q-chip>
-                    <q-avatar>
-                      <img :src="tournament.owner.avatarSrc" />
-                    </q-avatar>
-                    {{ tournament.owner.firstName }}
-                    {{ tournament.owner.lastName }}
-                  </q-chip>
-                </template>
-              </q-field>
-            </div>
-          </div>
-          <div class="row" style="width: 600px">
-            <div class="col">
-              <q-input
-                borderless
-                readonly
-                v-model="getParticipantsAmount"
-                label="Liczba uczestników"
-              />
-            </div>
-            <div class="col">
-              <q-input
-                borderless
-                readonly
-                v-model="getCompletedMatchesString"
-                label="Rozegrane mecze"
-              />
-            </div>
-          </div>
+        <div class="row">
+          <q-input
+            style="width:50%"
+            borderless
+            readonly
+            v-model="tournament.name"
+            autogrow
+            label="Nazwa turnieju"
+          />
+          <q-field borderless label="Organizator" stack-label style="width:50%">
+            <template v-slot:control>
+              <q-chip>
+                <q-avatar>
+                  <img :src="tournament.owner.avatarSrc" />
+                </q-avatar>
+                {{ tournament.owner.firstName }}
+                {{ tournament.owner.lastName }}
+              </q-chip>
+            </template>
+          </q-field>
         </div>
-      </q-card-section>
-      <q-card-section>
-        <div>
-          <OutcomeTableItem
-            :match="match"
-            v-for="match in tournament.matches"
-            :key="match.id"
+        <div class="row">
+          <q-input
+            borderless
+            style="width:50%"
+            readonly
+            v-model="getParticipantsAmount"
+            label="Liczba uczestników"
+          />
+          <q-input
+            style="width:50%"
+            borderless
+            readonly
+            v-model="getCompletedMatchesString"
+            label="Rozegrane mecze"
           />
         </div>
+      </q-card-section>
+      <q-card-section class="q-px-xs-none">
+        <OutcomeTableItem
+          :match="match"
+          v-for="match in tournament.matches"
+          :key="match.id"
+        />
       </q-card-section>
     </q-card>
   </q-page>

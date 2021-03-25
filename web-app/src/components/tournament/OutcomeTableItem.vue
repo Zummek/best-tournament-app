@@ -1,25 +1,54 @@
 <template>
-  <q-card>
-    <q-card-section class="row q-my-md" style="width: 600px">
-      <q-avatar
-        class="self-end"
-        size="md"
-        style="margin-right: -10px; z-index: 10"
-      >
-        <img :src="match.sideA.team.members[1].avatarSrc" />
-      </q-avatar>
-      <q-avatar class="self-end" size="xl">
-        <img :src="match.sideA.team.members[0].avatarSrc" />
-      </q-avatar>
+  <q-card class="q-pa-sm-xs q-mb-md">
+    <q-card-section class="row no-wrap q-py-sm q-px-xs-sm q-px-sm-md">
+      <div style="flex: 1; min-width: 150px">
+        <div class="row no-wrap">
+          <q-avatar
+            class="self-end"
+            size="md"
+            style="margin-right: -8px; z-index: 10"
+          >
+            <img :src="match.sideA.team.members[1].avatarSrc" />
+          </q-avatar>
+          <q-avatar class="self-end" :size="$q.screen.xs ? 'lg' : 'xl'">
+            <img :src="match.sideA.team.members[0].avatarSrc" />
+          </q-avatar>
 
-      <div class="q-mx-md self-end teamName">
-        {{ match.sideA.team.name }}
+          <div
+            :class="[
+              'q-mx-md teamName',
+              [$q.screen.xs ? 'self-center' : 'self-end'],
+            ]"
+          >
+            {{ match.sideA.team.name }}
+          </div>
+        </div>
+
+        <div v-if="$q.screen.xs" class="row no-wrap q-mt-sm">
+          <q-avatar
+            class="self-end"
+            size="md"
+            style="margin-right: -8px; z-index: 10"
+          >
+            <img :src="match.sideB.team.members[1].avatarSrc" />
+          </q-avatar>
+          <q-avatar class="self-end" size="lg">
+            <img :src="match.sideB.team.members[0].avatarSrc" />
+          </q-avatar>
+
+          <div class="q-mx-md self-center teamName">
+            {{ match.sideB.team.name }}
+          </div>
+        </div>
       </div>
+
+      <q-separator v-if="$q.screen.xs" vertical inset />
 
       <div
         @mouseover="showActionButton = true"
         @mouseleave="showActionButton = false"
-        style="height: 50px"
+        style="height: 50px; min-width: 120px"
+        class="q-ma-auto self-center"
       >
         <div class="matchDate">{{ matchFormatedDate }}</div>
         <div
@@ -33,26 +62,30 @@
             :color="scoreActionBtnColor"
             :label="scoreActionBtnLabel"
             @click="scoreActionBtnOnClick"
-            size="md"
-            dense
+            :size="$q.screen.xs ? '12px' : '13px'"
+            padding="xs sm"
           />
         </div>
       </div>
 
-      <div class="q-mx-md self-end teamName text-right">
-        {{ match.sideB.team.name }}
-      </div>
+      <div v-if="$q.screen.gt.xs" style="flex: 1; min-width: 150px">
+        <div class="row no-wrap justify-end">
+          <div class="q-mx-md self-end teamName text-right">
+            {{ match.sideB.team.name }}
+          </div>
 
-      <q-avatar class="self-end" size="xl">
-        <img :src="match.sideB.team.members[0].avatarSrc" />
-      </q-avatar>
-      <q-avatar
-        class="self-end"
-        size="md"
-        style="margin-left: -10px; z-index: 10"
-      >
-        <img :src="match.sideA.team.members[1].avatarSrc" />
-      </q-avatar>
+          <q-avatar class="self-end" size="xl">
+            <img :src="match.sideB.team.members[0].avatarSrc" />
+          </q-avatar>
+          <q-avatar
+            class="self-end"
+            size="md"
+            style="margin-left: -8px; z-index: 10"
+          >
+            <img :src="match.sideA.team.members[1].avatarSrc" />
+          </q-avatar>
+        </div>
+      </div>
     </q-card-section>
   </q-card>
 </template>
@@ -163,8 +196,7 @@ export default class OutcomeTableItem extends Vue {
 }
 
 .teamName {
-  font-size: 18px;
-  flex: 1;
+  font-size: 15px;
 }
 
 .score {

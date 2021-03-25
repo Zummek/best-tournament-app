@@ -10,6 +10,7 @@
 
         <q-card-section class="row justify-evenly">
           <q-input
+            style="width: 45%"
             v-model="sideAScore"
             :label="`Drużyna ${sideAName}`"
             placeholder="Wynik"
@@ -23,6 +24,7 @@
             ]"
           />
           <q-input
+            style="width: 45%"
             v-model="sideBScore"
             :label="`Drużyna ${sideBName}`"
             placeholder="Wynik"
@@ -45,8 +47,19 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn color="primary" label="OK" type="submit" />
-          <q-btn color="primary" label="Anuluj" @click="onCancelClick" />
+          <q-btn
+            color="primary"
+            label="Anuluj"
+            @click="onCancelClick"
+            outline
+            class="btn-fixed-width"
+          />
+          <q-btn
+            color="primary"
+            label="OK"
+            type="submit"
+            class="btn-fixed-width"
+          />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -108,5 +121,8 @@ export default class ScoreInputDialog extends Vue {
 <style lang="scss" scoped>
 .errorMessage {
   color: $negative;
+}
+.btn-fixed-width {
+  width: 80px;
 }
 </style>
