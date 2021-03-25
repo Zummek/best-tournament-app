@@ -1,9 +1,7 @@
-import { AxiosResponse } from 'axios';
-
 export interface AuthLoginResponse {
   data: Location;
 }
-export interface LogoResponse extends AxiosResponse {
+export interface LogoResponse {
   logo: string;
 }
 

@@ -7,7 +7,7 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  user: UserStateInterface;
+  currentUser: UserStateInterface;
 }
 
 export default store(function({ Vue }) {
@@ -15,7 +15,7 @@ export default store(function({ Vue }) {
 
   const Store = new Vuex.Store<StateInterface>({
     modules: {
-      user: userModule,
+      currentUser: userModule,
     },
 
     // enable strict mode (adds overhead!)
