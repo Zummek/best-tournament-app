@@ -17,7 +17,10 @@ const TeamSchema = new Schema({
     minLength: [3, 'Team name should be at least 3 characters long'],
     maxLength: [40, 'Team name cannot exceed 40 characters'],
   },
-  members: [UserSchema],
+  members: {
+    type: [UserSchema],
+    required: true,
+  },
 });
 
 export default mongoose.model<Team & Document>('Team', TeamSchema);

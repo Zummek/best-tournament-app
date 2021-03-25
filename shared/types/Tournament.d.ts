@@ -9,27 +9,27 @@ export interface Team {
 export interface Match {
   id?: string;
   sideA: {
-    team: Team | string; 
+    team: Team ; 
     score: {
       a: number;
       b: number;  
     },
   },
   sideB: {
-    team: Team | string;  
+    team: Team ;  
     score: {
       a: number;
       b: number;  
     },
   },
   isFinished: boolean;
-  date: Date;
+  // date: Date;
 }
 
 export default interface Tournament {
   id?: string;
   name: string;
   ownerMId: string;
-  teams:  Array<Team | string>; 
+  teams:  Array<Team>; 
   matches: Array<Match>;
 }

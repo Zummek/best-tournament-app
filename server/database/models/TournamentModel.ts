@@ -17,11 +17,11 @@ const MatchSchema = new Schema({
     },
   },
   isFinished: Schema.Types.Boolean,
-  date: Schema.Types.Date,
+  // date: Schema.Types.Date,
 });
 
 const TournamentSchema = new Schema({
-  name: { type: Schema.Types.String, unique: true },
+  name: { type: Schema.Types.String /* unique: true */ },
   ownerMId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],
