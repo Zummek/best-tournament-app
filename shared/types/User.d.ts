@@ -1,5 +1,8 @@
 export default interface User {
-  mId: string;
-  alias: string;
-  avatarURL: string;
+  MSId: string;
+  alias: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarSrc: string;
 }

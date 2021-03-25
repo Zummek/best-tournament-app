@@ -6,22 +6,18 @@ export interface Team {
   members: Array<User>; 
 }
 
+export interface MatchSide {
+  team: Team;
+  score: {
+    a: number;
+    b: number;
+  };
+}
+
 export interface Match {
   id?: string;
-  sideA: {
-    team: Team ; 
-    score: {
-      a: number;
-      b: number;  
-    },
-  },
-  sideB: {
-    team: Team ;  
-    score: {
-      a: number;
-      b: number;  
-    },
-  },
+  sideA: MatchSide;
+  sideB: MatchSide;
   isFinished: boolean;
   // date: Date;
 }

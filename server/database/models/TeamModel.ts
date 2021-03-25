@@ -2,12 +2,15 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { Team } from '../../../shared/types/Tournament';
 
 const UserSchema = new Schema({
-  mId: Schema.Types.String,
+  MSId: Schema.Types.String,
   alias: {
     type: Schema.Types.String,
     maxLength: 20,
   },
-  avatarURL: Schema.Types.String,
+  firstName: Schema.Types.String,
+  lastName: Schema.Types.String,
+  email: Schema.Types.String,
+  avatarSrc: Schema.Types.String,
 });
 
 const TeamSchema = new Schema({

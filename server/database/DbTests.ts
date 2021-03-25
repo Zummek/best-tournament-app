@@ -10,8 +10,11 @@ export default async function dbTests() {
   for (let i = 0; i < 4; i += 1) {
     const user : User = {
       alias: `janek${i}`,
-      mId: 'id1',
-      avatarURL: 'av',
+      MSId: 'id1',
+      avatarSrc: 'av',
+      firstName: '',
+      lastName: '',
+      email: '',
     };
     if (i % 2 === 0) { members1.push(user); } else { members2.push(user); }
   }
