@@ -45,7 +45,7 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="q-px-xs-none">
+      <q-card-section class="q-px-xs-sm">
         <outcome-table-item
           :match="match"
           v-for="match in tournament.matches"
