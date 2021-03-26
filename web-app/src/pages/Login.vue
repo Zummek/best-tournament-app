@@ -45,6 +45,7 @@
 </template>
 
 <script lang="ts">
+import api from 'src/services/http';
 import { Vue, Component } from 'vue-property-decorator';
 import axios, { AxiosResponse } from 'axios';
 
@@ -69,6 +70,11 @@ export default class Login extends Vue {
           code: this.$route.query.code,
         },
       });
+      // private async mounted() {
+      //   if (this.$route.query.code) {
+      //     await api.internalApi.auth.getToken(String(this.$route.query.code));
+      //   }
+      // }
     }
   }
 }
