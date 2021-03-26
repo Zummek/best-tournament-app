@@ -52,7 +52,7 @@ import { Vue, Component } from 'vue-property-decorator';
 
 @Component
 export default class Login extends Vue {
-  private logoUrl: unknown = '';
+  private logoUrl = '';
 
   private async loginWithMS() {
     const authUrlResponse: Location = await api.auth.getLoginUrl();
