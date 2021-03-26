@@ -59,7 +59,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import Tournament from '../../../../shared/types/Tournament';
-import OutcomeTableItem from '../../components/tournament/OutcomeTableItem.vue';
+import OutcomeTableItem from '../../components/tournament/details/OutcomeTableItem.vue';
 import moment from 'moment';
 
 @Component({

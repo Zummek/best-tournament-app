@@ -96,7 +96,7 @@
 import { Match } from 'app/../shared/types/Tournament';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import moment from 'moment';
-import ScoreInputDialog from '../../components/tournament/ScoreInputDialog.vue';
+import ScoreInputDialog from './ScoreInputDialog.vue';
 
 @Component
 export default class OutcomeTableItem extends Vue {
