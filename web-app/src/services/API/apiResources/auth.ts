@@ -1,4 +1,4 @@
-import axiosInstance from './../axiosInstance';
+import axiosInstance from '../axiosInstance';
 import * as types from './types';
 
 export const getLoginUrl = async () => {
