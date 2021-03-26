@@ -12,7 +12,7 @@
           ref="teamNameRef"
           label="Team name"
           error-message="Cannot be blank!"
-          :error="isErrorTeamName"
+          :error="isErrorInputTeamName"
         />
 
         <q-select
@@ -28,7 +28,7 @@
           emit-value
           behavior="menu"
           error-message="Cannot be blank!"
-          :error="isErrorPlayer1"
+          :error="isErrorSelectPlayer1"
         >
           <template v-slot:selected-item>
             <q-item v-if="player1" class="q-pa-none">
@@ -75,7 +75,7 @@
           emit-value
           behavior="menu"
           error-message="Choose different player!"
-          :error="isErrorPlayer2"
+          :error="isErrorSelectPlayer2"
         >
           <template v-slot:selected-item>
             <q-item v-if="player2" class="q-pa-none">
@@ -123,47 +123,22 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Team } from 'src/components/models';
-import User from 'src/components/User';
+import { Team } from 'app/../shared/types/Tournament';
+import User from 'app/../shared/types/User';
 
 @Component
 export default class TeamBuilder extends Vue {
   @Prop({ type: Array, required: true }) readonly users!: User[];
 
-  private isErrorPlayer1 = false;
-  private isErrorPlayer2 = false;
-  private isErrorTeamName = false;
+  private isErrorSelectPlayer1 = false;
+  private isErrorSelectPlayer2 = false;
+  private isErrorInputTeamName = false;
   private teamName = '';
   private player1: User | null = null;
   private player2: User | null = null;
 
-  private resetFilters() {
-    this.isErrorPlayer1 = false;
-    this.isErrorPlayer2 = false;
-    this.isErrorTeamName = false;
-  }
-
   private submitAddTeam() {
-    // validation
-    if (this.teamName === '') {
-      this.isErrorTeamName = true;
-    } else {
-      this.isErrorTeamName = false;
-    }
-    if (!this.player1) {
-      this.isErrorPlayer1 = true;
-    } else {
-      this.isErrorPlayer1 = false;
-    }
-    if (this.player2 === this.player1 && this.player2) {
-      this.isErrorPlayer2 = true;
-    } else {
-      this.isErrorPlayer2 = false;
-    }
-
-    if (this.isErrorTeamName || this.isErrorPlayer1 || this.isErrorPlayer2) {
-      return;
-    }
+    if (!this.validation()) return;
 
     const teamToAdd: Team = {
       name: this.teamName,
@@ -182,9 +157,35 @@ export default class TeamBuilder extends Vue {
     this.teamName = '';
     this.player1 = null;
     this.player2 = null;
-    this.isErrorTeamName = false;
-    this.isErrorPlayer1 = false;
-    this.isErrorPlayer2 = false;
+    this.isErrorInputTeamName = false;
+    this.isErrorSelectPlayer1 = false;
+    this.isErrorSelectPlayer2 = false;
+  }
+
+  private validation() {
+    if (this.teamName === '') {
+      this.isErrorInputTeamName = true;
+    } else {
+      this.isErrorInputTeamName = false;
+    }
+    if (!this.player1) {
+      this.isErrorSelectPlayer1 = true;
+    } else {
+      this.isErrorSelectPlayer1 = false;
+    }
+    if (this.player2 === this.player1 && this.player2) {
+      this.isErrorSelectPlayer2 = true;
+    } else {
+      this.isErrorSelectPlayer2 = false;
+    }
+
+    if (
+      this.isErrorInputTeamName ||
+      this.isErrorSelectPlayer1 ||
+      this.isErrorSelectPlayer2
+    ) {
+      return false;
+    } else return true;
   }
 
   private filterOptions: User[] = [];
@@ -202,7 +203,6 @@ export default class TeamBuilder extends Vue {
               .indexOf(needle) > -1
         );
       });
-
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
