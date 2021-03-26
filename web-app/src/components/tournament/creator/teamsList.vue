@@ -54,10 +54,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { IPagination, IColumns, Team } from 'src/components/models';
+import { IPagination, IColumns} from 'src/components/models';
+import { Team } from 'app/../shared/types/Tournament'
 
 @Component
-export default class teamsList extends Vue {
+export default class TeamsList extends Vue {
   @Prop({ type: Object, required: true }) readonly pagination!: IPagination;
   @Prop({ type: Array, required: true }) readonly columns!: IColumns;
   @Prop({ type: String, default: () => '' }) readonly expanded!: string;

@@ -1,6 +1,6 @@
 <template>
-  <q-page>
-    <div class="q-px-lg">
+  <q-page class="row justify-center ">
+    <div class="col-12 q-px-lg " style="max-width:1500px">
       <div class="row col-12">
         <h5>Tournament Creator</h5>
       </div>
@@ -21,15 +21,14 @@
         </div>
       </div>
       <div class="gt-xs row justify-between">
-        <div class="col-6" style="max-width: 800px">
+        <div class="col-6" style="max-width: 600px">
           <teams-list
             :data="teams"
             :columns="columns"
             :pagination="pagination"
           />
         </div>
-        <div class="col-6 q-px-md" style="max-width: 600px">
-          <!-- team builder -->
+        <div class="col-6 q-px-md " style="max-width: 600px">
           <team-builder @team-added="addTeam" :users="users" />
         </div>
       </div>
@@ -58,11 +57,11 @@
 </template>
 
 <script lang="ts">
-import User from 'src/components/User';
+import User from 'app/../shared/types/User';
 import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/TeamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
-import { Team } from 'src/components/models';
+import { Team } from 'app/../shared/types/Tournament';
 // import { QInput, QSelect } from 'quasar';
 
 @Component({
