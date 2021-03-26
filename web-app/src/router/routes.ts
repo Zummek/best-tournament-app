@@ -2,17 +2,17 @@ import { RouteConfig } from 'vue-router';
 
 const routes: RouteConfig[] = [
   {
-    path: '/app',
+    path: '/tournament/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '/index',
-        component: () => import('pages/Index.vue'),
+        path: 'list',
+        component: () => import('src/pages/tournament/TournamentsList.vue'),
         meta: { public: true },
       },
       {
-        path: '/tournamentsList',
-        component: () => import('src/pages/tournament/TournamentsList.vue'),
+        path: ':id/standings',
+        component: () => import('src/pages/tournament/TournamentStandings.vue'),
         meta: { public: true },
       },
     ],
