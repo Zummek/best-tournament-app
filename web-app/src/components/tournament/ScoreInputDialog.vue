@@ -12,28 +12,28 @@
           <q-input
             style="width: 45%"
             v-model="sideAScore"
-            :label="`Drużyna ${sideAName}`"
-            placeholder="Wynik"
+            :label="`${$t('tournament.team')} ${sideAName}`"
+            :placeholder="$t('tournament.score')"
             stack-label
             type="number"
             autofocus
             :rules="[
               val =>
                 (val && Number.isInteger(+val) && val >= 0) ||
-                'Wynik powinien być dodatnią liczbą całkowitą',
+                $t('tournament.scoreShouldBePositiveInteger'),
             ]"
           />
           <q-input
             style="width: 45%"
             v-model="sideBScore"
-            :label="`Drużyna ${sideBName}`"
-            placeholder="Wynik"
+            :label="`${$t('tournament.team')} ${sideBName}`"
+            :placeholder="$t('tournament.score')"
             stack-label
             type="number"
             :rules="[
               val =>
                 (val && Number.isInteger(+val) && val >= 0) ||
-                'Wynik powinien być dodatnią liczbą całkowitą',
+                $t('tournament.scoreShouldBePositiveInteger'),
             ]"
           />
           <div
@@ -41,22 +41,21 @@
             v-show="showRaportError"
             class="errorMessage"
           >
-            Jeśli zgłaszasz błędny wynik meczu to poprawiona wersja powinna się
-            różnić od tej pierwotnej.
+            {{ $t('tournament.scoreReportError') }}
           </div>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn
             color="primary"
-            label="Anuluj"
+            :label="$t('common.cancel')"
             @click="onCancelClick"
             outline
             class="btn-fixed-width"
           />
           <q-btn
             color="primary"
-            label="OK"
+            :label="$t('common.ok')"
             type="submit"
             class="btn-fixed-width"
           />

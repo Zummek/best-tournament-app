@@ -9,9 +9,14 @@
             readonly
             v-model="tournament.name"
             autogrow
-            label="Nazwa turnieju"
+            :label="$t('tournament.name')"
           />
-          <q-field borderless label="Organizator" stack-label style="width:50%">
+          <q-field
+            borderless
+            :label="$t('tournament.organizer')"
+            stack-label
+            style="width:50%"
+          >
             <template v-slot:control>
               <q-chip>
                 <q-avatar>
@@ -29,14 +34,14 @@
             style="width:50%"
             readonly
             v-model="participantsAmount"
-            label="Liczba uczestników"
+            :label="$t('tournament.participantsAmount')"
           />
           <q-input
             style="width:50%"
             borderless
             readonly
             v-model="completedMatchesFormated"
-            label="Rozegrane mecze"
+            :label="$t('tournament.matchesPlayed')"
           />
         </div>
       </q-card-section>

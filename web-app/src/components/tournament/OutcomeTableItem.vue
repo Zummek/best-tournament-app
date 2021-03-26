@@ -118,9 +118,9 @@ export default class OutcomeTableItem extends Vue {
   }
 
   get scoreActionBtnLabel() {
-    if (this.match.sideA.score.a === -1) return 'Dodaj wynik';
+    if (this.match.sideA.score.a === -1) return this.$t('tournament.addScore');
 
-    return 'Zgłoś wynik';
+    return this.$t('tournament.reportScore');
   }
 
   get scoreActionBtnColor() {
@@ -175,10 +175,9 @@ export default class OutcomeTableItem extends Vue {
         component: ScoreInputDialog,
         parent: this,
         mode: 'add',
-        title: 'Wynik',
-        message: 'Uzupełnij wynik po rozegranym meczu.',
-        note:
-          'Rywal będzie mógł zgłościć konflikt w przypadku gdy podasz błędny wynik.',
+        title: this.$t('tournament.score').toString(),
+        message: this.$t('tournament.completeScoreAfterMatch').toString(),
+        note: this.$t('tournament.competitorCanReportConflictNote').toString(),
         sideAScore: '',
         sideBScore: '',
         sideAName: this.match.sideA.team.name,
@@ -187,7 +186,7 @@ export default class OutcomeTableItem extends Vue {
       .onOk(() => {
         // TODO: call api, then
         this.$q.notify({
-          message: 'Dodano wynik meczu!',
+          message: this.$t('tournament.addedScoreToMatch').toString(),
           color: 'primary',
         });
       });
