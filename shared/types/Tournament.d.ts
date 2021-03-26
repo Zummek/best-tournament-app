@@ -25,7 +25,7 @@ export interface Match {
 export default interface Tournament {
   id?: string;
   name: string;
-  ownerMId: string;
+  ownerMSId: string;
   teams:  Array<Team>; 
   matches: Array<Match>;
 }

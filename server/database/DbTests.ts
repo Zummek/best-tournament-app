@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import Tournament, { Team } from '../../shared/types/Tournament';
+import Tournament, { Match, Team } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from './repositories/TeamRepository';
 import TournamentRepository from './repositories/TournamentRepository';
@@ -18,28 +18,63 @@ export default async function dbTests() {
     };
     if (i % 2 === 0) { members1.push(user); } else { members2.push(user); }
   }
-  const teamParzysci : Team = await TeamRepository.create('parzysci', members1);
-  const teamNieparzysci: Team = await TeamRepository.create('NIEparzysci', members2);
-  // console.log(teamParzysci);
-  // console.log(teamNieparzysci);
-  const teams : Team[] = [];
-  teams.push(teamParzysci);
-  teams.push(teamNieparzysci);
+  const teamP : Team = {
+    name: 'PPP',
+    members: members1,
+  };
+  const teamN : Team = {
+    name: 'NNN',
+    members: members2,
+  };
+  const teamss : Team[] = [];
+  teamss.push(teamP);
+  teamss.push(teamN);
+  const teamList : Team[] = await TeamRepository.createMany(teamss);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let t : Tournament = await TournamentRepository.create('turniej1', 'janek1 jest wlascicielem', teams);
-  // console.log(t);
-  t = await TournamentRepository.createMatch(t, t.teams[0], t.teams[1]);
-  // console.log(t);
-  t.matches[0].sideA.score.a = 1;
-  t.matches[0].sideA.score.b = 2;
-  t.matches[0].sideB.score.a = 3;
-  t.matches[0].sideB.score.b = 4;
-  t.matches[0].isFinished = true;
-  TournamentRepository.updateMatch(t, t.matches[0]);
+  const ma : Match = {
+    sideA: {
+      team: teamList[0],
+      score: {
+        a: -1,
+        b: -1,
+      },
+    },
+    sideB: {
+      team: teamList[1],
+      score: {
+        a: -1,
+        b: -1,
+      },
+    },
+    isFinished: false,
+  };
 
-  if (t.id !== undefined) { t = await TournamentRepository.getById(t.id); }
-  // console.log(t.teams[0]);
-  console.log(t);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const t : Tournament = await TournamentRepository.create({
+    name: 'nazwa',
+    ownerMSId: 'ownerId',
+    teams: teamList,
+    matches: [ma],
+  });
+
+  t.matches[0].sideA.score.a = 997;
+  t.matches[0].isFinished = true;
+  console.log(t.matches[0].sideA);
+  await TournamentRepository.updateMatch(t.matches[0]);
+  // console.log(t);
+  // t = await TournamentRepository.createMatch(t, t.teams[0], t.teams[1]);
+  // // console.log(t);
+  // t.matches[0].sideA.score.a = 1;
+  // t.matches[0].sideA.score.b = 2;
+  // t.matches[0].id;
+  // t.matches[0].sideB.score.a = 3;
+  // t.matches[0].sideB.score.b = 4;
+  // t.matches[0].isFinished = true;
+  // TournamentRepository.updateMatch(t, t.matches[0]); // dawac tylko obiekt meecz
+
+  // if (t.id !== undefined) { t = await TournamentRepository.getById(t.id); }
+  // // console.log(t.teams[0]);
+  // console.log(t);
   // await TournamentRepository.insertMatch(t, teamParzysci, teamNieparzysci).catch();
 
   // teams.push({

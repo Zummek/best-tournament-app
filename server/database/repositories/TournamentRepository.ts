@@ -18,7 +18,7 @@ export default class TournamentRepository {
         if (team.id === match.sideA.team.id) { isTeamAOnTeamsList = true; }
         if (team.id === match.sideB.team.id) { isTeamBOnTeamsList = true; }
       });
-      if (isTeamAOnTeamsList || isTeamBOnTeamsList) { throw new Error('All teams in matches entries should reffer to teams from tournaments teams list'); }
+      if (!isTeamAOnTeamsList || !isTeamBOnTeamsList) { throw new Error('All teams in matches entries should reffer to teams from tournaments teams list'); }
     });
     const savedT : Tournament = await TournamentModel.create(t);
     return savedT;
@@ -28,7 +28,7 @@ export default class TournamentRepository {
     if (match.id === undefined) throw new Error('Provided match does not contain id');
     // $set is a filter that tells mongo to update only match with specified id
     let t: Tournament | null = await TournamentModel.findOneAndUpdate(
-      { 'matches.id': match.id },
+      { 'matches._id': match.id },
       {
         $set: {
           'matches.$': match,

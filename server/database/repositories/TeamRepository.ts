@@ -5,12 +5,9 @@ import User from '../../../shared/types/User';
 import TeamModel from '../models/TeamModel';
 
 export default class TeamRepository {
-  public static create = async (name : string, members: User[]) => {
-    const team : Team = await TeamModel.create({
-      name: `${name}`,
-      members: [],
-    });
-    return team;
+  public static create = async (team : Team) => {
+    const savedTeam: Team = await TeamModel.create(team);
+    return savedTeam;
   };
 
   // Mongoose always validates each document before sending insertMany to MongoDB.
