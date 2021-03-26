@@ -248,7 +248,6 @@ export default class TeamBuilder extends Vue {
               .indexOf(needle) > -1
         );
       });
-
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
