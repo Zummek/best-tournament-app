@@ -48,29 +48,31 @@
         @mouseover="showActionButton = true"
         @mouseleave="showActionButton = false"
         style="height: 50px; min-width: 120px"
-        class="q-ma-auto self-center"
+        class="q-ma-auto column self-center justify-center"
       >
-        <div class="matchDate">{{ matchFormatedDate }}</div>
+        <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
         <div
-          v-if="!showActionButton && match.isFinished"
-          class="score full-width text-center"
+          v-if="
+            !showActionButton && match.isFinished && doesUserHavePermsToMatch
+          "
+          class="score q-my-auto"
         >
           {{ formatedScore }}
         </div>
-        <div v-else class="full-width text-center q-mt-xs">
-          <q-btn
-            :color="scoreActionBtnColor"
-            :label="scoreActionBtnLabel"
-            @click="scoreActionBtnOnClick"
-            :size="$q.screen.xs ? '12px' : '13px'"
-            padding="xs sm"
-          />
-        </div>
+        <q-btn
+          v-else
+          class="q-my-auto q-mx-auto"
+          :color="scoreActionBtnColor"
+          :label="scoreActionBtnLabel"
+          @click="scoreActionBtnOnClick"
+          :size="$q.screen.xs ? '12px' : '13px'"
+          padding="xs sm"
+        />
       </div>
 
       <div v-if="$q.screen.gt.xs" style="flex: 1; min-width: 150px">
         <div class="row no-wrap justify-end">
-          <div class="q-mx-md self-end teamName text-right">
+          <div class="q-mx-md teamName self-end text-right">
             {{ match.sideB.team.name }}
           </div>
 
@@ -133,32 +135,38 @@ export default class OutcomeTableItem extends Vue {
     return () => this.reportScore();
   }
 
-  get ifUserHasPermsToMatch() {
+  get doesUserHavePermsToMatch() {
     // TODO: make current user store
     return true;
   }
 
   private reportScore() {
-    this.$q
-      .dialog({
-        component: ScoreInputDialog,
-        mode: 'raport',
-        title: 'Zgłoś wynik',
-        message:
-          'Jeśli uważasz, że wprowadzony wynik jest błędny popraw poniższy wynik i prześlij. Organizator rozstrzygnie spór.',
-        sideAScore: this.match.sideA.score.a,
-        sideBScore: this.match.sideA.score.b,
-        sideAName: this.match.sideA.team.name,
-        sideBName: this.match.sideB.team.name,
-      })
-      .onOk(() => {
-        // TODO: call api, then
-        this.$q.notify({
-          message: 'Zgłoszono błędny wynik meczu!',
-          color: 'warning',
-          textColor: 'black',
-        });
-      });
+    this.$q.notify({
+      message: 'Ta opcja jest jeszcze nie dostępna!',
+      color: 'warning',
+      textColor: 'black',
+    });
+    // second sprint
+    // this.$q
+    //   .dialog({
+    //     component: ScoreInputDialog,
+    //     mode: 'raport',
+    //     title: 'Zgłoś wynik',
+    //     message:
+    //       'Jeśli uważasz, że wprowadzony wynik jest błędny popraw poniższy wynik i prześlij. Organizator rozstrzygnie spór.',
+    //     sideAScore: this.match.sideA.score.a,
+    //     sideBScore: this.match.sideA.score.b,
+    //     sideAName: this.match.sideA.team.name,
+    //     sideBName: this.match.sideB.team.name,
+    //   })
+    //   .onOk(() => {
+    //     // TODO: call api, then
+    //     this.$q.notify({
+    //       message: 'Zgłoszono błędny wynik meczu!',
+    //       color: 'warning',
+    //       textColor: 'black',
+    //     });
+    //   });
   }
 
   private addScore() {
@@ -204,5 +212,6 @@ export default class OutcomeTableItem extends Vue {
   line-height: 1.12;
   font-size: xx-large;
   font-weight: 600;
+  text-align: center;
 }
 </style>

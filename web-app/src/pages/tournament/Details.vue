@@ -28,20 +28,20 @@
             borderless
             style="width:50%"
             readonly
-            v-model="getParticipantsAmount"
+            v-model="participantsAmount"
             label="Liczba uczestników"
           />
           <q-input
             style="width:50%"
             borderless
             readonly
-            v-model="getCompletedMatchesString"
+            v-model="completedMatchesFormated"
             label="Rozegrane mecze"
           />
         </div>
       </q-card-section>
       <q-card-section class="q-px-xs-none">
-        <OutcomeTableItem
+        <outcome-table-item
           :match="match"
           v-for="match in tournament.matches"
           :key="match.id"
@@ -69,7 +69,7 @@ export default class TournamentDetails extends Vue {
     this.getTournamentDetails();
   }
 
-  get getCompletedMatchesString() {
+  get completedMatchesFormated() {
     const allMatches = this.tournament.matches.length;
     let completedMatches = 0;
 
@@ -82,7 +82,7 @@ export default class TournamentDetails extends Vue {
     return `${completedMatches} / ${allMatches}`;
   }
 
-  get getParticipantsAmount() {
+  get participantsAmount() {
     let participantsAmount = 0;
 
     for (let i = 0; i < this.tournament.teams.length; i++) {
