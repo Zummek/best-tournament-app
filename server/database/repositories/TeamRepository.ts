@@ -6,27 +6,18 @@ import TeamModel from '../models/TeamModel';
 
 export default class TeamRepository {
   public static create = async (name : string, members: User[]) => {
-    let team : Team = {
+    const team : Team = await TeamModel.create({
       name: `${name}`,
       members: [],
-    };
-    team.members = members;
-    const document = new TeamModel(team);
-    try {
-      team = await document.save();
-    } catch (err) {
-      throw new Error(`${err.name}\n${err.message}`);
-    }
+    });
     return team;
   };
 
-  // public static createMany = async (teams: Team[]) => {
-  //   let savedTeams : Team[];
-  //   try {
-  //     savedTeams = await TeamModel.insertMany(teams);
-  //   } catch (err) {
-  //     throw new Error(`${err.name}\n${err.message}`);
-  //   }
-  //   return savedTeams;
-  // };
+  // Mongoose always validates each document before sending insertMany to MongoDB.
+  // So if one document has a validation error, no documents will be saved,
+  // Returns: documents(teams) that passed validation
+  public static createMany = async (teams: Team[]) => {
+    const savedTeams : Team[] = await TeamModel.insertMany(teams);
+    return savedTeams;
+  };
 }
