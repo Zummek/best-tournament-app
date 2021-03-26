@@ -57,16 +57,15 @@ const consoleTransport = new transports.Console({
       format: 'HH:mm:ss',
     }),
     format.printf((info) => {
-      const shortPath = info.path
-        .split('\\')
-        .slice(-2)
-        .join('\\');
+      const shortPath = info.path.split('\\').slice(-2).join('\\');
       const filePath = `${shortPath}:${info.line}`;
-      const shortData = info.shortData ? `: ${JSON.stringify(info.shortData, null, 4)}` : '';
+      const shortData = info.shortData
+        ? `: ${JSON.stringify(info.shortData, null, 4)}`
+        : '';
 
-      return `${info.timestamp} ${info.level} ${colors.grey(`[${filePath}]`)}: ${
-        info.message
-      } ${shortData}`;
+      return `${info.timestamp} ${info.level} ${colors.grey(
+        `[${filePath}]`,
+      )}: ${info.message} ${shortData}`;
     }),
   ),
 });
@@ -79,10 +78,7 @@ const fileInfoTransport = new transports.DailyRotateFile({
   zippedArchive: true,
   maxSize: process.env.LOG_FILE_MAX_SIZE,
   maxFiles: process.env.LOG_MAX_FILES_NUMBER,
-  format: format.combine(
-    format.timestamp(),
-    format.json(),
-  ),
+  format: format.combine(format.timestamp(), format.json()),
 });
 
 const logger = createLogger({

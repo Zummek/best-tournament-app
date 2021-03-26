@@ -47,44 +47,22 @@
 </template>
 
 <script lang="ts">
-import api from 'src/services/http';
+import api from './../services/API';
 import { Vue, Component } from 'vue-property-decorator';
-import axios, { AxiosResponse } from 'axios';
 
 @Component
 export default class Login extends Vue {
   private logoUrl: unknown = '';
 
   private async loginWithMS() {
-    const authUrlResponse: AxiosResponse = await axios({
-      method: 'POST',
-      url: 'http://localhost:3000/v1/users/login',
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    window.location = authUrlResponse.data.data as Location;
+    const authUrlResponse: Location = await api.auth.getLoginUrl();
+    window.location = authUrlResponse;
   }
   private async mounted() {
-    const logoResponse = await axios({
-      method: 'GET',
-      url: 'http://localhost:3000/v1/organization/logo',
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    this.logoUrl = logoResponse.data.logo;
+    this.logoUrl = await api.organization.getAzureADApplicationLogo();
 
     if (this.$route.query.code) {
-      axios.defaults.withCredentials = true;
-      await axios({
-        method: 'POST',
-        url: 'http://localhost:3000/v1/users/logged',
-        data: {
-          code: this.$route.query.code,
-        },
-      });
-      // private async mounted() {
-      //   if (this.$route.query.code) {
-      //     await api.internalApi.auth.getToken(String(this.$route.query.code));
-      //   }
-      // }
+      await api.auth.getCookieToken(this.$route.query.code as string);
     }
   }
 }
