@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 app.use('/', indexRouter);
 
-app.all('*', (_req: Request, res: Response) => {
+app.all('*', (_req, res) => {
   res.status(404).json({
     message: 'This path doesn\'t exist',
   });
