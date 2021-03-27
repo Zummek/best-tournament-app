@@ -1,8 +1,9 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
 import log from '../utils/logger';
+// import dbTests from './DbTests';
 
-// eslint-disable-next-line import/prefer-default-export
 export const connectDatabase = () => {
   const uri = `mongodb://${process.env.DB_DEV_HOST}:${process.env.DB_DEV_PORT}/${process.env.DB_DEV_DATABASE}?authSource=admin`;
 
@@ -16,7 +17,8 @@ export const connectDatabase = () => {
       useUnifiedTopology: true,
     })
     .then(() => {
-      log.info('Database connection succesful');
+      console.log('DB connection succesful');
+      // dbTests();
     })
     .catch((error) => {
       log.error('Database connection error', { error });

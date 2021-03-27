@@ -1,26 +1,31 @@
 import User from "./User";
-
+ 
 export interface Team {
-  _id?: string;
+  id?: string
   name: string;
-  members: User[];
+  members: Array<User>; 
+}
+
+export interface MatchSide {
+  team: Team;
+  score: {
+    a: number;
+    b: number;
+  };
 }
 
 export interface Match {
-  id: string;
-  rivals: {
-    teamA: Team;
-    teamB: Team;
-  };
-  score: {
-    teamA: number | null;
-    teamB: number | null;
-  };
+  id?: string;
+  sideA: MatchSide;
+  sideB: MatchSide;
+  isFinished: boolean;
+  // date: Date;
 }
 
 export default interface Tournament {
+  id?: string;
   name: string;
-  owner: User;
-  participants: Team[];
-  matches: Match[];
+  ownerMSId: string;
+  teams:  Array<Team>; 
+  matches: Array<Match>;
 }
