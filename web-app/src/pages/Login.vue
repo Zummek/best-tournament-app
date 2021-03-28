@@ -55,15 +55,16 @@ export default class Login extends Vue {
   private logoUrl = '';
 
   private async loginWithMS() {
-    const authUrlResponse: Location = await api.auth.getLoginUrl();
-    window.location = authUrlResponse;
+    const authUrl = await api.auth.getLoginUrl();
+    window.location = authUrl;
   }
   private async mounted() {
-    this.logoUrl = await api.organization.getAzureADApplicationLogo();
-
     if (this.$route.query.code) {
       await api.auth.getCookieToken(this.$route.query.code as string);
     }
+  }
+  private async created() {
+    this.logoUrl = await api.organization.getAzureADApplicationLogo();
   }
 }
 </script>
