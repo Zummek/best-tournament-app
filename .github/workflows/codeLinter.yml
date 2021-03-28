@@ -12,7 +12,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
       - name: Prepare server
-        run: npm install
+        run: npm ci
         working-directory: ./server
       - name: Lint server
         run: npm run lint
