@@ -5,13 +5,13 @@ export default class Match implements IMatch {
   sideA: MatchSide;
   sideB: MatchSide;
   isFinished: boolean;
-  date: Date;
+  // date: Date;
 
   constructor(data: IMatch) {
     this.id = data.id;
     this.sideA = data.sideA;
     this.sideB = data.sideB;
     this.isFinished = data.isFinished;
-    this.date = data.date;
+    // this.date = data.date;
   }
 }

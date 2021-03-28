@@ -95,7 +95,7 @@
 <script lang="ts">
 import { Match } from 'app/../shared/types/Tournament';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import moment from 'moment';
+// import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
 
 @Component
@@ -104,13 +104,13 @@ export default class OutcomeTableItem extends Vue {
 
   private showActionButton = false;
 
-  get matchFormatedDate() {
-    return (
-      moment(this.match.date).format('L') +
-      ' ' +
-      moment(this.match.date).format('LT')
-    );
-  }
+  // get matchFormatedDate() {
+  //   return (
+  //     moment(this.match.date).format('L') +
+  //     ' ' +
+  //     moment(this.match.date).format('LT')
+  //   );
+  // }
 
   get formatedScore() {
     if (this.match.sideA.score.a === -1) return '- : -';
