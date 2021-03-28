@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import mongoose from 'mongoose';
 import { Team } from '../../../shared/types/Tournament';
-import User from '../../../shared/types/User';
 import TeamModel from '../models/TeamModel';
 
 export default class TeamRepository {
-  public static create = async (team : Team) => {
+  public static create = async (team: Team) => {
     const savedTeam: Team = await TeamModel.create(team);
     return savedTeam;
   };
@@ -14,7 +11,7 @@ export default class TeamRepository {
   // So if one document has a validation error, no documents will be saved,
   // Returns: documents(teams) that passed validation
   public static createMany = async (teams: Team[]) => {
-    const savedTeams : Team[] = await TeamModel.insertMany(teams);
+    const savedTeams: Team[] = await TeamModel.insertMany(teams);
     return savedTeams;
   };
 }
