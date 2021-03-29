@@ -59,7 +59,7 @@ export default async function dbTests() {
 
   t.matches[0].sideA.score.a = 997;
   t.matches[0].isFinished = true;
-  console.log(t.matches[0].sideA);
+  // console.log(t.matches[0].sideA);
   await TournamentRepository.updateMatch(t.matches[0]);
   // console.log(t);
   // t = await TournamentRepository.createMatch(t, t.teams[0], t.teams[1]);
