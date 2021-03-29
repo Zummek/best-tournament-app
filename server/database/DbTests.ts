@@ -56,11 +56,15 @@ export default async function dbTests() {
     teams: teamList,
     matches: [ma],
   });
+  const match1 = {
+    id: t.matches[0].id,
+    isFinished: true,
+  };
 
-  t.matches[0].sideA.score.a = 997;
-  t.matches[0].isFinished = true;
+  // t.matches[0].sideA.score.a = 997;
+  // t.matches[0].isFinished = true;
   // console.log(t.matches[0].sideA);
-  await TournamentRepository.updateMatch(t.matches[0]);
+  await TournamentRepository.updateMatch(match1);
   // console.log(t);
   // t = await TournamentRepository.createMatch(t, t.teams[0], t.teams[1]);
   // // console.log(t);
