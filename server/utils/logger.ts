@@ -41,7 +41,6 @@ const addPathFormat = format((log) => {
     stack = new Error().stack;
     stackInfo = getStackInfo(stack, 9);
   }
-
   log.path = stackInfo?.relativePath;
   log.line = stackInfo?.line;
   log.stack = stack;
@@ -57,15 +56,13 @@ const consoleTransport = new transports.Console({
       format: 'HH:mm:ss',
     }),
     format.printf((info) => {
-      const shortPath = info.path.split('\\').slice(-2).join('\\');
-      const filePath = `${shortPath}:${info.line}`;
+      const shortPath = info.path?.split('\\').slice(-2).join('\\');
+      const filePath = shortPath ? `${shortPath}:${info.line}` : undefined;
       const shortData = info.shortData
         ? `: ${JSON.stringify(info.shortData, null, 4)}`
         : '';
 
-      return `${info.timestamp} ${info.level} ${colors.grey(
-        `[${filePath}]`,
-      )}: ${info.message} ${shortData}`;
+      return `${info.timestamp} ${info.level}${filePath ? colors.grey(` [${filePath}]`) : ''}: ${info.message} ${shortData}`;
     }),
   ),
 });
