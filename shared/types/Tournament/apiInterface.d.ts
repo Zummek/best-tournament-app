@@ -9,3 +9,8 @@ export interface CreateTeam {
     MSId: string;
   }[];
 }
+
+export interface UpdateMatchOutcomes {
+  sideA: number;
+  sideB: number;
+}

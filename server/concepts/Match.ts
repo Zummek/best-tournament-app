@@ -14,21 +14,40 @@ export default class Match implements IMatch {
 
   isFinished: boolean;
 
-  constructor(data: INewMatch) {
-    this.sideA = {
-      team: data.teamA,
-      score: {
-        a: -1,
-        b: -1,
+  constructor(data: IMatch) {
+    this.sideA = data.sideA;
+    this.sideB = data.sideB;
+    this.isFinished = data.isFinished;
+  }
+
+  public static getInstanceBasedOnTeams(data: INewMatch) {
+    return new Match({
+      sideA: {
+        team: data.teamA,
+        score: {
+          a: -1,
+          b: -1,
+        },
       },
-    };
-    this.sideB = {
-      team: data.teamB,
-      score: {
-        a: -1,
-        b: -1,
+      sideB: {
+        team: data.teamB,
+        score: {
+          a: -1,
+          b: -1,
+        },
       },
-    };
-    this.isFinished = false;
+      isFinished: false,
+    });
+  }
+
+  public getAssignedTeam(userId: string) {
+    for (let i = 0; i < this.sideA.team.members.length; i++) {
+      if (this.sideA.team.members[i].MSId === userId) return 'sideA';
+    }
+    for (let i = 0; i < this.sideB.team.members.length; i++) {
+      if (this.sideB.team.members[i].MSId === userId) return 'sideB';
+    }
+
+    return false;
   }
 }

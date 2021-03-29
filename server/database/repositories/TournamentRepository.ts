@@ -1,8 +1,8 @@
 import TournamentModel from '../models/TournamentModel';
-import Tournament, { Match } from '../../../shared/types/Tournament';
+import Tournament from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
 import DeepPartial from '../../utils/DeepPartial';
-// import TeamModel from '../models/TeamModel';
+import Match from '../../concepts/Match';
 
 export default class TournamentRepository {
   public static async create(tournament: Tournament) {
@@ -17,8 +17,8 @@ export default class TournamentRepository {
     return await TournamentModel.create(tournament);
   }
 
-  public static async updateMatch(match: DeepPartial<Match>) {
-    if (!match.id) throw new AppError('Provided match does not contain id', 400);
+  public static async updateMatch(matchId: string, match: DeepPartial<Match>) {
+    if (!matchId) throw new AppError('Provided match does not contain id', 400);
 
     const set: { [key: string]: string; } = {};
     Object.keys(match).forEach((field) => {
@@ -27,9 +27,8 @@ export default class TournamentRepository {
       }
     });
 
-    // $set is a filter that tells mongo to update only match with specified id
     const tournament: Tournament | null = await TournamentModel.findOneAndUpdate(
-      { 'matches._id': match.id },
+      { 'matches._id': matchId },
       {
         $set: set,
       },
@@ -41,4 +40,10 @@ export default class TournamentRepository {
   public static getAll = async () => TournamentModel.find();
 
   public static getById = async (idSearch: string) => TournamentModel.findById(idSearch);
+
+  public static async getMatchById(matchId: string) {
+    const tournament = await TournamentModel.findOne({ 'matches._id': matchId });
+
+    return tournament?.matches.find((match) => match.id === matchId);
+  }
 }

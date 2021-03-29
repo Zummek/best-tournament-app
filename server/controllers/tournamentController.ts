@@ -15,6 +15,18 @@ const createTournament = catchAsync(
   },
 );
 
+const updateMatchOutcomes = catchAsync(
+  async (req, res) => {
+    const currentUserId = '3'; // TODO: waiting for decoded middleware => `req.decoded.user.id`
+    const { matchId } = req.params;
+
+    await Tournament.updateMatchOutcomes(req.body, matchId, currentUserId);
+
+    res.status(204).end();
+  },
+);
+
 export default {
   create: createTournament,
+  updateMatchOutcomes,
 };
