@@ -21,6 +21,9 @@
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off"
   }
 }

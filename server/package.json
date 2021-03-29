@@ -5,7 +5,8 @@
   "license": "MIT",
   "main": "index.js",
   "engines": {
-    "node": "^12"
+    "node": "^12",
+    "npm": "<=6.14.12"
   },
   "scripts": {
     "dev": "nodemon ./server.ts",
@@ -29,7 +30,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.19",
     "nodemon": "^2.0.7",
+    "qs": "^6.10.1",
     "saslprep": "^1.0.3",
+    "tournament-generator": "^1.2.0",
     "validator": "^13.5.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.1"

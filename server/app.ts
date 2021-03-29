@@ -30,7 +30,7 @@ app.use('/', indexRouter);
 
 app.all('*', (_req, res) => {
   res.status(404).json({
-    err: 'This path doesn\'t exist for now!',
+    message: 'This path doesn\'t exist',
   });
 });
 

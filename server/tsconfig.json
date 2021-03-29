@@ -6,6 +6,8 @@
     "outDir": "./build",
     "esModuleInterop": true,
     "strict": true,
-    "noImplicitThis": true
-  }
+    "noImplicitThis": true,
+    "typeRoots": ["./node_modules/@types", "typings"]
+  },
+  "exclude": ["build"]
 }

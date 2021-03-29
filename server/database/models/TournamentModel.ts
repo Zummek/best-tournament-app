@@ -23,4 +23,13 @@ const TournamentSchema = new Schema({
   matches: [MatchSchema],
 });
 
+// query middlewares
+// eslint-disable-next-line func-names
+TournamentSchema.pre(/^find/, function (next) {
+  this.populate('teams')
+    .populate('matches.sideA.team')
+    .populate('matches.sideB.team');
+  next();
+});
+
 export default mongoose.model<Tournament & Document>('Tournament', TournamentSchema);

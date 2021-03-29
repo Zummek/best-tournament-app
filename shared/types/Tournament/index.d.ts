@@ -1,9 +1,10 @@
-import User from "./User";
- 
+import User from "../User";
+export * as TournamentApi from "./apiInterface";
+
 export interface Team {
-  id?: string
+  id?: string;
   name: string;
-  members: Array<User>; 
+  members: User[];
 }
 
 export interface MatchSide {
@@ -26,6 +27,6 @@ export default interface Tournament {
   id?: string;
   name: string;
   ownerMSId: string;
-  teams:  Array<Team>; 
-  matches: Array<Match>;
+  teams: Team[];
+  matches: Match[];
 }
