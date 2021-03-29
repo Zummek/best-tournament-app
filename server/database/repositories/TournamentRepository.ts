@@ -5,8 +5,7 @@ import DeepPartial from '../../utils/DeepPartial';
 // import TeamModel from '../models/TeamModel';
 
 export default class TournamentRepository {
-  public static create =
-  async (tournament: Tournament) => {
+  public static async create(tournament: Tournament) {
     // Check if teams have ids, if teams in matches have ids
     // and if teams in matches are on teams list
     tournament.teams.forEach((team) => {
@@ -16,9 +15,9 @@ export default class TournamentRepository {
       if (!match.sideA.team.id || !match.sideB.team.id) { throw new AppError('All teams in matches entries should have ids', 400); }
     });
     return await TournamentModel.create(tournament);
-  };
+  }
 
-  public static updateMatch = async (match: DeepPartial<Match>) => {
+  public static async updateMatch(match: DeepPartial<Match>) {
     if (!match.id) throw new AppError('Provided match does not contain id', 400);
 
     const set: { [key: string]: string; } = {};
@@ -37,7 +36,7 @@ export default class TournamentRepository {
       { new: true },
     );
     return tournament;
-  };
+  }
 
   public static getAll = async () => TournamentModel.find();
 
