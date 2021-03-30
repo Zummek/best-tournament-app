@@ -1,7 +1,6 @@
 import TournamentModel from '../models/TournamentModel';
 import Tournament from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
-import DeepPartial from '../../utils/DeepPartial';
 import Match from '../../concepts/Match';
 
 export default class TournamentRepository {
@@ -17,20 +16,22 @@ export default class TournamentRepository {
     return await TournamentModel.create(tournament);
   }
 
-  public static async updateMatch(matchId: string, match: DeepPartial<Match>) {
+  public static async updateMatch(matchId: string, match: Match) {
     if (!matchId) throw new AppError('Provided match does not contain id', 400);
 
-    const set: { [key: string]: string; } = {};
-    Object.keys(match).forEach((field) => {
-      if (field !== 'id') {
-        set[`matches.$.${field}`] = `${match[field as keyof Match]}`;
-      }
-    });
+    // const set: { [key: string]: string; } = {};
+    // Object.keys(match).forEach((field) => {
+    //   if (field !== 'id') {
+    //     set[`matches.$.${field}`] = `${match[field as keyof Match]}`;
+    //   }
+    // });
 
-    const tournament: Tournament | null = await TournamentModel.findOneAndUpdate(
+    const tournament = await TournamentModel.findOneAndUpdate(
       { 'matches._id': matchId },
       {
-        $set: set,
+        $set: {
+          'matches.$': match,
+        },
       },
       { new: true },
     );
