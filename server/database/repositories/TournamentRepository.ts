@@ -40,7 +40,7 @@ export default class TournamentRepository {
 
   public static getAll = async () => TournamentModel.find();
 
-  public static getById = async (idSearch: string) => TournamentModel.findById(idSearch);
+  public static getById = async (id: string) => TournamentModel.findById(id);
 
   public static async getMatchById(matchId: string) {
     const tournament = await TournamentModel.findOne({ 'matches._id': matchId });

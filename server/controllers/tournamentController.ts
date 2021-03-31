@@ -1,5 +1,6 @@
 import Tournament from '../concepts/Tournament';
 import catchAsync from '../utils/catchAsync';
+import TournamentRepository from '../database/repositories/TournamentRepository';
 
 const createTournament = catchAsync(
   async (req, res) => {
@@ -26,7 +27,23 @@ const updateMatchOutcomes = catchAsync(
   },
 );
 
+const getAllTournaments = catchAsync(async (req, res) => {
+  const tournaments = await TournamentRepository.getAll();
+  res.status(200).json({
+    tournaments,
+  });
+});
+
+const getTournament = catchAsync(async (req, res) => {
+  const tournament = await TournamentRepository.getById(req.params.id);
+  res.status(200).json({
+    tournament,
+  });
+});
+
 export default {
   create: createTournament,
   updateMatchOutcomes,
+  getAllTournaments,
+  getTournament,
 };
