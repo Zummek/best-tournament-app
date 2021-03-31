@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import * as msal from '@azure/msal-node';
-import axios from 'axios';
-import QueryString from 'qs';
 import catchAsync from '../utils/catchAsync';
 import logger from '../utils/logger';
 

@@ -1,8 +1,9 @@
 import express from 'express';
-import * as authController from '../../controllers/authController';
+import * as MSController from '../../controllers/MSController';
 
 const organizationRouter = express.Router();
 
-organizationRouter.get('/logo', authController.getAzureADApplicationLogo);
+organizationRouter.get('/logo', MSController.getAzureADApplicationLogo);
+organizationRouter.post('/users', MSController.getAllUsers);
 
 export default organizationRouter;
