@@ -51,16 +51,11 @@
         class="q-ma-auto column self-center justify-center"
       >
         <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
-        <div
-          v-if="
-            !showActionButton && match.isFinished && doesUserHavePermsToMatch
-          "
-          class="score q-my-auto"
-        >
-          {{ formatedScore }}
-        </div>
         <q-btn
-          v-else
+          v-if="
+            (showActionButton && match.isFinished && getAssignedTeam) ||
+              (!match.isFinished && getAssignedTeam)
+          "
           class="q-my-auto q-mx-auto"
           :color="scoreActionBtnColor"
           :label="scoreActionBtnLabel"
@@ -68,6 +63,9 @@
           :size="$q.screen.xs ? '12px' : '13px'"
           padding="xs sm"
         />
+        <div v-else class="score q-my-auto">
+          {{ formatedScore }}
+        </div>
       </div>
 
       <div v-if="$q.screen.gt.xs" style="flex: 1; min-width: 150px">
@@ -94,6 +92,7 @@
 
 <script lang="ts">
 import { Match } from 'app/../shared/types/Tournament';
+import store from 'src/store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 // import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
@@ -135,9 +134,19 @@ export default class OutcomeTableItem extends Vue {
     return () => this.reportScore();
   }
 
-  get doesUserHavePermsToMatch() {
-    // TODO: make current user store
-    return true;
+  get getAssignedTeam() {
+    const currentUserId = store.state.currentUser.id;
+
+    for (let i = 0; i < this.match.sideA.team.members.length; i++) {
+      if (this.match.sideA.team.members[i].MSId === currentUserId)
+        return 'sideA';
+    }
+    for (let i = 0; i < this.match.sideB.team.members.length; i++) {
+      if (this.match.sideB.team.members[i].MSId === currentUserId)
+        return 'sideB';
+    }
+
+    return false;
   }
 
   private reportScore() {

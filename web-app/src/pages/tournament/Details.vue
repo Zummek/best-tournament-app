@@ -46,7 +46,7 @@
         </div>
       </q-card-section>
       <q-card-section class="q-px-xs-sm">
-        <outcome-table-item
+        <matches-table-item
           :match="match"
           v-for="match in tournament.matches"
           :key="match.id"
@@ -59,13 +59,13 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import Tournament from '../../../../shared/types/Tournament';
-import OutcomeTableItem from '../../components/tournament/details/OutcomeTableItem.vue';
+import MatchesTableItem from '../../components/tournament/details/MatchesTableItem.vue';
 // import moment from 'moment';
 import API from 'src/services/API';
 
 @Component({
   components: {
-    OutcomeTableItem,
+    MatchesTableItem,
   },
 })
 export default class TournamentDetails extends Vue {

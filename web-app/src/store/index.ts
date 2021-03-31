@@ -1,7 +1,7 @@
-import { store } from 'quasar/wrappers';
 import Vuex from 'vuex';
 import { UserStateInterface } from './user/state';
 import userModule from './user';
+import Vue from 'vue';
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
@@ -10,18 +10,14 @@ export interface StateInterface {
   currentUser: UserStateInterface;
 }
 
-export default store(function({ Vue }) {
-  Vue.use(Vuex);
+Vue.use(Vuex);
 
-  const Store = new Vuex.Store<StateInterface>({
-    modules: {
-      currentUser: userModule,
-    },
+export default new Vuex.Store<StateInterface>({
+  modules: {
+    currentUser: userModule,
+  },
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: !!process.env.DEBUGGING,
-  });
-
-  return Store;
+  // enable strict mode (adds overhead!)
+  // for dev mode only
+  strict: !!process.env.DEBUGGING,
 });
