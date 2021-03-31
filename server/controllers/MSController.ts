@@ -42,3 +42,17 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     users: users.data.value,
   });
 });
+
+export const getUserPhoto = catchAsync(async (req: Request, res: Response) => {
+  const photo = await axios({
+    method: 'GET',
+    url: `https://graph.microsoft.com/beta/users/${req.params.id}/photo/$value`,
+    headers: {
+      Authorization: `Bearer ${req.cookies.jwt}`,
+    },
+  });
+  res.status(200).json({
+    // binary representation
+    photo: photo.data,
+  });
+});

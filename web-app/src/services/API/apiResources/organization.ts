@@ -9,12 +9,17 @@ export const getAzureADApplicationLogo = async () => {
 };
 
 export const getUsers = async () => {
-  const usersResponse = await axiosInstance.post(
-    'http://localhost:3000/v1/organization/users',
-    {},
+  const usersResponse = await axiosInstance.get('v1/organization/users', {
+    withCredentials: true,
+  });
+  return usersResponse.data.users;
+};
+export const getUserPhoto = async (id: string) => {
+  const userPhotoResponse = await axiosInstance.get(
+    `v1/organization/users/${id}/photo`,
     {
       withCredentials: true,
     }
   );
-  return usersResponse.data.users;
+  return userPhotoResponse.data.photo;
 };
