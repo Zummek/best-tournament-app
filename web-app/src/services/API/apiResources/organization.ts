@@ -26,3 +26,14 @@ export const getUserPhoto = async (id: string) => {
   );
   return userPhotoResponse.data.data.photo;
 };
+
+export const getUsers = async () => {
+  const usersResponse = await axiosInstance.post(
+    'http://localhost:3000/v1/organization/users',
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return usersResponse.data.users;
+};
