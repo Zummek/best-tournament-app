@@ -82,8 +82,6 @@ export default class Tournament implements TournamentWithoutMS {
     const rawMatch = tournament?.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
-    // TODO: czy nie da się tego zrobić z poziomu TournamentModel?
-    // Zeby mongoose zwracało od razu instancje klasy
     const match = new Match(rawMatch);
 
     const hasOwnerRights = tournament.ownerId === currentUserId;
