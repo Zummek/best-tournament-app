@@ -57,7 +57,7 @@ export default async function dbTests() {
     matches: [ma],
   });
   // const match1 = {
-  //   id: t.matches[0].id,
+  //   id: t.matches[0]._id,
   //   isFinished: true,
   // };
 
@@ -70,13 +70,13 @@ export default async function dbTests() {
   // // console.log(t);
   // t.matches[0].sideA.score.a = 1;
   // t.matches[0].sideA.score.b = 2;
-  // t.matches[0].id;
+  // t.matches[0]._id;
   // t.matches[0].sideB.score.a = 3;
   // t.matches[0].sideB.score.b = 4;
   // t.matches[0].isFinished = true;
   // TournamentRepository.updateMatch(t, t.matches[0]); // dawac tylko obiekt meecz
 
-  // if (t.id !== undefined) { t = await TournamentRepository.getById(t.id); }
+  // if (t._id !== undefined) { t = await TournamentRepository.getById(t._id); }
   // // console.log(t.teams[0]);
   // console.log(t);
   // await TournamentRepository.insertMatch(t, teamParzysci, teamNieparzysci).catch();
@@ -88,8 +88,8 @@ export default async function dbTests() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   //
   // let t2: Tournament;
-  // if (typeof t.id === 'string') {
-  //   t2 = await TournamentRepository.getById(t.id);
+  // if (typeof t._id === 'string') {
+  //   t2 = await TournamentRepository.getById(t._id);
   //   console.log(t2);
   // }
   // console.log(tournament);
@@ -99,7 +99,7 @@ export default async function dbTests() {
   //   })
   //   .then((document) => {
   //     const t: Tournament = document;
-  //     console.log(t.id);
+  //     console.log(t._id);
   //     for (let i = 0; i < 8; i += 1) {
   //       TeamRepository.insert({
   //         name: `Kozy ${i}`,

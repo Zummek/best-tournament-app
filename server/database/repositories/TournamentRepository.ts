@@ -8,10 +8,10 @@ export default class TournamentRepository {
     // Check if teams have ids, if teams in matches have ids
     // and if teams in matches are on teams list
     tournament.teams.forEach((team) => {
-      if (!team.id) { throw new AppError('All teams should have ids.', 400); }
+      if (!team._id) { throw new AppError('All teams should have ids.', 400); }
     });
     tournament.matches.forEach((match) => {
-      if (!match.sideA.team.id || !match.sideB.team.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      if (!match.sideA.team._id || !match.sideB.team._id) { throw new AppError('All teams in matches entries should have ids', 400); }
     });
     return await TournamentModel.create(tournament);
   }
@@ -45,6 +45,6 @@ export default class TournamentRepository {
   public static async getMatchById(matchId: string) {
     const tournament = await TournamentModel.findOne({ 'matches._id': matchId });
 
-    return tournament?.matches.find((match) => match.id === matchId);
+    return tournament?.matches.find((match) => String(match._id) === matchId);
   }
 }

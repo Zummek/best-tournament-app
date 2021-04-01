@@ -2,7 +2,7 @@ import User from "../User";
 export * as TournamentApi from "./apiInterface";
 
 export interface Team {
-  id?: string;
+  _id?: string;
   name: string;
   members: User[];
 }
@@ -16,7 +16,7 @@ export interface MatchSide {
 }
 
 export interface Match {
-  id?: string;
+  _id?: string;
   sideA: MatchSide;
   sideB: MatchSide;
   isFinished: boolean;
@@ -24,7 +24,7 @@ export interface Match {
 }
 
 export default interface Tournament {
-  id?: string;
+  _id?: string;
   name: string;
   ownerMSId: string;
   teams: Team[];

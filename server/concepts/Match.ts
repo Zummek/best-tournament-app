@@ -6,7 +6,7 @@ interface INewMatch {
 }
 
 export default class Match implements IMatch {
-  id?: string | undefined;
+  _id?: string | undefined;
 
   sideA: MatchSide;
 
