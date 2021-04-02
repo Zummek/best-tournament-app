@@ -1,7 +1,7 @@
 <template>
   <q-table
     grid
-    title="Teams"
+    :title="$t('tournament.teams')"
     :data="data"
     :columns="columns"
     row-key="name"
@@ -11,8 +11,8 @@
   >
     <template v-slot:no-data="{ icon, message }">
       <div class="full-width row flex-center text-accent q-gutter-sm">
-        <q-icon size="2em" name="sentiment_dissatisfied" />
-        <span> {{ message }} <br />Add some new teams right away! </span>
+        <q-icon size="2em" name="sentiment_dissatisfied" /><br>
+        {{$t('tournament.noTeamsAddedErrorCreator')}}
       </div>
     </template>
     <!-- <template v-slot:top-right>
@@ -26,7 +26,7 @@
         <q-card class="row col-12 items-center">
           <q-card-section class="row col" style="text-align:left">
             <div class="text-grey-14 q-px-xs">
-              Name:
+              {{$t('common.name')}}:
             </div>
             <strong>{{ props.row.name }}</strong>
           </q-card-section>

@@ -2,7 +2,7 @@
   <q-form @submit.prevent="submitAddTeam">
     <q-card>
       <q-card-section>
-        <div class="text-h6">Team builder</div>
+        <div class="text-h6">{{$t('tournament.teamBuilderLabel')}}</div>
 
         <q-input
           clearable
@@ -10,8 +10,8 @@
           outlined
           v-model="teamName"
           ref="teamNameRef"
-          label="Team name"
-          error-message="Cannot be blank!"
+          :label="$t('tournament.teamName')"
+          :error-message="$t('tournament.cannotBeBlankError')"
           :error="isErrorInputTeamName"
         />
 
@@ -23,11 +23,11 @@
           input-debounce="100"
           ref="teamMember1"
           :options="filterOptions"
-          label="Captain"
+          :label="$t('tournament.teamCapitan')"
           @filter="selectFilter"
           emit-value
           behavior="menu"
-          error-message="Cannot be blank!"
+          :error-message="$t('tournament.cannotBeBlankError')"
           :error="isErrorSelectPlayer1"
         >
           <template v-slot:selected-item>
@@ -70,11 +70,11 @@
           v-model="player2"
           ref="teamMember2"
           :options="filterOptions"
-          label="Second member (optional)"
+          :label="$t('tournament.teamSecondMemberCreator')"
           @filter="selectFilter"
           emit-value
           behavior="menu"
-          error-message="Choose different player!"
+          :error-message="$t('tournament.chooseAnotherPlayerError')"
           :error="isErrorSelectPlayer2"
         >
           <template v-slot:selected-item>
@@ -110,7 +110,7 @@
           </template>
         </q-select>
         <q-btn
-          label="Add team"
+          :label="$t('tournament.teamAdd')"
           type="submit"
           color="primary"
           class="q-mt-md"

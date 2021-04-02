@@ -2,7 +2,7 @@
   <q-page class="row justify-center ">
     <div class="col-12 q-px-lg " style="max-width:1500px">
       <div class="row col-12">
-        <h5>Tournament Creator</h5>
+        <h5>{{ $t('tournament.tournamentCreatorLabel') }}</h5>
       </div>
       <div class="row justify-between">
         <div
@@ -14,8 +14,8 @@
             clear-icon="close"
             outlined
             v-model="tournamentName"
-            label="Tournament name"
-            error-message="Cannot be blank!"
+            :label="$t('tournament.name')"
+            :error-message="$t('tournament.cannotBeBlankError')"
             :error="isErrorTournamentName"
           />
         </div>
@@ -49,7 +49,7 @@
       >
         <q-btn padding="sm" color="primary" @click="submitAddTournament">
           <q-icon class="q-mx-none" name="add" />
-          Create
+          {{ $t('common.create') }}
         </q-btn>
       </q-page-sticky>
     </div>
@@ -62,15 +62,11 @@ import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/TeamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
 import { Team } from 'app/../shared/types/Tournament';
-// import { QInput, QSelect } from 'quasar';
 
 @Component({
   components: { TeamsList, TeamBuilder },
 })
 export default class TournamentCreator extends Vue {
-  // @Ref() readonly teamNameRef!: QInput;
-  // @Ref() readonly teamMember1!: QSelect;
-  // @Ref() readonly teamMember2!: QSelect;
   private tournamentName = '';
   private isErrorTournamentName = false;
   private pagination = {
