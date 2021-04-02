@@ -57,11 +57,11 @@
 </template>
 
 <script lang="ts">
-import User from 'app/../shared/types/User';
+import User from '../../../../shared/types/User';
 import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/TeamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
-import { Team } from 'app/../shared/types/Tournament';
+import { Team } from '../../../../shared/types/Tournament';
 
 @Component({
   components: { TeamsList, TeamBuilder },

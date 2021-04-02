@@ -123,8 +123,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Team } from 'app/../shared/types/Tournament';
-import User from 'app/../shared/types/User';
+import { Team } from '../../../../../shared/types/Tournament';
+import User from '../../../../../shared/types/User';
 
 @Component
 export default class TeamBuilder extends Vue {

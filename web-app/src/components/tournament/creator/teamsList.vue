@@ -53,7 +53,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { IPagination, IColumns } from 'src/components/models';
-import { Team } from 'app/../shared/types/Tournament';
+import { Team } from '../../../../../shared/types/Tournament';
 
 @Component
 export default class TeamsList extends Vue {
