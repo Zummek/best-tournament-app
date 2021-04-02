@@ -9,10 +9,10 @@
     :pagination="pagination"
     :rows-per-page-options="[0]"
   >
-    <template v-slot:no-data="{ icon, message }">
+    <template v-slot:no-data>
       <div class="full-width row flex-center text-accent q-gutter-sm">
-        <q-icon size="2em" name="sentiment_dissatisfied" /><br>
-        {{$t('tournament.noTeamsAddedErrorCreator')}}
+        <q-icon size="2em" name="sentiment_dissatisfied" /><br />
+        {{ $t('tournament.noTeamsAddedErrorCreator') }}
       </div>
     </template>
     <!-- <template v-slot:top-right>
@@ -25,9 +25,7 @@
       <div class="row q-pa-xs col-12">
         <q-card class="row col-12 items-center">
           <q-card-section class="row col" style="text-align:left">
-            <div class="text-grey-14 q-px-xs">
-              {{$t('common.name')}}:
-            </div>
+            <div class="text-grey-14 q-px-xs">{{ $t('common.name') }}:</div>
             <strong>{{ props.row.name }}</strong>
           </q-card-section>
           <q-card-section
@@ -54,8 +52,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { IPagination, IColumns} from 'src/components/models';
-import { Team } from 'app/../shared/types/Tournament'
+import { IPagination, IColumns } from 'src/components/models';
+import { Team } from 'app/../shared/types/Tournament';
 
 @Component
 export default class TeamsList extends Vue {
