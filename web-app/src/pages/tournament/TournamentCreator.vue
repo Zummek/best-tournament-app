@@ -95,7 +95,7 @@ export default class TournamentCreator extends Vue {
       name: 'Team1 co rozwali wszystkie inne teamy i wgl zniszczy je wszystkie',
       members: [
         {
-          id: '1',
+          MSId: '1',
           alias: 'some string',
           firstName: 'Jakub',
           lastName: 'Tabaluga',
@@ -108,7 +108,7 @@ export default class TournamentCreator extends Vue {
       name: 'Superduper TEAM',
       members: [
         {
-          id: '1',
+          MSId: '1',
           alias: 'some string',
           firstName: 'Jakub',
           lastName: 'Tabaluga',
@@ -116,7 +116,7 @@ export default class TournamentCreator extends Vue {
           avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
         },
         {
-          id: '2',
+          MSId: '2',
           alias: 'some string',
           firstName: 'Grzegorz',
           lastName: 'Puchatek',
@@ -129,7 +129,7 @@ export default class TournamentCreator extends Vue {
 
   private users: User[] = [
     {
-      id: '1',
+      MSId: '1',
       alias: 'some string',
       firstName: 'Jakub',
       lastName: 'Tabaluga',
@@ -137,7 +137,7 @@ export default class TournamentCreator extends Vue {
       avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
     },
     {
-      id: '2',
+      MSId: '2',
       alias: 'some string',
       firstName: 'Gargamel',
       lastName: 'Tabaluga',
@@ -145,7 +145,7 @@ export default class TournamentCreator extends Vue {
       avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
     },
     {
-      id: '3',
+      MSId: '3',
       alias: 'some string',
       firstName: 'Jarek',
       lastName: 'Duda',

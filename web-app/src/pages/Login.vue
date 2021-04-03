@@ -63,6 +63,10 @@ export default class Login extends Vue {
     if (this.$route.query.code) {
       await api.auth.getCookieToken(this.$route.query.code as string);
       await store.dispatch('currentUser/decodeTokenAndStore', this.$cookies.get('jwt'));
+      // const response = await api.organization.getUsers();
+      // await api.organization.getUserPhoto(response[0].id);
+
+      await this.$router.push({ name: 'TournamentsList' });
     }
   }
   private async created() {
