@@ -3,18 +3,26 @@
     <q-header elevated>
       <q-toolbar>
         <div class="row col-4 gt-xs">
-          <q-item
-            v-for="link in menuLinks"
-            clickable
-            tag="a"
-            target="_blank"
-            :href="link.link"
-            :key="link.label"
+          <q-tabs
+            align="left"
+            indicator-color="transparent"
+            active-color="white"
+            class="bg-primary text-grey-5"
+            shrink
           >
-            <q-item-section>
-              <q-item-label>{{ link.label }}</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-route-tab
+              :to="{ name: 'News' }"
+              label="News"
+              name="News"
+              style="max-width:80px"
+            />
+            <q-route-tab
+              :to="{ name: 'TournamentsList' }"
+              label="Tournaments"
+              name="Tournaments"
+              style="max-width:150px"
+            />
+          </q-tabs>
         </div>
 
         <q-toolbar-title
@@ -108,15 +116,24 @@
 
     <q-footer bordered class="bg-primary text-primary lt-sm">
       <q-tabs
-        v-model="tab"
         align="justify"
         indicator-color="transparent"
         active-color="white"
         class="bg-primary text-grey-5 shadow-2"
       >
-        <q-tab label="News" name="News" class="row col-6" />
+        <q-route-tab
+          :to="{ name: 'News' }"
+          label="News"
+          name="News"
+          class="row col-6"
+        />
         <q-separator vertical class="q-mx-xs" />
-        <q-tab label="Tournaments" name="Tournaments" class="row col-6" />
+        <q-route-tab
+          :to="{ name: 'TournamentsList' }"
+          label="Tournaments"
+          name="Tournaments"
+          class="row col-6"
+        />
       </q-tabs>
     </q-footer>
 
@@ -127,21 +144,8 @@
 </template>
 
 <script lang="ts">
-const linksData = [
-  {
-    label: 'News',
-    link: '#',
-  },
-  {
-    label: 'Tournaments',
-    link: '#',
-  },
-];
-
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class MainLayout extends Vue {
-  menuLinks = linksData;
-}
+export default class MainLayout extends Vue {}
 </script>
