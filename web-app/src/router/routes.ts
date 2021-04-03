@@ -7,13 +7,28 @@ const routes: RouteConfig[] = [
     children: [
       {
         path: '/index',
+        name: 'Index',
         component: () => import('pages/Index.vue'),
         meta: { public: true },
       },
       {
-        name: 'TournamentDetails',
+        path: '/tournamentsList',
+        name: 'TournamentsList',
+        component: () => import('src/pages/tournament/TournamentsList.vue'),
+        meta: { public: true }, //TODO change to false
+      },
+      {
         path: 'tournament/:id',
-        component: () => import('pages/tournament/Details.vue'),
+        name: 'TournamentDetails',
+        // component: () => import('pages/tournament/Details.vue'),
+        component: () => import('pages/Index.vue'),
+        meta: { public: true }, // TODO: change to false
+      },
+      {
+        path: '/createTournament',
+        name: 'TournamentCreator',
+        // component: () => import('pages/tournament/TournamentCreator.vue'),
+        component: () => import('pages/Index.vue'),
         meta: { public: true }, // TODO: change to false
       },
     ],

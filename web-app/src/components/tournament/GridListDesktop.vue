@@ -15,7 +15,12 @@
         <template v-slot:top-left>
           <div class="row">
             <span class="title">Tournaments</span>
-            <q-btn push color="primary" label="Add new" />
+            <q-btn
+              :to="{ name: 'TournamentCreator' }"
+              push
+              color="primary"
+              label="Add new"
+            />
           </div>
         </template>
         <template v-slot:top-right>
@@ -34,40 +39,48 @@
 
         <template v-slot:item="props">
           <div class="q-pa-sm col-sm-12 col-md-6 col-lg-4">
-            <q-card class="flex row">
-              <q-card-section class="col-4 overflow-hidden card__logo">
-                <q-icon size="5em" name="emoji_events" />
-              </q-card-section>
+            <q-btn
+              :to="{ name: 'TournamentDetails', params: { id: props.row.id } }"
+              no-caps
+              flat
+              padding="none"
+              class="col-12"
+            >
+              <q-card class="flex row">
+                <q-card-section class="col-4 overflow-hidden card__logo">
+                  <q-icon size="5em" name="emoji_events" />
+                </q-card-section>
 
-              <q-card-section class="col-8 overflow-hidden">
-                <div class="row justify-between items-center">
-                  <h3 class="card__header">{{ props.row.name }}</h3>
-                  <q-badge
-                    align="middle"
-                    outline
-                    rounded
-                    :color="
-                      props.row.status === 'In progress' ? 'orange' : 'green'
-                    "
-                    style="height: 35px;"
-                    :label="props.row.status"
-                  />
-                </div>
+                <q-card-section class="col-8 overflow-hidden">
+                  <div class="row justify-between items-center">
+                    <h3 class="card__header">{{ props.row.name }}</h3>
+                    <q-badge
+                      align="middle"
+                      outline
+                      rounded
+                      :color="
+                        props.row.status === 'In progress' ? 'orange' : 'green'
+                      "
+                      style="height: 35px;"
+                      :label="props.row.status"
+                    />
+                  </div>
 
-                <div class="text-grey-14 " style="text-align:left">
-                  Participants:
-                </div>
-                <q-chip size="1em">
-                  <q-avatar>
+                  <div class="text-grey-14 " style="text-align:left">
+                    Participants:
+                  </div>
+                  <q-chip size="1em">
+                    <q-avatar>
+                      <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                    </q-avatar>
+                    Organizer
+                  </q-chip>
+                  <q-avatar size="2em" v-for="n in 10" :key="n" class="q-ml-xs">
                     <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
                   </q-avatar>
-                  Organizer
-                </q-chip>
-                <q-avatar size="2em" v-for="n in 10" :key="n" class="q-ml-xs">
-                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-                </q-avatar>
-              </q-card-section>
-            </q-card>
+                </q-card-section>
+              </q-card>
+            </q-btn>
           </div>
         </template>
       </q-table>

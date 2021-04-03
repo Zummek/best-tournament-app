@@ -55,31 +55,37 @@ export default class TournamentsList extends Vue {
   ];
   private data = [
     {
+      id: '1',
       name: 'Work',
       status: 'In progress',
       participants: 'You and I',
     },
     {
+      id: '2',
       name: 'Tourn2',
       status: 'Finished',
       participants: 'You and I',
     },
     {
+      id: '3',
       name: 'Tourn3',
       status: 'Finished',
       participants: 'No one',
     },
     {
+      id: '4',
       name: 'Tourn4',
       status: 'Finished',
       participants: 'No one',
     },
     {
+      id: '5',
       name: 'Tourn5',
       status: 'Finished',
       participants: 'No one',
     },
     {
+      id: '6',
       name: 'Tourn6',
       status: 'Finished',
       participants: 'No one',
