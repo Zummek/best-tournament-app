@@ -28,7 +28,13 @@
 
       <template v-slot:item="props">
         <div class="row q-pa-xs col-12">
-          <q-btn no-caps flat padding="none" class="col-12">
+          <q-btn
+            :to="{ name: 'TournamentDetails', params: { id: props.row.id } }"
+            no-caps
+            flat
+            padding="none"
+            class="col-12"
+          >
             <q-card class="row col-12">
               <q-card-section
                 class="col-6 overflow-hidden"
@@ -56,7 +62,12 @@
       </template>
     </q-table>
     <q-page-sticky position="bottom-right" :offset="[36, 18]">
-      <q-btn round color="primary" icon="add" />
+      <q-btn
+        :to="{ name: 'TournamentCreator' }"
+        round
+        color="primary"
+        icon="add"
+      />
     </q-page-sticky>
   </div>
 </template>
