@@ -39,6 +39,7 @@ const routes: RouteConfig[] = [
     children: [
       {
         path: 'login',
+        name: 'login',
         component: () => import('pages/Login.vue'),
         meta: { public: true },
       },

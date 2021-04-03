@@ -47,7 +47,7 @@
         position="bottom-right"
         :offset="[36, 18]"
       >
-        <q-btn padding="sm" color="primary" @click="submitAddTournament">
+        <q-btn @click="submitAddTournament" padding="sm" color="primary">
           <q-icon class="q-mx-none" name="add" />
           {{ $t('common.create') }}
         </q-btn>
@@ -164,6 +164,9 @@ export default class TournamentCreator extends Vue {
     console.log('Creating tournament');
 
     // SENDING THAT CRAP FAAAAR AWAY
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.$router.push({ name: 'TournamentsList' });
   }
 
   private addTeam(team: Team) {
