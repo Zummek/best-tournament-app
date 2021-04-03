@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "strict": true,
     "noImplicitThis": true,
-    "typeRoots": ["./node_modules/@types", "typings"]
+    "typeRoots": ["typings", "./node_modules/@types"],
   },
   "exclude": ["build"]
 }
