@@ -243,6 +243,7 @@ export default class TeamBuilder extends Vue {
         const needle = val.toLowerCase();
         this.filterOptions = this.users.filter(
           user =>
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             (user.firstName + ' ' + user.lastName)
               .toLowerCase()
               .indexOf(needle) > -1

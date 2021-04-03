@@ -26,7 +26,6 @@ export default route<Store<StateInterface>>(function({ Vue }) {
   });
 
   Router.beforeEach((to, from, next) => {
-    console.log(Vue.$cookies.get('jwt'));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (to.meta.public === true || Vue.$cookies.get('jwt') !== null) {
       next();
@@ -38,31 +37,6 @@ export default route<Store<StateInterface>>(function({ Vue }) {
         },
       });
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    // if (to.matched.some(record => record.meta.requiresAuth)) {
-    //   // this route requires auth, check if logged in
-    //   // if not, redirect to login page.
-      
-    //   // console.log(access_token);
-    //   // // console.log(this.$cookies.isKey('jwt'));
-
-    //   // console.log(Router.app.$cookies.isKey('jwt'));
-    //   // console.log(Vue.$cookies.isKey('jwt'));
-    //   // console.log($cookies.isKey('jwt'));
-
-    //   // if (!this.$cookies.isKey("jwt")) {
-    //   //   //TODO: w warunku sprawdzać ciasteczko z MS
-    //   //   next({
-    //   //     name: 'login',
-    //   //     // query: { redirect: { name: 'TournamentCreator' } },
-    //   //   });
-    //   // } else {
-    //   //   next();
-    //   // }
-    // } else {
-    //   next();
-    // }
   });
 
   return Router;
