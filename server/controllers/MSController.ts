@@ -26,7 +26,7 @@ export const getAzureADApplicationLogo = catchAsync(async (req: Request, res: Re
     },
   });
   res.status(200).json({
-    logo: applicationData.data.info.logoUrl,
+    data: { logo: applicationData.data.info.logoUrl },
   });
 });
 
@@ -39,7 +39,7 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
     },
   });
   res.status(200).json({
-    users: users.data.value,
+    data: { users: users.data.value },
   });
 });
 
@@ -53,6 +53,6 @@ export const getUserPhoto = catchAsync(async (req: Request, res: Response) => {
   });
   res.status(200).json({
     // binary representation
-    photo: photo.data,
+    data: { photo: photo.data },
   });
 });
