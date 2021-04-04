@@ -30,14 +30,14 @@ const updateMatchOutcomes = catchAsync(
 const getAllTournaments = catchAsync(async (req, res) => {
   const tournaments = await TournamentRepository.getAll();
   res.status(200).json({
-    data: tournaments,
+    data: { tournaments },
   });
 });
 
 const getTournament = catchAsync(async (req, res) => {
   const tournament = await TournamentRepository.getById(req.params.id);
   res.status(200).json({
-    data: tournament,
+    data: { tournament },
   });
 });
 
