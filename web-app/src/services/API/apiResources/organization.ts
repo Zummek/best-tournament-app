@@ -26,19 +26,3 @@ export const getUserPhoto = async (id: string) => {
   );
   return userPhotoResponse.data.data.photo;
 };
-
-export const getUsers = async () => {
-  const usersResponse = await axiosInstance.get('v1/organization/users', {
-    withCredentials: true,
-  });
-  return usersResponse.data.users;
-};
-export const getUserPhoto = async (id: string) => {
-  const userPhotoResponse = await axiosInstance.get(
-    `v1/organization/users/${id}/photo`,
-    {
-      withCredentials: true,
-    }
-  );
-  return userPhotoResponse.data.photo;
-};
