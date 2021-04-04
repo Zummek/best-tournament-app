@@ -90,43 +90,7 @@ export default class TournamentCreator extends Vue {
     },
   ];
 
-  private teams: Team[] = [
-    {
-      name: 'Team1 co rozwali wszystkie inne teamy i wgl zniszczy je wszystkie',
-      members: [
-        {
-          MSId: '1',
-          alias: 'some string',
-          firstName: 'Jakub',
-          lastName: 'Tabaluga',
-          email: 'string',
-          avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
-        },
-      ],
-    },
-    {
-      name: 'Superduper TEAM',
-      members: [
-        {
-          MSId: '1',
-          alias: 'some string',
-          firstName: 'Jakub',
-          lastName: 'Tabaluga',
-          email: 'string',
-          avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
-        },
-        {
-          MSId: '2',
-          alias: 'some string',
-          firstName: 'Grzegorz',
-          lastName: 'Puchatek',
-          email: 'string',
-          avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
-        },
-      ],
-    },
-  ];
-
+  private teams: Team[] = [];
   private users: User[] = [
     {
       MSId: '1',
@@ -153,6 +117,7 @@ export default class TournamentCreator extends Vue {
       avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
     },
   ];
+
   private submitAddTournament() {
     if (!this.tournamentName) {
       this.isErrorTournamentName = true;
@@ -168,10 +133,14 @@ export default class TournamentCreator extends Vue {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.$router.push({ name: 'TournamentsList' });
   }
-
+  // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
   private addTeam(team: Team) {
     this.teams.push(team);
   }
+
+  // private created(){
+    
+  // }
 }
 </script>
 <style></style>

@@ -3,5 +3,5 @@ export default {
   cancel: 'Anuluj',
   create: 'Stwórz',
   name: 'Nazwa',
-  noResults: 'Brak wyników wyszukiwania'
+  noSearchResults: 'Brak wyników wyszukiwania',
 };
