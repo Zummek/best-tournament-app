@@ -36,4 +36,18 @@ export default {
       noTournaments: 'Brak turniejów do wyświetlenia',
     },
   },
+  team: {
+    label: 'Drużyna',
+    name: 'Nazwa Drużyny',
+    list: 'Lista Drużyn',
+    captain: 'Kapitan',
+    secondMember: 'Gracz nr 2',
+    secondMemberCreator: 'Gracz nr 2 (opcjonalnie)',
+    add: 'Dodaj drużynę',
+    builderTitle: 'Kreator drużyny',
+  },
+  tournamentCreatorTitle: 'Kreator turnieju',
+  noTeamsAddedErrorCreator: 'Dodaj drużynę za pomocą kreatora drużyny !',
+  cannotBeBlankError: 'Pole nie może być puste !',
+  chooseAnotherPlayerError: 'Wybierz innego gracza !',
 };

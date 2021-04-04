@@ -2,7 +2,7 @@
   <q-form @submit.prevent="submitAddTeam">
     <q-card>
       <q-card-section>
-        <div class="text-h6">{{$t('tournament.teamBuilderLabel')}}</div>
+        <div class="text-h6">{{ $t('tournament.team.builderTitle') }}</div>
 
         <q-input
           clearable
@@ -10,7 +10,7 @@
           outlined
           v-model="teamName"
           ref="teamNameRef"
-          :label="$t('tournament.teamName')"
+          :label="$t('tournament.team.name')"
           :error-message="$t('tournament.cannotBeBlankError')"
           :error="isErrorInputTeamName"
         />
@@ -23,7 +23,7 @@
           input-debounce="100"
           ref="teamMember1"
           :options="filterOptions"
-          :label="$t('tournament.teamCapitan')"
+          :label="$t('tournament.team.captain')"
           @filter="selectFilter"
           emit-value
           behavior="menu"
@@ -45,7 +45,7 @@
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">
-                No results
+                {{ $t('common.noResults') }}
               </q-item-section>
             </q-item>
           </template>
@@ -70,7 +70,7 @@
           v-model="player2"
           ref="teamMember2"
           :options="filterOptions"
-          :label="$t('tournament.teamSecondMemberCreator')"
+          :label="$t('tournament.team.secondMemberCreator')"
           @filter="selectFilter"
           emit-value
           behavior="menu"
@@ -92,7 +92,7 @@
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">
-                No results
+                {{ $t('common.noResults') }}
               </q-item-section>
             </q-item>
           </template>
@@ -110,7 +110,7 @@
           </template>
         </q-select>
         <q-btn
-          :label="$t('tournament.teamAdd')"
+          :label="$t('tournament.team.add')"
           type="submit"
           color="primary"
           class="q-mt-md"
@@ -136,6 +136,7 @@ export default class TeamBuilder extends Vue {
   private teamName = '';
   private player1: User | null = null;
   private player2: User | null = null;
+  private filterOptions: User[] = [];
 
   private submitAddTeam() {
     if (!this.validation()) return;
@@ -187,8 +188,6 @@ export default class TeamBuilder extends Vue {
       return false;
     } else return true;
   }
-
-  private filterOptions: User[] = [];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private selectFilter(val: string, update: any) {

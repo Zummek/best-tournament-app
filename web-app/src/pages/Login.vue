@@ -66,7 +66,7 @@ export default class Login extends Vue {
       // const response = await api.organization.getUsers();
       // await api.organization.getUserPhoto(response[0].id);
 
-      await this.$router.push({ name: 'TournamentsList' });
+      await this.$router.replace({ name: 'TournamentsList' });
     }
   }
   private async created() {

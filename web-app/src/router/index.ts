@@ -32,6 +32,9 @@ export default route<Store<StateInterface>>(function({ Vue }) {
     } else {
       next({
         name: 'login',
+        query: {
+          next: to.path,
+        },
       });
     }
   });

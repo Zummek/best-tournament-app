@@ -1,7 +1,7 @@
 <template>
   <q-table
     grid
-    :title="$t('tournament.teams')"
+    :title="$t('tournament.team.list')"
     :data="data"
     :columns="columns"
     row-key="name"
@@ -15,11 +15,6 @@
         {{ $t('tournament.noTeamsAddedErrorCreator') }}
       </div>
     </template>
-    <!-- <template v-slot:top-right>
-                <q-btn dense icon="add" color="primary" class="q-pr-xs">
-                  Add new team
-                </q-btn>
-              </template> -->
 
     <template v-slot:item="props">
       <div class="row q-pa-xs col-12">
@@ -41,9 +36,9 @@
               {{ player.firstName }} {{ player.lastName }}
             </div>
           </q-card-section>
-          <q-card-section class="col-1 q-mr-md">
+          <q-card-actions class="col-1 q-mr-lg">
             <q-btn dense icon="remove" @click="deleteTeam(props.row)" />
-          </q-card-section>
+          </q-card-actions>
         </q-card>
       </div>
     </template>

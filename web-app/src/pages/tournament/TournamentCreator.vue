@@ -2,7 +2,7 @@
   <q-page class="row justify-center ">
     <div class="col-12 q-px-lg " style="max-width:1500px">
       <div class="row col-12">
-        <h5>{{ $t('tournament.tournamentCreatorLabel') }}</h5>
+        <h5>{{ $t('tournament.tournamentCreatorTitle') }}</h5>
       </div>
       <div class="row justify-between">
         <div
