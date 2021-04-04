@@ -6,7 +6,7 @@ const mutation: MutationTree<UserStateInterface> = {
     state = user;
   },
   logOut(state: UserStateInterface) {
-    state.id = '';
+    state._id = '';
     state.tenantId = '';
     state.name = '';
     state.username = '';

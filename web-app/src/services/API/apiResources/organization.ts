@@ -5,5 +5,5 @@ export const getAzureADApplicationLogo = async () => {
   const logoResponse = await axiosInstance.get<types.LogoResponse>(
     'v1/organization/logo'
   );
-  return logoResponse.data.logo;
+  return logoResponse.data.data;
 };

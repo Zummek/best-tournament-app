@@ -1,5 +1,5 @@
 export interface UserStateInterface {
-  id: string;
+  _id: string;
   tenantId: string;
   name: string;
   username: string;
@@ -7,7 +7,7 @@ export interface UserStateInterface {
 
 function state(): UserStateInterface {
   return {
-    id: '',
+    _id: '',
     tenantId: '',
     name: '',
     username: '',
