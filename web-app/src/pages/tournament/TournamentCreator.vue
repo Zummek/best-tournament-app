@@ -221,6 +221,10 @@ export default class TournamentCreator extends Vue {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
   }
+
+  // private created(){
+    
+  // }
 }
 </script>
 <style></style>
