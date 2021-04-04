@@ -2,7 +2,7 @@ export interface AuthLoginResponse {
   data: Location;
 }
 export interface LogoResponse {
-  logo: string;
+  data: string;
 }
 
 export interface CreateTournamentPayload {

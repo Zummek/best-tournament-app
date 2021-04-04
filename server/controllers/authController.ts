@@ -101,6 +101,6 @@ export const getAzureADApplicationLogo = catchAsync(async (req: Request, res: Re
     },
   });
   res.status(200).json({
-    logo: applicationData.data.info.logoUrl,
+    data: applicationData.data.info.logoUrl,
   });
 });
