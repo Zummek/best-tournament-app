@@ -17,7 +17,7 @@ const cookieOptions: CookieOptions = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN_HOURS! * 60 * 60 * 1000,
   ),
-  httpOnly: true,
+  httpOnly: false,
   sameSite: 'strict',
 };
 
