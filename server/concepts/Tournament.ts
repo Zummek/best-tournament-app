@@ -60,7 +60,7 @@ export default class Tournament implements ITournament {
 
     const assignedTeam = match.getAssignedTeam(currentUserId);
 
-    if (!assignedTeam) throw new AppError('You are not authorized to update this match', 401);
+    if (!assignedTeam) throw new AppError('You are not authorized to update this match', 403);
     if (match.sideA.score.a !== -1) throw new AppError('The match result has already been reported', 400);
 
     match.sideA.score = {
