@@ -38,7 +38,10 @@ export default class TournamentRepository {
     return tournament;
   }
 
-  public static getAll = async () => TournamentModel.find();
+  public static getAll = async (page: number, pageSize: number) => {
+    const skip = (page - 1) * pageSize;
+    return TournamentModel.find().skip(skip).limit(pageSize);
+  };
 
   public static getById = async (id: string) => TournamentModel.findById(id);
 

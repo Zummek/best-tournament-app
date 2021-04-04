@@ -28,7 +28,9 @@ const updateMatchOutcomes = catchAsync(
 );
 
 const getAllTournaments = catchAsync(async (req, res) => {
-  const tournaments = await TournamentRepository.getAll();
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 100;
+  const tournaments = await TournamentRepository.getAll(page, pageSize);
   res.status(200).json({
     data: { tournaments },
   });
