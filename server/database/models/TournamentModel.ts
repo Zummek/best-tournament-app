@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import Tournament from '../../../shared/types/Tournament';
+import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
 
 const MatchSideSchema = new Schema({
   team: { type: Schema.Types.ObjectId, ref: 'Team', required: [true, 'Missing team'] },
@@ -18,7 +18,7 @@ const MatchSchema = new Schema({
 
 const TournamentSchema = new Schema({
   name: { type: Schema.Types.String /* unique: true */ },
-  ownerMSId: Schema.Types.String,
+  ownerId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],
 });
@@ -32,4 +32,4 @@ TournamentSchema.pre(/^find/, function (next) {
   next();
 });
 
-export default mongoose.model<Tournament & Document>('Tournament', TournamentSchema);
+export default mongoose.model<TournamentWihtoutMS & Document>('Tournament', TournamentSchema);

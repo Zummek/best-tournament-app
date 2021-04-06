@@ -6,7 +6,7 @@ export interface Create {
 export interface CreateTeam {
   name: string;
   members: {
-    MSId: string;
+    id: string;
   }[];
 }
 

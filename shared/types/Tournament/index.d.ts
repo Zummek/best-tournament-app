@@ -1,10 +1,14 @@
-import User from "../User";
+import User, { UserWithoutMS } from "../User";
 export * as TournamentApi from "./apiInterface";
 
 export interface Team {
   _id?: string;
   name: string;
   members: User[];
+}
+
+export interface TeamWithoutMS extends Omit<Team, "members"> {
+  members: UserWithoutMS[];
 }
 
 export interface MatchSide {
@@ -15,6 +19,10 @@ export interface MatchSide {
   };
 }
 
+export interface MatchSideWithoutMS extends Omit<MatchSide, "team"> {
+  team: TeamWithoutMS;
+}
+
 export interface Match {
   _id?: string;
   sideA: MatchSide;
@@ -23,10 +31,22 @@ export interface Match {
   // date: Date;
 }
 
+export interface MatchWithoutMS extends Omit<Match, "sideA" | "sideB"> {
+  sideA: MatchSideWithoutMS;
+  sideB: MatchSideWithoutMS;
+}
+
 export default interface Tournament {
   _id?: string;
   name: string;
-  ownerMSId: string;
+  owner: User;
   teams: Team[];
   matches: Match[];
+}
+
+export interface TournamentWihtoutMS
+  extends Omit<Tournament, "owner" | "teams" | "matches"> {
+  ownerId: string;
+  teams: TeamWithoutMS[];
+  matches: MatchWithoutMS[];
 }

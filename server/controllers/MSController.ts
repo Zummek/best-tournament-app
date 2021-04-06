@@ -2,6 +2,7 @@ import axios from 'axios';
 import QueryString from 'qs';
 import { Request, Response } from 'express';
 import catchAsync from '../utils/catchAsync';
+import MSOrganization from '../concepts/MSOrganization';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getAzureADApplicationLogo = catchAsync(async (req: Request, res: Response) => {
@@ -25,21 +26,17 @@ export const getAzureADApplicationLogo = catchAsync(async (req: Request, res: Re
       Authorization: `Bearer ${applicationToken.data.access_token}`,
     },
   });
+
   res.status(200).json({
     data: { logo: applicationData.data.info.logoUrl },
   });
 });
 
 export const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const users = await axios({
-    method: 'GET',
-    url: 'https://graph.microsoft.com/beta/users',
-    headers: {
-      Authorization: `Bearer ${req.cookies.jwt}`,
-    },
-  });
+  const users = await MSOrganization.getAllUsers(`Bearer ${req.cookies.jwt}`);
+
   res.status(200).json({
-    data: { users: users.data.value },
+    data: { users },
   });
 });
 
@@ -51,6 +48,7 @@ export const getUserPhoto = catchAsync(async (req: Request, res: Response) => {
       Authorization: `Bearer ${req.cookies.jwt}`,
     },
   });
+
   res.status(200).json({
     // binary representation
     data: { photo: photo.data },

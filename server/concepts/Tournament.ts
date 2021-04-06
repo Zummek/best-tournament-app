@@ -1,26 +1,30 @@
 import tournamentGenerator from 'tournament-generator';
-import ITournament, { Team, TournamentApi } from '../../shared/types/Tournament';
+import ITournament, {
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWihtoutMS, Team as ITeam, Match as IMatch,
+} from '../../shared/types/Tournament';
+import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
 // eslint-disable-next-line import/no-cycle
 import TournamentRepository from '../database/repositories/TournamentRepository';
 import AppError from '../utils/appError';
 import Match from './Match';
+import MSOrganization from './MSOrganization';
 
-export default class Tournament implements ITournament {
+export default class Tournament implements TournamentWihtoutMS {
   _id?: string;
 
   name: string;
 
-  ownerMSId: string;
+  ownerId: string;
 
-  teams: Team[];
+  teams: TeamWithoutMS[];
 
-  matches: Match[];
+  matches: MatchWithoutMS[];
 
   constructor(data: Tournament) {
     this._id = data._id;
     this.name = data.name;
-    this.ownerMSId = data.ownerMSId;
+    this.ownerId = data.ownerId;
     this.teams = data.teams;
     this.matches = data.matches instanceof Match
       ? data.matches : data.matches.map((match) => new Match(match));
@@ -32,13 +36,13 @@ export default class Tournament implements ITournament {
 
     return TournamentRepository.create({
       name: data.name,
-      ownerMSId: ownerId,
+      ownerId,
       teams,
       matches,
     });
   }
 
-  private static generateMatches(teams: Team[]): Match[] {
+  private static generateMatches(teams: TeamWithoutMS[]): Match[] {
     const { data } = tournamentGenerator(teams, { type: 'single-round' });
 
     return data.map((match) => Match.getInstanceBasedOnTeams({
@@ -68,5 +72,82 @@ export default class Tournament implements ITournament {
       b: data.sideB,
     };
     await TournamentRepository.updateMatch(matchId, match);
+  }
+
+  public static async enrichWithMSUsers(
+    tournament: Tournament,
+    token: string,
+    allUsersPrepared?: User[],
+  ): Promise<ITournament> {
+    let allUsers: User[] = [];
+
+    if (allUsersPrepared) allUsers = allUsersPrepared;
+    else allUsers = await MSOrganization.getAllUsers(token);
+
+    const getUserById = (id: string): User => {
+      const user = allUsers.find((u) => u.id === id);
+
+      // TODO: poniższa linijka nie powinna miec prawa bytu ale w przypadku gdy
+      // nie przechowujemy userów wszystko może się stać - do przemyślenia
+      if (!user) { throw new AppError('Something went wrong', 500); }
+
+      return user;
+    };
+
+    const enrichtedTeams: ITeam[] = tournament.teams.map((team) => ({
+      ...team,
+      members: team.members.map((member) => ({
+        ...member,
+        ...getUserById(member.id),
+      })),
+    }));
+
+    const enrichtedMatches: IMatch[] = tournament.matches.map((match) => ({
+      ...match,
+      sideA: {
+        ...match.sideA,
+        team: {
+          ...match.sideA.team,
+          members: match.sideA.team.members.map((member) => ({
+            ...member,
+            ...getUserById(member.id),
+          })),
+        },
+      },
+      sideB: {
+        ...match.sideB,
+        team: {
+          ...match.sideB.team,
+          members: match.sideB.team.members.map((member) => ({
+            ...member,
+            ...getUserById(member.id),
+          })),
+        },
+      },
+    }));
+
+    const enrichtedTournament: ITournament = {
+      ...tournament,
+      owner: getUserById(tournament.ownerId),
+      teams: enrichtedTeams,
+      matches: enrichtedMatches,
+    };
+
+    return enrichtedTournament;
+  }
+
+  public static async enrichTournamentsWithMSUsers(
+    tournaments: Tournament[],
+    token: string,
+  ): Promise<ITournament[]> {
+    const allUsers = await MSOrganization.getAllUsers(token);
+    const enrichedTournaments = [];
+
+    for (let i = 0; i < tournaments.length; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      enrichedTournaments.push(await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers));
+    }
+
+    return enrichedTournaments;
   }
 }
