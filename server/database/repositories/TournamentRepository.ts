@@ -1,5 +1,5 @@
 import TournamentModel from '../models/TournamentModel';
-import Tournament, { TournamentWihtoutMS } from '../../../shared/types/Tournament';
+import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
 import Match from '../../concepts/Match';
 
