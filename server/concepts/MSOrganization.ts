@@ -15,5 +15,15 @@ export default class MSOrganization {
     return response.data.value.map((rawUser: MSUser) => new User(rawUser));
   }
 
-  // przerzuciłbym reszte
+  public static async getUserPhoto(token: string, userId: string) {
+    const photo = await axios({
+      method: 'GET',
+      url: `https://graph.microsoft.com/beta/users/${userId}/photo/$value`,
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    return photo.data;
+  }
 }
