@@ -1,16 +1,13 @@
-export interface UserStateInterface {
-  _id: string;
-  tenantId: string;
-  name: string;
-  username: string;
-}
+import User from 'app/../shared/types/User';
 
-function state(): UserStateInterface {
+function state(): User {
   return {
-    _id: '',
-    tenantId: '',
-    name: '',
-    username: '',
+    id: '',
+    alias: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    avatarSrc: '',
   };
 }
 

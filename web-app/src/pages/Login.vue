@@ -49,6 +49,7 @@
 <script lang="ts">
 import api from './../services/API';
 import { Vue, Component } from 'vue-property-decorator';
+import store from 'src/store';
 
 @Component
 export default class Login extends Vue {
@@ -60,9 +61,17 @@ export default class Login extends Vue {
   }
   private async mounted() {
     if (this.$route.query.code) {
+      try {
       await api.auth.getCookieToken(this.$route.query.code as string);
-      // const response = await api.organization.getUsers();
-      // await api.organization.getUserPhoto(response[0].id);
+      await store.dispatch('currentUser/decodeTokenAndStore', this.$cookies.get('jwt'));
+
+      //TEST
+      setTimeout(() => {
+        console.log('store.', store.state);
+      }, 1000);
+      } catch (error) {
+        console.log('error', error)
+      }
     }
   }
   private async created() {

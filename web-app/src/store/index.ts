@@ -1,13 +1,13 @@
 import Vuex from 'vuex';
-import { UserStateInterface } from './user/state';
 import userModule from './user';
 import Vue from 'vue';
+import User from 'app/../shared/types/User';
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  currentUser: UserStateInterface;
+  currentUser: User;
 }
 
 Vue.use(Vuex);
