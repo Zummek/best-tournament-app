@@ -49,7 +49,7 @@
         <matches-table-item
           :match="match"
           v-for="match in tournament.matches"
-          :key="match.id"
+          :key="match._id"
         />
       </q-card-section>
     </q-card>

@@ -12,5 +12,5 @@ export const getTournament = async (tournamentId: string) => {
     `v1/tournament/${encodeURIComponent(tournamentId)}`
   );
 
-  return response.data;
+  return response.data.data.tournament;
 };

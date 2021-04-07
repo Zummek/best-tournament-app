@@ -138,11 +138,11 @@ export default class OutcomeTableItem extends Vue {
     const currentUserId = store.state.currentUser.id;
 
     for (let i = 0; i < this.match.sideA.team.members.length; i++) {
-      if (this.match.sideA.team.members[i].MSId === currentUserId)
+      if (this.match.sideA.team.members[i].id === currentUserId)
         return 'sideA';
     }
     for (let i = 0; i < this.match.sideB.team.members.length; i++) {
-      if (this.match.sideB.team.members[i].MSId === currentUserId)
+      if (this.match.sideB.team.members[i].id === currentUserId)
         return 'sideB';
     }
 
