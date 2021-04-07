@@ -1,6 +1,11 @@
 <template>
   <q-page class="flex flex-center">
-    <q-card class="q-px-xs-none q-px-sm-md">
+    <q-spinner
+      v-if="!tournament"
+      color="primary"
+      size="3em"
+    />
+    <q-card v-else class="q-px-xs-none q-px-sm-md">
       <q-card-section>
         <div class="row">
           <q-input
@@ -20,7 +25,8 @@
             <template v-slot:control>
               <q-chip>
                 <q-avatar>
-                  <img :src="tournament.owner.avatarSrc" />
+                  <!-- <img :src="tournament.owner.avatarSrc" /> -->
+                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
                 </q-avatar>
                 {{ tournament.owner.firstName }}
                 {{ tournament.owner.lastName }}
@@ -69,74 +75,79 @@ import API from 'src/services/API';
   },
 })
 export default class TournamentDetails extends Vue {
-  private tournament!: Tournament;
+  private tournament: Tournament | null = null;
 
-  private created() {
-    void this.getTournamentDetails();
+  private async created() {
+    await this.getTournamentDetails();
   }
 
   get completedMatchesFormated() {
-    const allMatches = this.tournament.matches.length;
-    let completedMatches = 0;
+    if(this.tournament) {
+      const allMatches = this.tournament.matches.length;
+      let completedMatches = 0;
 
-    for (let i = 0; i < this.tournament.matches.length; i++) {
-      if (this.tournament.matches[i].isFinished) {
-        completedMatches++;
+      for (let i = 0; i < this.tournament.matches.length; i++) {
+        if (this.tournament.matches[i].isFinished) {
+          completedMatches++;
+        }
       }
-    }
 
-    return `${completedMatches} / ${allMatches}`;
+      return `${completedMatches} / ${allMatches}`;
+    }
   }
 
   get participantsAmount() {
-    let participantsAmount = 0;
+    if(this.tournament) {
+      let participantsAmount = 0;
 
-    for (let i = 0; i < this.tournament.teams.length; i++) {
-      participantsAmount += this.tournament.teams[i].members.length;
+      for (let i = 0; i < this.tournament.teams.length; i++) {
+        participantsAmount += this.tournament.teams[i].members.length;
+      }
+
+      return participantsAmount;
     }
-
-    return participantsAmount;
   }
 
   private async getTournamentDetails() {
     this.tournament = await API.tournament.getTournament(this.$route.params.id);
-
     this.sortMatches();
   }
 
   private sortMatches() {
-    // sort array by isFinished and Date
-    this.tournament.matches.sort((a, b) => {
-      if (a.isFinished && b.isFinished) {
+    if(this.tournament) {
+      // sort array by isFinished and Date
+      this.tournament.matches.sort((a, b) => {
+        if (a.isFinished && b.isFinished) {
+          return 0;
+          // if (moment(a.date).diff(b.date) > 0) return -1;
+          // else return 1;
+        } else if (!a.isFinished && b.isFinished) return 1;
+        else if (a.isFinished && !b.isFinished) return -1;
+        else if (!a.isFinished && !b.isFinished) {
+          return 0;
+          // if (moment(a.date).diff(b.date) > 0) return -1;
+          // else return 1;
+        }
+
         return 0;
-        // if (moment(a.date).diff(b.date) > 0) return -1;
-        // else return 1;
-      } else if (!a.isFinished && b.isFinished) return 1;
-      else if (a.isFinished && !b.isFinished) return -1;
-      else if (!a.isFinished && !b.isFinished) {
-        return 0;
-        // if (moment(a.date).diff(b.date) > 0) return -1;
-        // else return 1;
-      }
+      });
 
-      return 0;
-    });
+      // add next three matches or witout score to the top
+      /*let maxMatchesOnTop = 3;
+      for (
+        let i = 0;
+        this.tournament.matches.length > i && maxMatchesOnTop;
+        i++
+      ) {
+        const match = this.tournament.matches[i];
 
-    // add next three matches or witout score to the top
-    /*let maxMatchesOnTop = 3;
-    for (
-      let i = 0;
-      this.tournament.matches.length > i && maxMatchesOnTop;
-      i++
-    ) {
-      const match = this.tournament.matches[i];
-
-      if (!match.isFinished && moment().diff(match.date, 'days') === 0) {
-        maxMatchesOnTop--;
-        this.tournament.matches.splice(i, 1);
-        this.tournament.matches.unshift(match);
-      }
-    }*/
+        if (!match.isFinished && moment().diff(match.date, 'days') === 0) {
+          maxMatchesOnTop--;
+          this.tournament.matches.splice(i, 1);
+          this.tournament.matches.unshift(match);
+        }
+      }*/
+    }
   }
 }
 </script>

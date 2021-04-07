@@ -8,10 +8,12 @@
             size="md"
             style="margin-right: -8px; z-index: 10"
           >
-            <img :src="match.sideA.team.members[1].avatarSrc" />
+            <!-- <img :src="match.sideA.team.members[1].avatarSrc" /> -->
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
           <q-avatar class="self-end" :size="$q.screen.xs ? 'lg' : 'xl'">
-            <img :src="match.sideA.team.members[0].avatarSrc" />
+            <!-- <img :src="match.sideA.team.members[0].avatarSrc" /> -->
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
 
           <div
@@ -30,10 +32,12 @@
             size="md"
             style="margin-right: -8px; z-index: 10"
           >
-            <img :src="match.sideB.team.members[1].avatarSrc" />
+            <!-- <img :src="match.sideB.team.members[1].avatarSrc" /> -->
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
           <q-avatar class="self-end" size="lg">
-            <img :src="match.sideB.team.members[0].avatarSrc" />
+            <!-- <img :src="match.sideB.team.members[0].avatarSrc" /> -->
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
 
           <div class="q-mx-md self-center teamName">
@@ -75,14 +79,16 @@
           </div>
 
           <q-avatar class="self-end" size="xl">
-            <img :src="match.sideB.team.members[0].avatarSrc" />
+            <!-- <img :src="match.sideB.team.members[0].avatarSrc" /> -->
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
           <q-avatar
             class="self-end"
             size="md"
             style="margin-left: -8px; z-index: 10"
           >
-            <img :src="match.sideA.team.members[1].avatarSrc" />
+            <!-- <img :src="match.sideA.team.members[1].avatarSrc" /> -->
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
         </div>
       </div>

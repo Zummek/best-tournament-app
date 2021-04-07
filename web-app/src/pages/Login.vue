@@ -66,9 +66,10 @@ export default class Login extends Vue {
       await store.dispatch('currentUser/decodeTokenAndStore', this.$cookies.get('jwt'));
 
       //TEST
-      setTimeout(() => {
-        console.log('store.', store.state);
-      }, 1000);
+      // setTimeout(() => {
+      //   console.log('store.', store.state);
+      //   void this.$router.replace({ name: 'TournamentDetails', params: { id: '606ced4b69e73625bc18165c' } })
+      // }, 5);
       } catch (error) {
         console.log('error', error)
       }
