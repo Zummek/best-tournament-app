@@ -56,10 +56,15 @@ const updateMatchScores = catchAsync(
     res.status(204).end();
   },
 );
+const deleteTournament = catchAsync(async (req, res) => {
+  await TournamentRepository.delete(req.params.id);
+  res.status(204).end();
+});
 
 export default {
   create: createTournament,
   getAll: getAllTournaments,
   get: getTournament,
+  deleteTournament,
   updateMatchScores,
 };

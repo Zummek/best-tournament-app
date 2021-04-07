@@ -55,4 +55,9 @@ export default class TournamentRepository {
 
     return tournament?.matches.find((match) => String(match._id) === matchId);
   }
+
+  public static async delete(id: string) {
+    if (await TournamentRepository.getById(id) === null) throw new AppError('No tournament with such id', 400);
+    TournamentModel.findByIdAndDelete(id);
+  }
 }
