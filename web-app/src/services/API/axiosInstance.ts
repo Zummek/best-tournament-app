@@ -6,7 +6,7 @@ import { Notify } from 'quasar';
 
 Vue.use(VueCookies);
 
-const baseURL = process.env.HOST
+const baseURL = process.env.SSL
   ? 'https'
   : 'http' + `://${process.env.HOST}:${process.env.PORT}`;
 
