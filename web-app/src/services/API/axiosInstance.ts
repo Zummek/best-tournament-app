@@ -11,6 +11,7 @@ const baseURL = process.env.SSL
   : 'http' + `://${process.env.HOST}:${process.env.PORT}`;
 
 const axiosInstance = axios.create({
+  withCredentials: true,
   headers: {},
   baseURL,
 });
