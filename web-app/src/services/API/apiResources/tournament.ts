@@ -1,6 +1,5 @@
 import axiosInstance from '../axiosInstance';
 import * as types from './types';
-import Tournament from '../../../../../shared/types/Tournament';
 
 export const createTournament = async (
   payload: types.CreateTournamentPayload
@@ -9,7 +8,7 @@ export const createTournament = async (
 };
 
 export const getTournament = async (tournamentId: string) => {
-  const response = await axiosInstance.get<Tournament>(
+  const response = await axiosInstance.get<types.getTournamentResponse>(
     `v1/tournament/${encodeURIComponent(tournamentId)}`
   );
   return response.data;
