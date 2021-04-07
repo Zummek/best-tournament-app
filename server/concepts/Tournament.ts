@@ -94,46 +94,40 @@ export default class Tournament implements TournamentWihtoutMS {
       return user;
     };
 
-    const enrichtedTeams: ITeam[] = tournament.teams.map((team) => ({
-      ...team,
-      members: team.members.map((member) => ({
+    const enrichedTeams: ITeam[] = tournament.teams.map((team) => {
+      const newTeam = team;
+
+      newTeam.members = team.members.map((member) => ({
         ...member,
         ...getUserById(member.id),
-      })),
-    }));
+      }));
 
-    const enrichtedMatches: IMatch[] = tournament.matches.map((match) => ({
-      ...match,
-      sideA: {
-        ...match.sideA,
-        team: {
-          ...match.sideA.team,
-          members: match.sideA.team.members.map((member) => ({
-            ...member,
-            ...getUserById(member.id),
-          })),
-        },
-      },
-      sideB: {
-        ...match.sideB,
-        team: {
-          ...match.sideB.team,
-          members: match.sideB.team.members.map((member) => ({
-            ...member,
-            ...getUserById(member.id),
-          })),
-        },
-      },
-    }));
+      return newTeam as ITeam;
+    });
 
-    const enrichtedTournament: ITournament = {
+    const enrichedMatches: IMatch[] = tournament.matches.map((match) => {
+      const newMatch = match;
+
+      match.sideA.team.members = match.sideA.team.members.map((member) => ({
+        ...member,
+        ...getUserById(member.id),
+      }));
+      match.sideB.team.members = match.sideB.team.members.map((member) => ({
+        ...member,
+        ...getUserById(member.id),
+      }));
+
+      return newMatch as IMatch;
+    });
+
+    const enrichedTournament: ITournament = {
       ...tournament,
       owner: getUserById(tournament.ownerId),
-      teams: enrichtedTeams,
-      matches: enrichtedMatches,
+      teams: enrichedTeams,
+      matches: enrichedMatches,
     };
 
-    return enrichtedTournament;
+    return enrichedTournament;
   }
 
   public static async enrichTournamentsWithMSUsers(
