@@ -14,6 +14,6 @@ indexRouter.use(unless(authenticationMiddleware,
 
 indexRouter.use('/v1/users/', userRouter);
 indexRouter.use('/v1/organization/', organizationRouter);
-indexRouter.use('/v1/tournament/', tournamentRouter);
+indexRouter.use('/v1/tournaments/', tournamentRouter);
 
 export default indexRouter;
