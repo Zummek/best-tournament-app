@@ -26,6 +26,7 @@
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
     "no-underscore-dangle": "off",
-    "consistent-return": "off"
+    "consistent-return": "off",
+    "max-len": ["error", { "code": 150 }]
   }
 }

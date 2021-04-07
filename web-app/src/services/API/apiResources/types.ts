@@ -1,33 +1,32 @@
+import Tournament from 'app/../shared/types/Tournament';
+import User from 'app/../shared/types/User';
+
 export interface AuthLoginResponse {
   data: Location;
 }
-export interface LogoResponse {
+
+export interface GetLogoResponse {
   data: {
     logo: string;
   };
 }
-interface OrgUser {
-  businessPhones: string[];
-  displayName: string;
-  givenName: string;
-  jobTitle: string | null;
-  mail: string | null;
-  mobilePhone: string | null;
-  officeLocation: string | null;
-  preferredLanguage: string | null;
-  surname: string;
-  userPrincipalName: string;
-  id: string;
-}
-export interface OrgUsersResponse {
+
+export interface GetUsersResponse {
   data: {
-    users: OrgUser[];
+    users: User[];
   };
 }
-export interface OgUserPhotoResponse {
+
+export interface GetUserPhotoResponse {
   data: {
     photo: unknown;
   };
+}
+
+export interface getTournamentResponse {
+  data: {
+    tournament: Tournament
+  }
 }
 
 export interface CreateTournamentPayload {

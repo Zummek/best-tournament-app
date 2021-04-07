@@ -1,20 +1,20 @@
-import { Match as IMatch, MatchSide, Team } from '../../shared/types/Tournament';
+import { MatchSideWithoutMS, MatchWithoutMS, TeamWithoutMS } from '../../shared/types/Tournament';
 
 interface INewMatch {
-  teamA: Team;
-  teamB: Team;
+  teamA: TeamWithoutMS;
+  teamB: TeamWithoutMS;
 }
 
-export default class Match implements IMatch {
+export default class Match implements MatchWithoutMS {
   _id?: string | undefined;
 
-  sideA: MatchSide;
+  sideA: MatchSideWithoutMS;
 
-  sideB: MatchSide;
+  sideB: MatchSideWithoutMS;
 
   isFinished: boolean;
 
-  constructor(data: IMatch) {
+  constructor(data: MatchWithoutMS) {
     this.sideA = data.sideA;
     this.sideB = data.sideB;
     this.isFinished = data.isFinished;
@@ -42,10 +42,10 @@ export default class Match implements IMatch {
 
   public getAssignedTeam(userId: string) {
     for (let i = 0; i < this.sideA.team.members.length; i++) {
-      if (this.sideA.team.members[i].MSId === userId) return 'sideA';
+      if (this.sideA.team.members[i].id === userId) return 'sideA';
     }
     for (let i = 0; i < this.sideB.team.members.length; i++) {
-      if (this.sideB.team.members[i].MSId === userId) return 'sideB';
+      if (this.sideB.team.members[i].id === userId) return 'sideB';
     }
 
     return false;

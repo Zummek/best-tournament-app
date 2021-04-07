@@ -56,7 +56,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   }
 
   req.decoded = {
-    userMSId: decoded.tid,
+    userMSId: decoded.oid,
   };
 
   next();

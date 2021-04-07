@@ -30,19 +30,30 @@ const updateMatchOutcomes = catchAsync(
 const getAllTournaments = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1;
   const pageSize = Number(req.query.pageSize) || 100;
-  const tournaments = await TournamentRepository.getAll(page, pageSize);
+
+  const data = await TournamentRepository.getAll(page, pageSize);
+  const enrichedTournament = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, `Bearer ${req.cookies.jwt}`);
+
   res.status(200).json({
     data: {
-      totalRows: tournaments.totalRows,
-      tournaments: tournaments.data,
+      totalRows: data.totalRows,
+      tournaments: enrichedTournament,
     },
   });
 });
 
 const getTournament = catchAsync(async (req, res) => {
   const tournament = await TournamentRepository.getById(req.params.id);
+
+  if (!tournament) {
+    res.status(404).end();
+    return;
+  }
+
+  const enrichedTournament = await Tournament.enrichWithMSUsers(tournament, `Bearer ${req.cookies.jwt}`);
+
   res.status(200).json({
-    data: { tournament },
+    data: { tournament: enrichedTournament },
   });
 });
 
