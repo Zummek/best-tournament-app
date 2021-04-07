@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import * as msal from '@azure/msal-node';
-import axios from 'axios';
-import QueryString from 'qs';
 import catchAsync from '../utils/catchAsync';
 import logger from '../utils/logger';
 
@@ -17,7 +15,7 @@ const cookieOptions: CookieOptions = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN_HOURS! * 60 * 60 * 1000,
   ),
-  httpOnly: false,
+  httpOnly: true,
   sameSite: 'strict',
 };
 
@@ -78,29 +76,3 @@ export const getToken = catchAsync(
     res.status(200).end();
   },
 );
-
-export const getAzureADApplicationLogo = catchAsync(async (req: Request, res: Response) => {
-  const applicationToken = await axios({
-    method: 'POST',
-    url: `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`,
-    data: QueryString.stringify({
-      client_id: `${process.env.CLIENT_ID}`,
-      scope: 'https://graph.microsoft.com/.default',
-      client_secret: `${process.env.CLIENT_SECRET}`,
-      grant_type: 'client_credentials',
-    }),
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-    },
-  });
-  const applicationData = await axios({
-    method: 'GET',
-    url: `https://graph.microsoft.com/v1.0/applications/${process.env.OBJECT_ID}`,
-    headers: {
-      Authorization: `Bearer ${applicationToken.data.access_token}`,
-    },
-  });
-  res.status(200).json({
-    data: { logo: applicationData.data.info.logoUrl },
-  });
-});

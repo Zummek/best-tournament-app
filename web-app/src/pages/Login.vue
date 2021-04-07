@@ -61,6 +61,8 @@ export default class Login extends Vue {
   private async mounted() {
     if (this.$route.query.code) {
       await api.auth.getCookieToken(this.$route.query.code as string);
+      // const response = await api.organization.getUsers();
+      // await api.organization.getUserPhoto(response[0].id);
     }
   }
   private async created() {

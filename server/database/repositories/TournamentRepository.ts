@@ -38,7 +38,17 @@ export default class TournamentRepository {
     return tournament;
   }
 
-  public static getAll = async () => TournamentModel.find();
+  public static getAll = async (page: number, pageSize: number) => {
+    const skip = (page - 1) * pageSize;
+    const totalRows = await TournamentModel.aggregate([{
+      $group: {
+        _id: null,
+        count: { $sum: 1 },
+      },
+    }]);
+    const data = await TournamentModel.find().skip(skip).limit(pageSize);
+    return { totalRows: totalRows[0].count, data };
+  };
 
   public static getById = async (id: string) => TournamentModel.findById(id);
 
