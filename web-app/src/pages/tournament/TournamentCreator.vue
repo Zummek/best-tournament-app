@@ -221,10 +221,28 @@ export default class TournamentCreator extends Vue {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
   }
+  
+  private async createTournament() {
+    console.log(this.teams);
+    const response = await API.tournament.createTournament({
+      name: this.tournamentName,
+      teams: this.teams,
+    });
+    console.log(response);
+  }
 
-  // private created(){
-    
-  // }
+  private async created() {
+    await this.getUsers();
+  }
+  private async getUsers() {
+    this.users = await API.organization.getUsers();
+
+    this.users.forEach(function(user) {
+      user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
+    });
+    console.log(this.users);
+  }
+  // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
 }
 </script>
 <style></style>
