@@ -24,7 +24,7 @@ export interface GetUserPhotoResponse {
   };
 }
 
-export interface getTournamentResponse {
+export interface GetTournamentResponse {
   data: {
     tournament: Tournament;
   };
@@ -37,7 +37,20 @@ export interface getTournamentsResponse {
 }
 
 export interface CreateTournamentPayload {
-  name: string; // TODO: it is temporary as template
+  name: string;
+  teams: CreateTeam[];
+}
+export interface CreateTeam {
+  name: string;
+  members: {
+    id: string;
+  }[];
+}
+
+export interface CreateTournamentResponse {
+  data: {
+    _id: string;
+  };
 }
 
 export type UpdateTournamentMatchPayload = UpdateMatchOutcomes;

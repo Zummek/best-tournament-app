@@ -62,6 +62,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/TeamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
 import { Team } from '../../../../shared/types/Tournament';
+import API from 'src/services/API';
 
 @Component({
   components: { TeamsList, TeamBuilder },
@@ -91,32 +92,7 @@ export default class TournamentCreator extends Vue {
   ];
 
   private teams: Team[] = [];
-  private users: User[] = [
-    {
-      MSId: '1',
-      alias: 'some string',
-      firstName: 'Jakub',
-      lastName: 'Tabaluga',
-      email: 'string',
-      avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
-    },
-    {
-      MSId: '2',
-      alias: 'some string',
-      firstName: 'Gargamel',
-      lastName: 'Tabaluga',
-      email: 'string',
-      avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
-    },
-    {
-      MSId: '3',
-      alias: 'some string',
-      firstName: 'Jarek',
-      lastName: 'Duda',
-      email: 'string',
-      avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
-    },
-  ];
+  private users: User[] = [];
 
   private submitAddTournament() {
     if (!this.tournamentName) {
@@ -129,18 +105,36 @@ export default class TournamentCreator extends Vue {
     console.log('Creating tournament');
 
     // SENDING THAT CRAP FAAAAR AWAY
-
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.createTournament();
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.$router.push({ name: 'TournamentsList' });
   }
-  // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
   private addTeam(team: Team) {
     this.teams.push(team);
   }
+  
+  private async createTournament() {
+    console.log(this.teams);
+    const response = await API.tournament.createTournament({
+      name: this.tournamentName,
+      teams: this.teams,
+    });
+    console.log(response);
+  }
 
-  // private created(){
-    
-  // }
+  private async created() {
+    await this.getUsers();
+  }
+  private async getUsers() {
+    this.users = await API.organization.getUsers();
+
+    this.users.forEach(function(user) {
+      user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
+    });
+    console.log(this.users);
+  }
+  // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
 }
 </script>
 <style></style>

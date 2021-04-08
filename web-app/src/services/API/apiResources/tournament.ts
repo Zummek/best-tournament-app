@@ -5,11 +5,21 @@ import * as types from './types';
 export const createTournament = async (
   payload: types.CreateTournamentPayload
 ) => {
-  await axiosInstance.post('v1/tournaments', payload);
+  try {
+    const response = await axiosInstance.post<types.CreateTournamentResponse>(
+      'v1/tournaments',
+      payload
+    );
+    console.log(response.data);
+    return response.data.data;
+  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    console.log(error.response);
+  }
 };
 
 export const getTournament = async (tournamentId: string) => {
-  const response = await axiosInstance.get<types.getTournamentResponse>(
+  const response = await axiosInstance.get<types.GetTournamentResponse>(
     `v1/tournaments/${encodeURIComponent(tournamentId)}`
   );
 
