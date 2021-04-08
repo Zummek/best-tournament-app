@@ -47,7 +47,10 @@ export default {
     builderTitle: 'Kreator drużyny',
   },
   tournamentCreatorTitle: 'Kreator turnieju',
-  noTeamsAddedErrorCreator: 'Dodaj drużynę za pomocą kreatora drużyny !',
-  cannotBeBlankError: 'Pole nie może być puste !',
-  chooseAnotherPlayerError: 'Wybierz innego gracza !',
+  noTeamsAddedErrorCreator: 'Dodaj drużynę za pomocą kreatora drużyny!',
+  cannotBeBlankError: 'Pole nie może być puste!',
+  chooseAnotherPlayerError: 'Wybierz innego gracza!',
+  tooShortTeamNameError: 'Nazwa drużyny jest za krótka!',
+  tooLongTeamNameError: 'Nazwa drużyny jest za długa!',
+  addingTournamentError: 'Ups... coś poszło nietak. Turniej nie został poprawnie utworzony',
 };

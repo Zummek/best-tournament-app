@@ -14,4 +14,11 @@ export default {
       noTournaments: 'No tournaments to show',
     },
   },
+  tournamentCreatorTitle: 'Tournament creator',
+  noTeamsAddedErrorCreator: 'Add new teams using Team creator!',
+  cannotBeBlankError: 'Cannot be blank!',
+  chooseAnotherPlayerError: 'Choose different player!',
+  tooShortTeamNameError: 'Team name too short!',
+  tooLongTeamNameError: 'Team name too long!',
+  addingTournamentError: 'Ups... something went wrong. Tournament was not created',
 };

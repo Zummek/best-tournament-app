@@ -43,7 +43,7 @@
         />
       </div>
       <q-page-sticky
-        v-if="teams.length"
+        v-if="teams.length >= 2"
         position="bottom-right"
         :offset="[36, 18]"
       >
@@ -94,33 +94,39 @@ export default class TournamentCreator extends Vue {
   private teams: Team[] = [];
   private users: User[] = [];
 
-  private submitAddTournament() {
-    if (!this.tournamentName) {
-      this.isErrorTournamentName = true;
-      return;
-    } else {
-      this.isErrorTournamentName = false;
+  private async submitAddTournament() {
+    // console.log('Creating tournament');
+    if (this.validation()) {
+      const responseData = await API.tournament.createTournament({
+        name: this.tournamentName,
+        teams: this.teams,
+      });
+      if (responseData?._id) {
+        void this.$router.push({
+          name: 'TournamentDetails',
+          params: { id: responseData._id },
+        });
+      } else {
+        this.$q.notify({
+          message: this.$t('tournament.addingTournamentError').toString(),
+          color: 'warning',
+          textColor: 'black',
+        });
+      }
     }
-
-    console.log('Creating tournament');
-
-    // SENDING THAT CRAP FAAAAR AWAY
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.createTournament();
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.$router.push({ name: 'TournamentsList' });
   }
   private addTeam(team: Team) {
     this.teams.push(team);
   }
-  
-  private async createTournament() {
-    console.log(this.teams);
-    const response = await API.tournament.createTournament({
-      name: this.tournamentName,
-      teams: this.teams,
-    });
-    console.log(response);
+
+  private validation() {
+    if (!this.tournamentName) {
+      this.isErrorTournamentName = true;
+      return false;
+    } else {
+      this.isErrorTournamentName = false;
+      return true;
+    }
   }
 
   private async created() {
@@ -132,7 +138,6 @@ export default class TournamentCreator extends Vue {
     this.users.forEach(function(user) {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
-    console.log(this.users);
   }
   // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
 }

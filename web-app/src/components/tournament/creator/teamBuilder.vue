@@ -11,7 +11,7 @@
           v-model="teamName"
           ref="teamNameRef"
           :label="$t('tournament.team.name')"
-          :error-message="$t('tournament.cannotBeBlankError')"
+          :error-message="teamNameErrorMessage"
           :error="isErrorInputTeamName"
         />
 
@@ -130,6 +130,7 @@ import User from '../../../../../shared/types/User';
 export default class TeamBuilder extends Vue {
   @Prop({ type: Array, required: true }) readonly users!: User[];
 
+  private teamNameErrorMessage = this.$t('tournament.tooShortTeamNameError');
   private isErrorSelectPlayer1 = false;
   private isErrorSelectPlayer2 = false;
   private isErrorInputTeamName = false;
@@ -164,8 +165,12 @@ export default class TeamBuilder extends Vue {
   }
 
   private validation() {
-    if (this.teamName === '') {
+    if (this.teamName.length <= 3) {
       this.isErrorInputTeamName = true;
+      this.teamNameErrorMessage = this.$t('tournament.tooShortTeamNameError');
+    } else if (this.teamName.length > 40) {
+      this.isErrorInputTeamName = true;
+      this.teamNameErrorMessage = this.$t('tournament.tooLongTeamNameError');
     } else {
       this.isErrorInputTeamName = false;
     }
