@@ -3,8 +3,12 @@ import { MutationTree } from 'vuex';
 
 const mutation: MutationTree<User> = {
   setUser(state, user: User) {
-    console.log('HELLO', user); // tu coś nie działa
-    state = user;
+    state.id = user.id;
+    state.alias = user.alias;
+    state.firstName = user.firstName;
+    state.lastName = user.lastName;
+    state.email = user.email;
+    state.avatarSrc = user.avatarSrc;
   },
   logOut(state) {
     state.id = '';

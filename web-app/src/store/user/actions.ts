@@ -22,7 +22,6 @@ const actions: ActionTree<User, StateInterface> = {
       email: decoded.upn,
     };
 
-    // commit('currentUser/setUser', user, { root: true });
     commit('setUser', user);
   },
 };
