@@ -221,14 +221,15 @@ export default class TournamentCreator extends Vue {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
   }
-  
-  private async createTournament() {
-    console.log(this.teams);
-    const response = await API.tournament.createTournament({
-      name: this.tournamentName,
-      teams: this.teams,
-    });
-    console.log(response);
+
+  private validation() {
+    if (!this.tournamentName) {
+      this.isErrorTournamentName = true;
+      return false;
+    } else {
+      this.isErrorTournamentName = false;
+      return true;
+    }
   }
 
   private async created() {
@@ -240,7 +241,6 @@ export default class TournamentCreator extends Vue {
     this.users.forEach(function(user) {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
-    console.log(this.users);
   }
   // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
 }
