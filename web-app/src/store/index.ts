@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import userModule from './user';
 import Vue from 'vue';
 import User from 'app/../shared/types/User';
+import createPersistedState from 'vuex-persistedstate';
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
@@ -16,6 +17,11 @@ export default new Vuex.Store<StateInterface>({
   modules: {
     currentUser: userModule,
   },
+  plugins: [
+    createPersistedState({
+      paths: ['currentUser'],
+    }),
+  ],
 
   // enable strict mode (adds overhead!)
   // for dev mode only
