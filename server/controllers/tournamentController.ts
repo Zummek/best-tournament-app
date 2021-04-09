@@ -16,17 +16,6 @@ const createTournament = catchAsync(
   },
 );
 
-const updateMatchOutcomes = catchAsync(
-  async (req, res) => {
-    const currentUserId = req.decoded.userMSId;
-    const { matchId } = req.params;
-
-    await Tournament.updateMatchOutcomes(req.body, matchId, currentUserId);
-
-    res.status(204).end();
-  },
-);
-
 const getAllTournaments = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1;
   const pageSize = Number(req.query.pageSize) || 100;
@@ -59,7 +48,6 @@ const getTournament = catchAsync(async (req, res) => {
 
 export default {
   create: createTournament,
-  updateMatchOutcomes,
-  getAllTournaments,
-  getTournament,
+  getAll: getAllTournaments,
+  get: getTournament,
 };

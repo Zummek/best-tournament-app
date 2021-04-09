@@ -75,8 +75,8 @@ export default class ScoreInputDialog extends Vue {
   @Prop({ required: true }) readonly title!: string;
   @Prop({ required: true }) readonly message!: string;
   @Prop({ required: true }) readonly note!: string;
-  @Prop({ required: true }) readonly sideAScore!: number;
-  @Prop({ required: true }) readonly sideBScore!: number;
+  @Prop({ required: false, default: '' }) sideAScore!: number;
+  @Prop({ required: false, default: '' }) sideBScore!: number;
   @Prop({ required: true }) readonly sideAName!: string;
   @Prop({ required: true }) readonly sideBName!: string;
   @Ref() readonly dialog!: QDialog;
@@ -94,7 +94,6 @@ export default class ScoreInputDialog extends Vue {
   }
 
   onDialogHide() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     this.$emit('hide');
   }
 
@@ -105,8 +104,7 @@ export default class ScoreInputDialog extends Vue {
     )
       this.showRaportError = true;
     else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      this.$emit('ok');
+      this.$emit('ok', { sideA: this.sideAScore, sideB: this.sideBScore });
       this.hide();
     }
   }

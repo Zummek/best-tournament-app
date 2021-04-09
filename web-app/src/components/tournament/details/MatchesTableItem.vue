@@ -98,10 +98,12 @@
 
 <script lang="ts">
 import { Match } from 'app/../shared/types/Tournament';
-import store from 'src/store';
+import store from '../../../store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 // import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
+import API from 'src/services/API';
+import { UpdateTournamentMatchPayload } from 'src/services/API/apiResources/types';
 
 @Component
 export default class OutcomeTableItem extends Vue {
@@ -193,13 +195,12 @@ export default class OutcomeTableItem extends Vue {
         title: this.$t('tournament.score').toString(),
         message: this.$t('tournament.completeScoreAfterMatch').toString(),
         note: this.$t('tournament.competitorCanReportConflictNote').toString(),
-        sideAScore: '',
-        sideBScore: '',
         sideAName: this.match.sideA.team.name,
         sideBName: this.match.sideB.team.name,
       })
-      .onOk(() => {
-        // TODO: call api, then
+      .onOk(async (data: UpdateTournamentMatchPayload) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        await API.tournament.updateTournamentMatch(this.match._id!, data);
         this.$q.notify({
           message: this.$t('tournament.addedScoreToMatch').toString(),
           color: 'primary',

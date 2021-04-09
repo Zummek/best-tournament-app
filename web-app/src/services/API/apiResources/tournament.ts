@@ -14,3 +14,10 @@ export const getTournament = async (tournamentId: string) => {
 
   return response.data.data.tournament;
 };
+
+export const updateTournamentMatch = async (
+  matchId: string,
+  payload: types.UpdateTournamentMatchPayload
+) => {
+  await axiosInstance.post(`v1/matches/${matchId}`, payload);
+};
