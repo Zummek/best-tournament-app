@@ -1,5 +1,11 @@
+import { Document } from 'mongoose';
 import TournamentModel from '../models/TournamentModel';
+<<<<<<< HEAD
 import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
+=======
+import TeamModel from '../models/TeamModel';
+import Tournament from '../../../shared/types/Tournament';
+>>>>>>> Delete tournament
 import AppError from '../../utils/appError';
 // eslint-disable-next-line import/no-cycle
 import Match from '../../concepts/Match';
@@ -57,7 +63,11 @@ export default class TournamentRepository {
   }
 
   public static async delete(id: string) {
-    if (await TournamentRepository.getById(id) === null) throw new AppError('No tournament with such id', 400);
-    TournamentModel.findByIdAndDelete(id);
+    const tournament : Tournament & Document | null = await TournamentModel.findById(id).exec();
+    if (tournament === null) throw new AppError('No tournament with such id', 400);
+    tournament.teams.forEach((team) => {
+      TeamModel.findByIdAndDelete(team._id);
+    });
+    tournament.deleteOne();
   }
 }
