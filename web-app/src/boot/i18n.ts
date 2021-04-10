@@ -12,9 +12,9 @@ declare module 'vue/types/vue' {
 Vue.use(VueI18n);
 
 export const i18n = new VueI18n({
-  locale: 'en-us',
-  fallbackLocale: 'en-us',
-  messages
+  locale: 'pl',
+  fallbackLocale: 'pl',
+  messages,
 });
 
 export default boot(({ app }) => {

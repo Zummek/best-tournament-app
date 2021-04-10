@@ -42,11 +42,6 @@ module.exports = configure(function(ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
-      env: {
-        BACKEND_API_URL: ctx.dev
-        ? 'http://localhost:3000'
-        : 'https://prod.api.com'
-      },
 
       // transpile: false,
 
@@ -104,7 +99,8 @@ module.exports = configure(function(ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify']
+      plugins: ['Notify', 'Dialog'],
+      cssAddon: true
     },
 
     // animations: 'all', // --- includes all animations

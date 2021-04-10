@@ -51,29 +51,6 @@ export default class Tournament implements TournamentWihtoutMS {
     }));
   }
 
-  public static async updateMatchOutcomes(
-    data: TournamentApi.UpdateMatchOutcomes,
-    matchId: string,
-    currentUserId: string,
-  ) {
-    const rawMatch = await TournamentRepository.getMatchById(matchId);
-
-    if (!rawMatch) throw new AppError('Match does not exits', 404);
-
-    const match = new Match(rawMatch);
-
-    const assignedTeam = match.getAssignedTeam(currentUserId);
-
-    if (!assignedTeam) throw new AppError('You are not authorized to update this match', 403);
-    if (match.sideA.score.a !== -1) throw new AppError('The match result has already been reported', 400);
-
-    match.sideA.score = {
-      a: data.sideA,
-      b: data.sideB,
-    };
-    await TournamentRepository.updateMatch(matchId, match);
-  }
-
   public static async enrichWithMSUsers(
     tournament: Tournament,
     token: string,

@@ -1,6 +1,7 @@
 import TournamentModel from '../models/TournamentModel';
 import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
+// eslint-disable-next-line import/no-cycle
 import Match from '../../concepts/Match';
 
 export default class TournamentRepository {

@@ -1,27 +1,29 @@
-import { store } from 'quasar/wrappers';
 import Vuex from 'vuex';
-import { UserStateInterface } from './user/state';
 import userModule from './user';
+import Vue from 'vue';
+import User from 'app/../shared/types/User';
+import createPersistedState from 'vuex-persistedstate';
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  currentUser: UserStateInterface;
+  currentUser: User;
 }
 
-export default store(function({ Vue }) {
-  Vue.use(Vuex);
+Vue.use(Vuex);
 
-  const Store = new Vuex.Store<StateInterface>({
-    modules: {
-      currentUser: userModule,
-    },
+export default new Vuex.Store<StateInterface>({
+  modules: {
+    currentUser: userModule,
+  },
+  plugins: [
+    createPersistedState({
+      paths: ['currentUser'],
+    }),
+  ],
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: !!process.env.DEBUGGING,
-  });
-
-  return Store;
+  // enable strict mode (adds overhead!)
+  // for dev mode only
+  strict: !!process.env.DEBUGGING,
 });

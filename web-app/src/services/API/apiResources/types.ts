@@ -25,10 +25,15 @@ export interface GetUserPhotoResponse {
 
 export interface getTournamentResponse {
   data: {
-    tournament: Tournament
-  }
+    tournament: Tournament;
+  };
 }
 
 export interface CreateTournamentPayload {
   name: string; // TODO: it is temporary as template
+}
+
+export interface UpdateTournamentMatchPayload {
+  sideA: number;
+  sideB: number;
 }

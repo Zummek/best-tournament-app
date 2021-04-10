@@ -1,15 +1,22 @@
+import User from 'app/../shared/types/User';
 import { MutationTree } from 'vuex';
-import { UserStateInterface } from './state';
 
-const mutation: MutationTree<UserStateInterface> = {
-  setUser(state: UserStateInterface, user: UserStateInterface) {
-    state = user;
+const mutation: MutationTree<User> = {
+  setUser(state, user: User) {
+    state.id = user.id;
+    state.alias = user.alias;
+    state.firstName = user.firstName;
+    state.lastName = user.lastName;
+    state.email = user.email;
+    state.avatarSrc = user.avatarSrc;
   },
-  logOut(state: UserStateInterface) {
-    state._id = '';
-    state.tenantId = '';
-    state.name = '';
-    state.username = '';
+  logOut(state) {
+    state.id = '';
+    state.alias = '';
+    state.firstName = '';
+    state.lastName = '';
+    state.email = '';
+    state.avatarSrc = '';
   },
 };
 

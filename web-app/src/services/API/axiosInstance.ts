@@ -6,9 +6,14 @@ import { Notify } from 'quasar';
 
 Vue.use(VueCookies);
 
+const baseURL = process.env.SSL
+  ? 'https'
+  : 'http' + `://${process.env.HOST}:${process.env.PORT}`;
+
 const axiosInstance = axios.create({
+  withCredentials: true,
   headers: {},
-  baseURL: process.env.BACKEND_API_URL,
+  baseURL,
 });
 
 axiosInstance.interceptors.response.use(
