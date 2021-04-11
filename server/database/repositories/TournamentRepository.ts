@@ -60,7 +60,6 @@ export default class TournamentRepository {
 
   public static async delete(id: string) {
     const tournament : TournamentWihtoutMS & Document | null = await TournamentModel.findById(id).exec();
-    console.log(tournament);
     if (tournament === null) throw new AppError('No tournament with such id', 400);
     tournament.teams.forEach(async (team) => {
       await TeamModel.findByIdAndDelete(team._id).exec();
