@@ -1,23 +1,73 @@
 <template>
   <q-page class="row justify-center ">
-    <div class="col-12 q-px-lg " style="max-width:1500px">
-      <div class="row col-12">
-        <h5>{{ $t('tournament.tournamentCreatorTitle') }}</h5>
-      </div>
+    <div class="col-12 q-pa-lg " style="max-width:1500px">
       <div class="row justify-between">
         <div
           :class="$q.screen.gt.xs ? 'col-6' : 'col-12'"
           :style="$q.screen.gt.xs ? 'max-width: 300px' : ''"
         >
-          <q-input
-            clearable
-            clear-icon="close"
-            outlined
-            v-model="tournamentName"
-            :label="$t('tournament.name')"
-            :error-message="$t('tournament.cannotBeBlankError')"
-            :error="isErrorTournamentName"
-          />
+          <div class="cursor-pointer">
+            <h5 class="q-ma-md">
+              {{ tournamentName }}
+              <q-badge v-if="tournamentName === initTournamentName" rounded  outline color="grey"  align="bottom" transparent label="Edit" />
+            </h5>
+
+            <q-popup-edit
+              v-model="tournamentName"
+              :validate="val => val.length > 3 && val.length < 40"
+            >
+              <template
+                v-slot="{
+                  initialValue,
+                  value,
+                  emitValue,
+                  validate,
+                  set,
+                  cancel,
+                }"
+              >
+                <q-input
+                  autofocus
+                  dense
+                  :value="tournamentName"
+                  :hint="$t('tournament.name')"
+                  :rules="[val => validate(value) || 'Wrong input length']"
+                  @input="emitValue"
+                >
+                  <template v-slot:after>
+                    <q-btn
+                      flat
+                      dense
+                      color="negative"
+                      icon="cancel"
+                      @click.stop="cancel"
+                    />
+                    <q-btn
+                      flat
+                      dense
+                      color="positive"
+                      icon="check_circle"
+                      @click.stop="set"
+                      :disable="
+                        validate(value) === false || initialValue === value
+                      "
+                    />
+                  </template>
+                </q-input>
+              </template>
+            </q-popup-edit>
+          </div>
+        </div>
+        <div class="col-6 gt-xs" style="text-align:right">
+          <q-btn
+            @click="submitAddTournament"
+            :disabled="teams.length < 2"
+            padding="sm"
+            color="primary"
+          >
+            <q-icon class="q-mx-none" name="add" />
+            {{ $t('common.create') }}
+          </q-btn>
         </div>
       </div>
       <div class="gt-xs row justify-between">
@@ -43,11 +93,16 @@
         />
       </div>
       <q-page-sticky
-        v-if="teams.length >= 2"
+        v-if="$q.screen.lt.sm"
         position="bottom-right"
         :offset="[36, 18]"
       >
-        <q-btn @click="submitAddTournament" padding="sm" color="primary">
+        <q-btn
+          @click="submitAddTournament"
+          :disabled="teams.length < 2"
+          padding="sm"
+          color="primary"
+        >
           <q-icon class="q-mx-none" name="add" />
           {{ $t('common.create') }}
         </q-btn>
@@ -68,7 +123,8 @@ import API from 'src/services/API';
   components: { TeamsList, TeamBuilder },
 })
 export default class TournamentCreator extends Vue {
-  private tournamentName = '';
+  private initTournamentName = '[Tournament name]'
+  private tournamentName = this.initTournamentName;
   private isErrorTournamentName = false;
   private pagination = {
     rowsPerPage: 0,
@@ -88,6 +144,12 @@ export default class TournamentCreator extends Vue {
       align: 'right',
       label: 'Participants',
       field: 'participants',
+    },
+    {
+      name: 'action',
+      align: 'right',
+      label: '',
+      field: 'action',
     },
   ];
 

@@ -1,13 +1,15 @@
 <template>
   <q-table
-    grid
+    :grid="$q.screen.lt.sm"
     :title="$t('tournament.team.list')"
     :data="data"
     :columns="columns"
     row-key="name"
     virtual-scroll
+    :class="$q.screen.gt.xs ? 'sticky-virtscroll-table' : ''"
     :pagination="pagination"
     :rows-per-page-options="[0]"
+    :virtual-scroll-sticky-size-start="48"
   >
     <template v-slot:no-data>
       <div class="full-width row flex-center text-accent q-gutter-sm">
@@ -16,6 +18,37 @@
       </div>
     </template>
 
+    <!-- For List Table View -->
+    <template v-slot:body="props">
+      <q-tr :props="props">
+        <q-td v-for="col in props.cols" :key="col.name" :props="props">
+          <template v-if="col.name === 'participants'">
+            <div
+              class="row col text-grey-14 justify-end"
+              style="font-size:0.7em"
+              v-for="player in props.row.members"
+              :key="player.id"
+            >
+              {{ player.firstName }} {{ player.lastName }}
+            </div>
+          </template>
+          <template v-if="col.name === 'action'">
+            <q-btn
+              dense
+              flat
+              text-color="red"
+              icon="close"
+              @click="deleteTeam(props.row)"
+            />
+          </template>
+          <template v-else>
+            {{ col.value }}
+          </template>
+        </q-td>
+      </q-tr>
+    </template>
+
+    <!-- For Grid Table View -->
     <template v-slot:item="props">
       <div class="row q-pa-xs col-12">
         <q-card class="row col-12 items-center">
@@ -37,7 +70,7 @@
             </div>
           </q-card-section>
           <q-card-actions class="col-1 q-mr-lg">
-            <q-btn dense icon="remove" @click="deleteTeam(props.row)" />
+            <q-btn dense flat icon="close" @click="deleteTeam(props.row)" />
           </q-card-actions>
         </q-card>
       </div>
@@ -62,3 +95,21 @@ export default class TeamsList extends Vue {
   }
 }
 </script>
+<style lang="sass">
+.sticky-virtscroll-table
+  /* height or max-height is important */
+  height: 75vh
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    background-color: #fff
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:last-child th
+    top: 48px
+  thead tr:first-child th
+    top: 0
+</style>
