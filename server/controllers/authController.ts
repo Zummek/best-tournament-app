@@ -49,7 +49,7 @@ export const login = catchAsync(
     const authCodeUrlParameters = {
       scopes: ['user.read', 'user.readbasic.all', 'user.readwrite', 'user.read.all',
         'user.readwrite.all', 'directory.read.all', 'directory.accessasuser.all'],
-      redirectUri: 'http://localhost:8080/login',
+      redirectUri: `${process.env.SSL === 'true' ? 'https' : 'http'}://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/login`,
     };
 
     const authSessionURL = await loggingSession.getAuthCodeUrl(
