@@ -1,4 +1,3 @@
-import { Document } from 'mongoose';
 import TournamentModel from '../models/TournamentModel';
 import TeamModel from '../models/TeamModel';
 import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
@@ -49,8 +48,16 @@ export default class TournamentRepository {
     return { totalRows: totalRows[0].count, tournaments };
   };
 
-  public static getById =
-  async (id: string): Promise<TournamentWihtoutMS | null> => TournamentModel.findById(id).lean();
+  private static getDocumentById = async (id: string) => {
+    const tournamentDb = await TournamentModel.findById(id).exec();
+    if (tournamentDb === null) throw new AppError('No tournament with such id', 400);
+    return tournamentDb;
+  };
+
+  public static getById = async (id: string) => {
+    const tournamentDb = await TournamentRepository.getDocumentById(id);
+    return <TournamentWihtoutMS>tournamentDb;
+  };
 
   public static async getMatchById(matchId: string) {
     const tournament = await TournamentModel.findOne({ 'matches._id': matchId }).lean();
@@ -59,11 +66,10 @@ export default class TournamentRepository {
   }
 
   public static async delete(id: string) {
-    const tournament : TournamentWihtoutMS & Document | null = await TournamentModel.findById(id).exec();
-    if (tournament === null) throw new AppError('No tournament with such id', 400);
-    tournament.teams.forEach(async (team) => {
+    const tournamentDb = await TournamentRepository.getDocumentById(id);
+    tournamentDb.teams.forEach(async (team) => {
       await TeamModel.findByIdAndDelete(team._id).exec();
     });
-    tournament.deleteOne();
+    tournamentDb.deleteOne();
   }
 }

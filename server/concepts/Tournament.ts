@@ -166,4 +166,10 @@ export default class Tournament implements TournamentWihtoutMS {
 
     return enrichedTournaments;
   }
+
+  public static async delete(tournamentId: string, currentUserId : string) {
+    const tournament = await TournamentRepository.getById(tournamentId);
+    if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament', 400);
+    await TournamentRepository.delete(tournamentId);
+  }
 }

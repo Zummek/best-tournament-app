@@ -6,7 +6,7 @@ export interface Team {
   name: string;
   members: User[];
 }
-
+// in db
 export interface TeamWithoutMS extends Omit<Team, "members"> {
   members: UserWithoutMS[];
 }
@@ -43,7 +43,7 @@ export default interface Tournament {
   teams: Team[];
   matches: Match[];
 }
-
+// in db
 export interface TournamentWihtoutMS
   extends Omit<Tournament, "owner" | "teams" | "matches"> {
   ownerId: string;
