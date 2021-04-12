@@ -1,11 +1,11 @@
 <template>
   <q-page class="flex flex-center">
-    <q-spinner
-      v-if="!tournament"
-      color="primary"
-      size="3em"
-    />
-    <q-card v-else class="q-px-xs-none q-px-sm-md">
+    <q-spinner v-if="!tournament" color="primary" size="3em" />
+    <q-card
+      v-else
+      class="q-px-xs-none q-px-sm-md"
+      :class="{ fit: $q.screen.xs }"
+    >
       <q-card-section>
         <div class="row">
           <q-input
@@ -51,7 +51,7 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="q-px-xs-sm">
+      <q-card-section class="q-px-xs-md">
         <matches-table-item
           :match="match"
           v-for="match in tournament.matches"
@@ -82,7 +82,7 @@ export default class TournamentDetails extends Vue {
   }
 
   get completedMatchesFormated() {
-    if(this.tournament) {
+    if (this.tournament) {
       const allMatches = this.tournament.matches.length;
       let completedMatches = 0;
 
@@ -97,7 +97,7 @@ export default class TournamentDetails extends Vue {
   }
 
   get participantsAmount() {
-    if(this.tournament) {
+    if (this.tournament) {
       let participantsAmount = 0;
 
       for (let i = 0; i < this.tournament.teams.length; i++) {
@@ -114,7 +114,7 @@ export default class TournamentDetails extends Vue {
   }
 
   private sortMatches() {
-    if(this.tournament) {
+    if (this.tournament) {
       // sort array by isFinished and Date
       this.tournament.matches.sort((a, b) => {
         if (a.isFinished && b.isFinished) {
