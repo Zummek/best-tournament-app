@@ -40,35 +40,40 @@ export default class TournamentRepository {
         count: { $sum: 1 },
       },
     }]);
-    const tournaments: TournamentWihtoutMS[] = await TournamentModel.find().skip(skip).limit(pageSize).lean();
-
+    const tournaments: TournamentWihtoutMS[] = await TournamentModel.find().skip(skip).limit(pageSize).lean()
+      .exec();
     return { totalRows: totalRows[0].count, tournaments };
   };
+
+  public static getById = async (id: string) => {
+    const tournament: TournamentWihtoutMS | null = await TournamentModel.findById(id).lean().exec();
+    return tournament;
+  };
+
+  public static async getMatchById(matchId: string) {
+    const tournamentDoc = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
+    if (!tournamentDoc) return null;
+    const matchWithoutMS = tournamentDoc.matches.find((match) => match._id === matchId);
+    if (matchWithoutMS === undefined) return null; // This will never happen but ensures that function returns null | MatchWithoutMS
+    return matchWithoutMS;
+  }
+
+  public static async delete(id: string) {
+    const tournamentDb = await TournamentRepository.getDocumentById(id);
+    // add transaction
+    const session = await TournamentModel.startSession();
+    await session.withTransaction(async () => {
+      tournamentDb.teams.forEach(async (team) => {
+        await TeamModel.findByIdAndDelete(team._id).exec();
+      });
+      tournamentDb.deleteOne();
+    });
+    session.endSession();
+  }
 
   private static getDocumentById = async (id: string) => {
     const tournamentDb = await TournamentModel.findById(id).exec();
     if (tournamentDb === null) throw new AppError('No tournament with such id', 400);
     return tournamentDb;
   };
-
-  public static getById = async (id: string) => {
-    const tournamentDb = await TournamentRepository.getDocumentById(id);
-    return <TournamentWihtoutMS>tournamentDb;
-  };
-
-  public static async getMatchById(matchId: string) {
-    const tournament = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
-    if (!tournament) throw new AppError('(1)Tournament with match with provided id, does not exist', 400);
-    const MatchSideWithoutMS = tournament.matches.find((match) => match._id === matchId);
-    if (!MatchSideWithoutMS) throw new AppError('(2)Tournament with match with provided id, does not exist', 400);
-    return MatchSideWithoutMS;
-  }
-
-  public static async delete(id: string) {
-    const tournamentDb = await TournamentRepository.getDocumentById(id);
-    tournamentDb.teams.forEach(async (team) => {
-      await TeamModel.findByIdAndDelete(team._id).exec();
-    });
-    tournamentDb.deleteOne();
-  }
 }

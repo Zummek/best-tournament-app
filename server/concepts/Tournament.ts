@@ -144,7 +144,7 @@ export default class Tournament implements TournamentWihtoutMS {
 
     const enrichedTournament: ITournament = {
       ...tournament,
-      owner: getUserById(tournament.ownerId),
+      // owner: getUserById(tournament.ownerId),
       teams: enrichedTeams,
       matches: enrichedMatches,
     };
@@ -159,9 +159,11 @@ export default class Tournament implements TournamentWihtoutMS {
     const allUsers = await MSOrganization.getAllUsers(token);
     const enrichedTournaments = [];
 
-    for (let i = 0; i < tournaments.length; i++) {
+    if (!(tournaments === [])) {
+      for (let i = 0; i < tournaments.length; i++) {
       // eslint-disable-next-line no-await-in-loop
-      enrichedTournaments.push(await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers));
+        enrichedTournaments.push(await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers));
+      }
     }
 
     return enrichedTournaments;
@@ -169,7 +171,9 @@ export default class Tournament implements TournamentWihtoutMS {
 
   public static async delete(tournamentId: string, currentUserId : string) {
     const tournament = await TournamentRepository.getById(tournamentId);
+    if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
     if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament', 403);
+
     await TournamentRepository.delete(tournamentId);
   }
 }
