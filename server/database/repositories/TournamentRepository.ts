@@ -1,9 +1,7 @@
 import TournamentModel from '../models/TournamentModel';
 import TeamModel from '../models/TeamModel';
-import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
+import { TournamentWihtoutMS, MatchWithoutMS } from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
-// eslint-disable-next-line import/no-cycle
-import Match from '../../concepts/Match';
 
 export default class TournamentRepository {
   public static async create(tournament: TournamentWihtoutMS) {
@@ -15,23 +13,22 @@ export default class TournamentRepository {
     tournament.matches.forEach((match) => {
       if (!match.teamA._id || !match.teamB._id) { throw new AppError('All teams in matches entries should have ids', 400); }
     });
-
-    return await TournamentModel.create(tournament);
+    const tournamentWihtoutMS : TournamentWihtoutMS = await TournamentModel.create(tournament);
+    return tournamentWihtoutMS;
   }
 
-  public static async updateMatch(matchId: string, match: Match) {
-    if (!matchId) throw new AppError('Provided match does not contain id', 400);
-
-    const tournament = await TournamentModel.findOneAndUpdate(
-      { 'matches._id': matchId },
+  public static async updateMatch(match: MatchWithoutMS) {
+    if (!match._id) throw new AppError('Provided match does not contain id', 400);
+    const tournament: TournamentWihtoutMS | null = await TournamentModel.findOneAndUpdate(
+      { 'matches._id': match._id },
       {
         $set: {
           'matches.$': match,
         },
       },
       { new: true },
-    ).lean();
-
+    ).exec();
+    if (!tournament) throw new AppError('Attempting to update a non-existent match', 400);
     return tournament;
   }
 
@@ -60,9 +57,11 @@ export default class TournamentRepository {
   };
 
   public static async getMatchById(matchId: string) {
-    const tournament = await TournamentModel.findOne({ 'matches._id': matchId }).lean();
-
-    return tournament?.matches.find((match) => String(match._id) === matchId);
+    const tournament = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
+    if (!tournament) throw new AppError('(1)Tournament with match with provided id, does not exist', 400);
+    const MatchSideWithoutMS = tournament.matches.find((match) => match._id === matchId);
+    if (!MatchSideWithoutMS) throw new AppError('(2)Tournament with match with provided id, does not exist', 400);
+    return MatchSideWithoutMS;
   }
 
   public static async delete(id: string) {
