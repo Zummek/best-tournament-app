@@ -51,6 +51,51 @@ export default class Tournament implements TournamentWihtoutMS {
     }));
   }
 
+  public static async updateMatchScores(
+    data: TournamentApi.UpdateMatchOutcomes,
+    tournamentId: string,
+    matchId: string,
+    currentUserId: string,
+  ) {
+    const tournament = await TournamentRepository.getById(tournamentId);
+    if (!tournament) throw new AppError('Tournament does not exits', 404);
+
+    const rawMatch = tournament?.matches.find((match) => String(match._id) === matchId);
+    if (!rawMatch) throw new AppError('Match does not exits', 404);
+
+    const match = new Match(rawMatch);
+
+    const hasOwnerRights = tournament.ownerId === currentUserId;
+    const assignedTeam = match.getAssignedTeam(currentUserId);
+
+    // TODO: co w przypadku gdy owner też jest graczem?
+    if (hasOwnerRights) {
+      match.score.final = {
+        a: data.sideA,
+        b: data.sideB,
+      };
+      match.isFinished = true;
+    } else if (assignedTeam === 'teamA') {
+      if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
+      match.score.reportedByA = {
+        a: data.sideA,
+        b: data.sideB,
+      };
+      if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
+    } else if (assignedTeam === 'teamB') {
+      if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
+      match.score.reportedByB = {
+        a: data.sideA,
+        b: data.sideB,
+      };
+      if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
+    } else {
+      throw new AppError('You are not authorized to update this match', 403);
+    }
+
+    await TournamentRepository.updateMatch(matchId, match);
+  }
+
   public static async enrichWithMSUsers(
     tournament: Tournament,
     token: string,
@@ -85,11 +130,11 @@ export default class Tournament implements TournamentWihtoutMS {
     const enrichedMatches: IMatch[] = tournament.matches.map((match) => {
       const newMatch = match;
 
-      match.sideA.team.members = match.sideA.team.members.map((member) => ({
+      match.teamA.members = match.teamA.members.map((member) => ({
         ...member,
         ...getUserById(member.id),
       }));
-      match.sideB.team.members = match.sideB.team.members.map((member) => ({
+      match.teamB.members = match.teamB.members.map((member) => ({
         ...member,
         ...getUserById(member.id),
       }));

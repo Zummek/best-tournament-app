@@ -1,23 +1,27 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { TournamentWihtoutMS } from '../../../shared/types/Tournament';
 
-const MatchSideSchema = new Schema({
-  team: { type: Schema.Types.ObjectId, ref: 'Team', required: [true, 'Missing team'] },
-  score: {
-    a: { type: Schema.Types.Number, default: -1 },
-    b: { type: Schema.Types.Number, default: -1 },
-  },
+const ScoreSchema = new Schema({
+  a: { type: Schema.Types.Number, default: -1 },
+  b: { type: Schema.Types.Number, default: -1 },
+});
+
+const MatchScoreSchema = new Schema({
+  reportedByA: ScoreSchema,
+  reportedByB: ScoreSchema,
+  final: ScoreSchema,
 });
 
 const MatchSchema = new Schema({
-  sideA: MatchSideSchema,
-  sideB: MatchSideSchema,
+  teamA: { type: Schema.Types.ObjectId, ref: 'Team', required: [true, 'Missing team'] },
+  teamB: { type: Schema.Types.ObjectId, ref: 'Team', required: [true, 'Missing team'] },
+  score: MatchScoreSchema,
   isFinished: Schema.Types.Boolean,
   // date: Schema.Types.Date,
 });
 
 const TournamentSchema = new Schema({
-  name: { type: Schema.Types.String /* unique: true */ },
+  name: { type: Schema.Types.String },
   ownerId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],
@@ -27,8 +31,8 @@ const TournamentSchema = new Schema({
 // eslint-disable-next-line func-names
 TournamentSchema.pre(/^find/, function (next) {
   this.populate('teams')
-    .populate('matches.sideA.team')
-    .populate('matches.sideB.team');
+    .populate('matches.teamA')
+    .populate('matches.teamB');
   next();
 });
 

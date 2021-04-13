@@ -46,8 +46,20 @@ const getTournament = catchAsync(async (req, res) => {
   });
 });
 
+const updateMatchScores = catchAsync(
+  async (req, res) => {
+    const currentUserId = req.decoded.userMSId;
+    const { tournamentId, matchId } = req.params;
+
+    await Tournament.updateMatchScores(req.body, tournamentId, matchId, currentUserId);
+
+    res.status(204).end();
+  },
+);
+
 export default {
   create: createTournament,
   getAll: getAllTournaments,
   get: getTournament,
+  updateMatchScores,
 };

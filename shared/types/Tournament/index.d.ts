@@ -11,29 +11,29 @@ export interface TeamWithoutMS extends Omit<Team, "members"> {
   members: UserWithoutMS[];
 }
 
-export interface MatchSide {
-  team: Team;
-  score: {
-    a: number;
-    b: number;
-  };
+export interface Score {
+  a: number;
+  b: number;
 }
 
-export interface MatchSideWithoutMS extends Omit<MatchSide, "team"> {
-  team: TeamWithoutMS;
+export interface MatchScore {
+  reportedByA: Score;
+  reportedByB: Score;
+  final: Score
 }
 
 export interface Match {
   _id?: string;
-  sideA: MatchSide;
-  sideB: MatchSide;
+  teamA: Team;
+  teamB: Team;
+  score: MatchScore;
   isFinished: boolean;
   // date: Date;
 }
 
-export interface MatchWithoutMS extends Omit<Match, "sideA" | "sideB"> {
-  sideA: MatchSideWithoutMS;
-  sideB: MatchSideWithoutMS;
+export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
+  teamA: TeamWithoutMS;
+  teamB: TeamWithoutMS;
 }
 
 export default interface Tournament {
