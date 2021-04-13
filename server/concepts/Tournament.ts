@@ -71,22 +71,22 @@ export default class Tournament implements TournamentWihtoutMS {
     // TODO: co w przypadku gdy owner też jest graczem?
     if (hasOwnerRights) {
       match.score.final = {
-        a: data.sideA,
-        b: data.sideB,
+        a: data.teamA,
+        b: data.teamB,
       };
       match.isFinished = true;
     } else if (assignedTeam === 'teamA') {
       if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
       match.score.reportedByA = {
-        a: data.sideA,
-        b: data.sideB,
+        a: data.teamA,
+        b: data.teamB,
       };
       if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
     } else if (assignedTeam === 'teamB') {
       if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
       match.score.reportedByB = {
-        a: data.sideA,
-        b: data.sideB,
+        a: data.teamA,
+        b: data.teamB,
       };
       if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
     } else {

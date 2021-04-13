@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <q-spinner v-if="!tournament" color="primary" size="3em" />
+    <q-spinner v-if="isLoading" color="primary" size="3em" />
     <q-card
       v-else
       class="q-px-xs-none q-px-sm-md"
@@ -56,6 +56,9 @@
           :match="match"
           v-for="match in tournament.matches"
           :key="match._id"
+          :isOwner="isOwner"
+          :tournamentId="tournament._id"
+          @refreshData="getTournamentDetails"
         />
       </q-card-section>
     </q-card>
@@ -68,6 +71,7 @@ import Tournament from '../../../../shared/types/Tournament';
 import MatchesTableItem from '../../components/tournament/details/MatchesTableItem.vue';
 // import moment from 'moment';
 import API from 'src/services/API';
+import store from 'src/store';
 
 @Component({
   components: {
@@ -77,8 +81,13 @@ import API from 'src/services/API';
 export default class TournamentDetails extends Vue {
   private tournament: Tournament | null = null;
 
+  private isOwner = false;
+  private isLoading = true;
+
   private async created() {
     await this.getTournamentDetails();
+
+    this.isOwner = store.state.currentUser.id === this.tournament?.owner.id;
   }
 
   get completedMatchesFormated() {
@@ -109,8 +118,10 @@ export default class TournamentDetails extends Vue {
   }
 
   private async getTournamentDetails() {
+    this.isLoading = true;
     this.tournament = await API.tournament.getTournament(this.$route.params.id);
     this.sortMatches();
+    this.isLoading = false;
   }
 
   private sortMatches() {

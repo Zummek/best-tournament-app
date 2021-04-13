@@ -2,47 +2,58 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin" style="width: 444px">
       <q-form @submit="onOKClick">
-        <q-card-section class="q-dialog__title">{{ title }}</q-card-section>
-        <q-card-section class="q-dialog__message">{{ message }}</q-card-section>
-        <q-card-section v-if="note" class="q-dialog__message">{{
-          note
+        <q-card-section class="q-dialog__title">{{ getTitle }}</q-card-section>
+        <q-card-section class="q-dialog__message">{{
+          getMessage
         }}</q-card-section>
+
+        <q-card-section v-if="score.reportedByA.a !== -1">
+          <score-input-dialog-team-report
+            :reportedByTeamName="teamAName"
+            :teamAName="teamAName"
+            :teamBName="teamBName"
+            :score="score.reportedByA"
+            @acceptScore="acceptScore('teamA')"
+          />
+        </q-card-section>
+        <q-card-section v-if="score.reportedByB.a !== -1">
+          <score-input-dialog-team-report
+            :reportedByTeamName="teamBName"
+            :teamAName="teamAName"
+            :teamBName="teamBName"
+            :score="score.reportedByB"
+            @acceptScore="acceptScore('teamB')"
+          />
+        </q-card-section>
 
         <q-card-section class="row justify-evenly">
           <q-input
             style="width: 45%"
-            v-model="sideAScore"
-            :label="`${$t('tournament.team')} ${sideAName}`"
-            :placeholder="$t('tournament.score')"
+            v-model="valueTeamAScore"
+            :label="`${$t('tournament.team')} ${teamAName}`"
+            :placeholder="$t('tournament.scoreInputDialog.score')"
             stack-label
             type="number"
             autofocus
             :rules="[
               val =>
                 (val && Number.isInteger(+val) && val >= 0) ||
-                $t('tournament.scoreShouldBePositiveInteger'),
+                $t('tournament.scoreInputDialog.scoreShouldBePositiveInteger'),
             ]"
           />
           <q-input
             style="width: 45%"
-            v-model="sideBScore"
-            :label="`${$t('tournament.team')} ${sideBName}`"
-            :placeholder="$t('tournament.score')"
+            v-model="valueTeamBScore"
+            :label="`${$t('tournament.team')} ${teamBName}`"
+            :placeholder="$t('tournament.scoreInputDialog.score')"
             stack-label
             type="number"
             :rules="[
               val =>
                 (val && Number.isInteger(+val) && val >= 0) ||
-                $t('tournament.scoreShouldBePositiveInteger'),
+                $t('tournament.scoreInputDialog.scoreShouldBePositiveInteger'),
             ]"
           />
-          <div
-            v-if="mode === 'raport'"
-            v-show="showRaportError"
-            class="errorMessage"
-          >
-            {{ $t('tournament.scoreReportError') }}
-          </div>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -68,22 +79,42 @@
 <script lang="ts">
 import { Component, Prop, Ref, Vue } from 'vue-property-decorator';
 import { QDialog } from 'quasar';
+import { MatchScore } from 'app/../shared/types/Tournament';
+import ScoreInputDialogTeamReport from './ScoreInputDialogTeamReport.vue';
 
-@Component
+@Component({
+  components: {
+    ScoreInputDialogTeamReport,
+  },
+})
 export default class ScoreInputDialog extends Vue {
   @Prop({ required: true }) readonly mode!: string;
-  @Prop({ required: true }) readonly title!: string;
-  @Prop({ required: true }) readonly message!: string;
-  @Prop({ required: true }) readonly note!: string;
-  @Prop({ required: false, default: '' }) sideAScore!: number;
-  @Prop({ required: false, default: '' }) sideBScore!: number;
-  @Prop({ required: true }) readonly sideAName!: string;
-  @Prop({ required: true }) readonly sideBName!: string;
+  @Prop({ required: true }) score!: MatchScore;
+  @Prop({ required: true }) readonly teamAName!: string;
+  @Prop({ required: true }) readonly teamBName!: string;
+  @Prop({ required: true }) readonly isOwner!: boolean;
   @Ref() readonly dialog!: QDialog;
 
-  private sideAOrginalSorce = this.sideAScore;
-  private sideBOrginalSorce = this.sideBScore;
-  private showRaportError = false;
+  private valueTeamAScore = '';
+  private valueTeamBScore = '';
+
+  get getTitle() {
+    if (this.mode === 'resolving')
+      return this.$t('tournament.scoreInputDialog.resolveConflict');
+    else return this.$t('tournament.scoreInputDialog.score');
+  }
+
+  get getMessage() {
+    if (this.mode === 'resolving')
+      return this.$t(
+        'tournament.scoreInputDialog.solveConflictBetweenTeamsMessage'
+      );
+    if (this.score.reportedByA.a !== -1 || this.score.reportedByB.a !== -1)
+      return this.$t(
+        'tournament.scoreInputDialog.enterScoreOrAcceptAlreadyGiven'
+      );
+    else return this.$t('tournament.scoreInputDialog.completeScoreAfterMatch');
+  }
 
   show() {
     this.dialog.show();
@@ -97,16 +128,27 @@ export default class ScoreInputDialog extends Vue {
     this.$emit('hide');
   }
 
-  onOKClick() {
-    if (
-      this.sideAScore === this.sideAOrginalSorce &&
-      this.sideBScore === this.sideBOrginalSorce
-    )
-      this.showRaportError = true;
-    else {
-      this.$emit('ok', { sideA: this.sideAScore, sideB: this.sideBScore });
-      this.hide();
+  acceptScore(team: string) {
+    if (team === 'teamA') {
+      this.$emit('ok', {
+        teamA: this.score.reportedByA.a,
+        teamB: this.score.reportedByA.b,
+      });
+    } else {
+      this.$emit('ok', {
+        teamA: this.score.reportedByB.a,
+        teamB: this.score.reportedByB.b,
+      });
     }
+    this.hide();
+  }
+
+  onOKClick() {
+    this.$emit('ok', {
+      teamA: this.valueTeamAScore,
+      teamB: this.valueTeamBScore,
+    });
+    this.hide();
   }
 
   onCancelClick() {
@@ -116,9 +158,6 @@ export default class ScoreInputDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.errorMessage {
-  color: $negative;
-}
 .btn-fixed-width {
   width: 80px;
 }
