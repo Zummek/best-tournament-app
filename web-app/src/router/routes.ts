@@ -12,7 +12,7 @@ const routes: RouteConfig[] = [
       },
       {
         name: 'TournamentDetails',
-        path: 'tournament/:id',
+        path: 'tournaments/:id',
         component: () => import('pages/tournament/Details.vue'),
         meta: { public: true }, // TODO: change to false
       },
@@ -35,6 +35,7 @@ const routes: RouteConfig[] = [
   {
     path: '*',
     component: () => import('pages/Error404.vue'),
+    meta: { public: true },
   },
 ];
 

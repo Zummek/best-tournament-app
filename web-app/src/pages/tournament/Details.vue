@@ -119,7 +119,15 @@ export default class TournamentDetails extends Vue {
 
   private async getTournamentDetails() {
     this.isLoading = true;
-    this.tournament = await API.tournament.getTournament(this.$route.params.id);
+    try {
+      this.tournament = await API.tournament.getTournament(
+        this.$route.params.id
+      );
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.response.status === 404) void this.$router.push('/*');
+      return;
+    }
     this.sortMatches();
     this.isLoading = false;
   }
