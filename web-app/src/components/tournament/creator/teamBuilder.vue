@@ -1,7 +1,7 @@
 <template>
   <q-form @submit.prevent="submitAddTeam">
-    <q-card>
-      <q-card-section>
+    <q-card :style="$q.screen.lt.sm ? '' : 'height:75vh'">
+      <q-card-section class="q-ma-none q-pb-none">
         <div class="text-h6">{{ $t('tournament.team.builderTitle') }}</div>
 
         <q-input
@@ -9,36 +9,68 @@
           clear-icon="close"
           outlined
           v-model="teamName"
-          ref="teamNameRef"
           :label="$t('tournament.team.name')"
           :error-message="teamNameErrorMessage"
           :error="isErrorInputTeamName"
         />
+      </q-card-section>
+      <q-card-section class="q-ma-none q-py-none">
+        <q-virtual-scroll :items="players" separator style="max-height: 40vh">
+          <template v-slot="{ item }">
+            <q-item dense>
+              <q-item-section>
+                <q-item-label class="row">
+                  <q-item class="q-pa-none col-11">
+                    <q-item-section avatar>
+                      <q-avatar>
+                        <img :src="item.avatarSrc" />
+                      </q-avatar>
+                    </q-item-section>
+                    <q-item-section>
+                      {{ item.firstName }} {{ item.lastName }}
+                    </q-item-section>
+                  </q-item>
 
+                  <q-btn
+                    class="col-1"
+                    dense
+                    flat
+                    text-color="red"
+                    icon="close"
+                    @click="deletePlayer(item)"
+                  />
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-virtual-scroll>
+      </q-card-section>
+      <q-card-section class="row items-stretch content-center q-pb-none">
         <q-select
+          :class="$q.screen.gt.xs ? 'col-11 q-pb-none' : 'col-12'"
           clearable
           filled
           use-input
-          v-model="player1"
+          v-model="player"
           input-debounce="100"
-          ref="teamMember1"
           :options="filterOptions"
-          :label="$t('tournament.team.captain')"
+          :label="$t('tournament.team.choosePlayer')"
           @filter="selectFilter"
+          @input="addPlayerControl"
           emit-value
           behavior="menu"
-          :error-message="$t('tournament.cannotBeBlankError')"
-          :error="isErrorSelectPlayer1"
+          :error-message="playerSelectErrorMessage"
+          :error="isErrorSelectPlayer"
         >
           <template v-slot:selected-item>
-            <q-item v-if="player1" class="q-pa-none">
+            <q-item v-if="player" class="q-pa-none">
               <q-item-section avatar>
                 <q-avatar>
-                  <img :src="player1.avatarSrc" />
+                  <img :src="player.avatarSrc" />
                 </q-avatar>
               </q-item-section>
               <q-item-section>
-                {{ player1.firstName }} {{ player1.lastName }}
+                {{ player.firstName }} {{ player.lastName }}
               </q-item-section>
             </q-item>
           </template>
@@ -62,60 +94,32 @@
             </q-item>
           </template>
         </q-select>
-        <q-select
-          clearable
-          v-if="player1"
-          filled
-          use-input
-          v-model="player2"
-          ref="teamMember2"
-          :options="filterOptions"
-          :label="$t('tournament.team.secondMemberCreator')"
-          @filter="selectFilter"
-          emit-value
-          behavior="menu"
-          :error-message="$t('tournament.chooseAnotherPlayerError')"
-          :error="isErrorSelectPlayer2"
-        >
-          <template v-slot:selected-item>
-            <q-item v-if="player2" class="q-pa-none">
-              <q-item-section avatar>
-                <q-avatar>
-                  <img :src="player2.avatarSrc" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>
-                {{ player2.firstName }} {{ player2.lastName }}
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t('common.noResults') }}
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-              <q-item-section avatar>
-                <q-avatar>
-                  <img :src="scope.opt.avatarSrc" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>
-                {{ scope.opt.firstName }} {{ scope.opt.lastName }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
         <q-btn
+          v-if="$q.screen.gt.xs"
+          class="col-1"
+          text-color="white"
+          color="green"
+          icon="add"
+          dense
+          @click="addPlayer"
+        />
+      </q-card-section>
+      <q-card-section
+        class="q-pt-none"
+        :style="$q.screen.gt.xs ? 'position:absolute; bottom:0' : ''"
+      >
+        <q-btn
+          :disabled="players.length < 1"
           :label="$t('tournament.team.add')"
           type="submit"
           color="primary"
           class="q-mt-md"
           :style="$q.screen.gt.xs ? '' : 'width:100%'"
-        />
+        >
+          <q-tooltip v-if="players.length < 1" content-class="bg-accent">
+            {{ $t('tournament.atLeastOneMemberError') }}
+          </q-tooltip>
+        </q-btn>
       </q-card-section>
     </q-card>
   </q-form>
@@ -131,40 +135,65 @@ export default class TeamBuilder extends Vue {
   @Prop({ type: Array, required: true }) readonly users!: User[];
 
   private teamNameErrorMessage = this.$t('tournament.tooShortTeamNameError');
-  private isErrorSelectPlayer1 = false;
-  private isErrorSelectPlayer2 = false;
+  private playerSelectErrorMessage = this.$t('tournament.cannotBeBlankError');
+  private isErrorSelectPlayer = false;
   private isErrorInputTeamName = false;
   private teamName = '';
-  private player1: User | null = null;
-  private player2: User | null = null;
+  private player: User | null = null;
   private filterOptions: User[] = [];
+  private players: User[] = [];
+
+  private addPlayerControl() {
+    if (this.$q.screen.lt.md) this.addPlayer();
+  }
+
+  private addPlayer() {
+    if (!this.validateTeamMember()) return;
+    if (this.player) this.players.push(this.player);
+    this.player = null;
+    this.isErrorSelectPlayer = false;
+  }
+
+  private deletePlayer(user: User) {
+    this.players.splice(this.players.indexOf(user), 1);
+  }
 
   private submitAddTeam() {
-    if (!this.validation()) return;
+    if (!this.validationName()) return;
 
     const teamToAdd: Team = {
       name: this.teamName,
-      members: [],
+      members: this.players,
     };
-
-    if (this.player1) {
-      teamToAdd.members.push(this.player1);
-    }
-    if (this.player2) {
-      teamToAdd.members.push(this.player2);
-    }
 
     this.$emit('team-added', teamToAdd);
 
     this.teamName = '';
-    this.player1 = null;
-    this.player2 = null;
+    this.player = null;
+    this.players = [];
     this.isErrorInputTeamName = false;
-    this.isErrorSelectPlayer1 = false;
-    this.isErrorSelectPlayer2 = false;
+    this.isErrorSelectPlayer = false;
   }
 
-  private validation() {
+  private validateTeamMember() {
+    if (this.player) {
+      if (this.players.indexOf(this.player) !== -1) {
+        this.isErrorSelectPlayer = true;
+        this.playerSelectErrorMessage = this.$t(
+          'tournament.alreadyIncludedPlayerError'
+        );
+      } else this.isErrorSelectPlayer = false;
+    } else {
+      this.isErrorSelectPlayer = true;
+      this.playerSelectErrorMessage = this.$t('tournament.cannotBeBlankError');
+    }
+
+    if (this.isErrorSelectPlayer) {
+      return false;
+    } else return true;
+  }
+
+  private validationName() {
     if (this.teamName.length <= 3) {
       this.isErrorInputTeamName = true;
       this.teamNameErrorMessage = this.$t('tournament.tooShortTeamNameError');
@@ -174,22 +203,8 @@ export default class TeamBuilder extends Vue {
     } else {
       this.isErrorInputTeamName = false;
     }
-    if (!this.player1) {
-      this.isErrorSelectPlayer1 = true;
-    } else {
-      this.isErrorSelectPlayer1 = false;
-    }
-    if (this.player2 === this.player1 && this.player2) {
-      this.isErrorSelectPlayer2 = true;
-    } else {
-      this.isErrorSelectPlayer2 = false;
-    }
 
-    if (
-      this.isErrorInputTeamName ||
-      this.isErrorSelectPlayer1 ||
-      this.isErrorSelectPlayer2
-    ) {
+    if (this.isErrorInputTeamName) {
       return false;
     } else return true;
   }

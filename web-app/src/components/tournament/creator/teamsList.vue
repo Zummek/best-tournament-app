@@ -70,7 +70,7 @@
             </div>
           </q-card-section>
           <q-card-actions class="col-1 q-mr-lg">
-            <q-btn dense flat icon="close" @click="deleteTeam(props.row)" />
+            <q-btn dense flat icon="close" text-color="red" @click="deleteTeam(props.row)" />
           </q-card-actions>
         </q-card>
       </div>

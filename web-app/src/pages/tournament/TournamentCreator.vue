@@ -6,10 +6,22 @@
           :class="$q.screen.gt.xs ? 'col-6' : 'col-12'"
           :style="$q.screen.gt.xs ? 'max-width: 300px' : ''"
         >
-          <div class="cursor-pointer">
-            <h5 class="q-ma-md">
+          <div
+            class="cursor-pointer"
+            :style="$q.screen.gt.xs ? '' : 'text-align:center'"
+          >
+            <h5 class="q-my-md">
               {{ tournamentName }}
-              <q-badge v-if="tournamentName === initTournamentName" rounded  outline color="grey"  align="bottom" transparent label="Edit" />
+              <q-badge
+                v-if="tournamentName === initTournamentName"
+                rounded
+                outline
+                color="grey"
+                align="bottom"
+                transparent
+              >
+                <q-icon name="edit" />
+              </q-badge>
             </h5>
 
             <q-popup-edit
@@ -31,7 +43,10 @@
                   dense
                   :value="tournamentName"
                   :hint="$t('tournament.name')"
-                  :rules="[val => validate(value) || 'Wrong input length']"
+                  :rules="[
+                    val =>
+                      validate(value) || $t('tournament.wrongInputLengthError'),
+                  ]"
                   @input="emitValue"
                 >
                   <template v-slot:after>
@@ -65,6 +80,9 @@
             padding="sm"
             color="primary"
           >
+            <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
+              {{ $t('tournament.atLeastTwoTeamsError') }}
+            </q-tooltip>
             <q-icon class="q-mx-none" name="add" />
             {{ $t('common.create') }}
           </q-btn>
@@ -103,6 +121,9 @@
           padding="sm"
           color="primary"
         >
+          <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
+            {{ $t('tournament.atLeastTwoTeamsError') }}
+          </q-tooltip>
           <q-icon class="q-mx-none" name="add" />
           {{ $t('common.create') }}
         </q-btn>
@@ -123,7 +144,7 @@ import API from 'src/services/API';
   components: { TeamsList, TeamBuilder },
 })
 export default class TournamentCreator extends Vue {
-  private initTournamentName = '[Tournament name]'
+  private initTournamentName = '[Tournament name]';
   private tournamentName = this.initTournamentName;
   private isErrorTournamentName = false;
   private pagination = {
