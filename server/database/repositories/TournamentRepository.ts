@@ -1,35 +1,114 @@
-import TournamentModel from '../models/TournamentModel';
+import TournamentModel, { MatchDocument, TournamentDocument } from '../models/TournamentModel';
 import TeamModel from '../models/TeamModel';
-import { TournamentWihtoutMS, MatchWithoutMS } from '../../../shared/types/Tournament';
+import { toTeamDb, toTeam, TeamDb } from './TeamRepository';
+import { TournamentWihtoutMS, MatchWithoutMS, MatchSideWithoutMS } from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
+
+interface MatchSideDB extends Omit<MatchSideWithoutMS, 'team'>{
+  team: TeamDb,
+}
+interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'sideA' | 'sideB'> {
+  _id?:string,
+  sideA: MatchSideDB,
+  sideB: MatchSideDB
+}
+function toMatchDb(match: MatchWithoutMS) : MatchDb {
+  const matchDb : MatchDb = {
+    _id: match.id,
+    sideA: {
+      team: toTeamDb(match.sideA.team),
+      score: {
+        a: match.sideA.score.a,
+        b: match.sideA.score.b,
+      },
+    },
+    sideB: {
+      team: toTeamDb(match.sideB.team),
+      score: {
+        a: match.sideB.score.a,
+        b: match.sideB.score.b,
+      },
+    },
+    isFinished: match.isFinished,
+  };
+  return matchDb;
+}
+function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
+  const match : MatchWithoutMS = {
+    id: matchDoc._id.toString(),
+    sideA: {
+      team: toTeam(matchDoc.sideA.team),
+      score: {
+        a: matchDoc.sideA.score.a,
+        b: matchDoc.sideA.score.b,
+      },
+    },
+    sideB: {
+      team: toTeam(matchDoc.sideB.team),
+      score: {
+        a: matchDoc.sideA.score.a,
+        b: matchDoc.sideA.score.b,
+      },
+    },
+    isFinished: matchDoc.isFinished,
+  };
+  return match;
+}
+interface TournamentDb extends Omit<TournamentWihtoutMS, 'id' | 'teams' | 'matches'> {
+  _id?: string,
+  teams: TeamDb[],
+  matches: MatchDb[]
+}
+function toTournamentDb(t: TournamentWihtoutMS) : TournamentDb {
+  const tDb : TournamentDb = {
+    _id: t.id,
+    name: t.name,
+    ownerId: t.ownerId,
+    teams: t.teams.map((team) => toTeamDb(team)),
+    matches: t.matches.map((match) => toMatchDb(match)),
+  };
+  return tDb;
+}
+function toTournament(tourDoc: TournamentDocument) : TournamentWihtoutMS {
+  const tournament : TournamentWihtoutMS = {
+    id: tourDoc._id.toString(),
+    ownerId: tourDoc.ownerId,
+    name: tourDoc.name,
+    teams: tourDoc.teams.map((teamDoc) => toTeam(teamDoc)),
+    matches: tourDoc.matches.map((matchDoc) => toMatch(matchDoc)),
+  };
+  return tournament;
+}
 
 export default class TournamentRepository {
   public static async create(tournament: TournamentWihtoutMS) {
-    // Check if teams have ids, if teams in matches have ids
-    // and if teams in matches are on teams list
+    if (tournament.id) { throw new AppError('New tournament should not have id', 400); }
     tournament.teams.forEach((team) => {
-      if (!team._id) { throw new AppError('All teams should have ids.', 400); }
+      if (!team.id) { throw new AppError('All teams should have ids.', 400); }
     });
     tournament.matches.forEach((match) => {
-      if (!match.teamA._id || !match.teamB._id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
     });
-    const tournamentWihtoutMS : TournamentWihtoutMS = await TournamentModel.create(tournament);
-    return tournamentWihtoutMS;
+    const tDoc = await TournamentModel.create(toTournamentDb(tournament));
+    const tour = await TournamentRepository.getById(tDoc._id);
+    if (!tour) { throw new AppError('Error while creating tournament', 400); }
+    return tour;
   }
 
   public static async updateMatch(match: MatchWithoutMS) {
-    if (!match._id) throw new AppError('Provided match does not contain id', 400);
-    const tournament: TournamentWihtoutMS | null = await TournamentModel.findOneAndUpdate(
-      { 'matches._id': match._id },
+    if (!match.id) throw new AppError('Provided match does not contain id', 400);
+    const matchDb = toMatchDb(match);
+    const tDoc: TournamentDocument | null = await TournamentModel.findOneAndUpdate(
+      { 'matches._id': matchDb._id },
       {
         $set: {
-          'matches.$': match,
+          'matches.$': matchDb,
         },
       },
       { new: true },
     ).exec();
-    if (!tournament) throw new AppError('Attempting to update a non-existent match', 400);
-    return tournament;
+    if (!tDoc) throw new AppError('Attempting to update a non-existent match', 400);
+    return toTournament(tDoc);
   }
 
   public static getAll = async (page: number, pageSize: number) => {
@@ -40,40 +119,35 @@ export default class TournamentRepository {
         count: { $sum: 1 },
       },
     }]);
-    const tournaments: TournamentWihtoutMS[] = await TournamentModel.find().skip(skip).limit(pageSize).lean()
-      .exec();
+    const tDocs: TournamentDocument[] = await TournamentModel.find().skip(skip).limit(pageSize).exec();
+    const tournaments: TournamentWihtoutMS[] = tDocs.map((tDoc) => toTournament(tDoc));
     return { totalRows: totalRows[0].count, tournaments };
   };
 
   public static getById = async (id: string) => {
-    const tournament: TournamentWihtoutMS | null = await TournamentModel.findById(id).lean().exec();
-    return tournament;
+    const tDoc: TournamentDocument | null = await TournamentModel.findById(id).exec();
+    if (!tDoc) return null;
+    return toTournament(tDoc);
   };
 
   public static async getMatchById(matchId: string) {
-    const tournamentDoc = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
-    if (!tournamentDoc) return null;
-    const matchWithoutMS = tournamentDoc.matches.find((match) => match._id === matchId);
-    if (matchWithoutMS === undefined) return null; // This will never happen but ensures that function returns null | MatchWithoutMS
-    return matchWithoutMS;
+    const tDoc = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
+    if (!tDoc) return null;
+    const matchDoc = tDoc.matches.find((match) => match._id === matchId);
+    if (!matchDoc) return null;
+    return toMatch(matchDoc);
   }
 
   public static async delete(id: string) {
-    const tournamentDb = await TournamentRepository.getDocumentById(id);
-    // add transaction
+    const tDoc = await TournamentModel.findById(id).exec();
+    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 400);
     const session = await TournamentModel.startSession();
     await session.withTransaction(async () => {
-      tournamentDb.teams.forEach(async (team) => {
+      tDoc.teams.forEach(async (team) => {
         await TeamModel.findByIdAndDelete(team._id).exec();
       });
-      tournamentDb.deleteOne();
+      await tDoc.deleteOne();
     });
     session.endSession();
   }
-
-  private static getDocumentById = async (id: string) => {
-    const tournamentDb = await TournamentModel.findById(id).exec();
-    if (tournamentDb === null) throw new AppError('No tournament with such id', 400);
-    return tournamentDb;
-  };
 }

@@ -11,7 +11,7 @@ import Match from './Match';
 import MSOrganization from './MSOrganization';
 
 export default class Tournament implements TournamentWihtoutMS {
-  _id?: string;
+  id?: string;
 
   name: string;
 
@@ -22,7 +22,7 @@ export default class Tournament implements TournamentWihtoutMS {
   matches: MatchWithoutMS[];
 
   constructor(data: Tournament) {
-    this._id = data._id;
+    this.id = data.id;
     this.name = data.name;
     this.ownerId = data.ownerId;
     this.teams = data.teams;
@@ -34,13 +34,20 @@ export default class Tournament implements TournamentWihtoutMS {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 406);
     const matches = Tournament.generateMatches(teams);
-
     return TournamentRepository.create({
       name: data.name,
       ownerId,
       teams,
       matches,
     });
+  }
+
+  public static async delete(tournamentId: string, currentUserId : string) {
+    const tournament = await TournamentRepository.getById(tournamentId);
+    if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
+    if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament', 403);
+
+    await TournamentRepository.delete(tournamentId);
   }
 
   private static generateMatches(teams: TeamWithoutMS[]): Match[] {
@@ -168,13 +175,5 @@ export default class Tournament implements TournamentWihtoutMS {
     }
 
     return enrichedTournaments;
-  }
-
-  public static async delete(tournamentId: string, currentUserId : string) {
-    const tournament = await TournamentRepository.getById(tournamentId);
-    if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
-    if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament', 403);
-
-    await TournamentRepository.delete(tournamentId);
   }
 }

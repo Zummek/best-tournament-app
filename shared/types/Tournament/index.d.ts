@@ -2,7 +2,7 @@ import User, { UserWithoutMS } from "../User";
 export * as TournamentApi from "./apiInterface";
 
 export interface Team {
-  _id?: string;
+  id?: string;
   name: string;
   members: User[];
 }
@@ -23,7 +23,7 @@ export interface MatchScore {
 }
 
 export interface Match {
-  _id?: string;
+  id?: string;
   teamA: Team;
   teamB: Team;
   score: MatchScore;
@@ -37,7 +37,7 @@ export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
 }
 
 export default interface Tournament {
-  _id?: string;
+  id?: string;
   name: string;
   ownerId: string;
   teams: Team[];

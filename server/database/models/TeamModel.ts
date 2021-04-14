@@ -1,8 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { TeamWithoutMS } from '../../../shared/types/Tournament';
+import { UserWithoutMS } from '../../../shared/types/User';
 
 const UserSchema = new Schema({
-  id: Schema.Types.String,
+  _id: {
+    type: Schema.Types.String,
+    required: [true, 'User should have id (from organization)'],
+  },
   alias: {
     type: Schema.Types.String,
     maxLength: 20,
@@ -10,6 +14,7 @@ const UserSchema = new Schema({
 });
 
 const TeamSchema = new Schema({
+  // _id added automatically
   name: {
     type: Schema.Types.String,
     required: [true, 'No team name was specified'],
@@ -21,5 +26,10 @@ const TeamSchema = new Schema({
     required: true,
   },
 });
+export interface UserDocument extends Omit<UserWithoutMS, 'id'>, Document {
+}
 
-export default mongoose.model<TeamWithoutMS & Document>('Team', TeamSchema);
+export interface TeamDocument extends Omit<TeamWithoutMS, 'id' | 'members'>, Document {
+  members: UserDocument[];
+}
+export default mongoose.model<TeamDocument>('Team', TeamSchema);

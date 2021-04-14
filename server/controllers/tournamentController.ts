@@ -10,7 +10,7 @@ const createTournament = catchAsync(
 
     res.status(201).json({
       data: {
-        _id: tournament._id,
+        id: tournament.id,
       },
     });
   },
