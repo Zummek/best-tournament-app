@@ -6,6 +6,7 @@
       :filter="filter"
       :expanded="expanded"
       :pagination="pagination"
+      :pageChanged="loadData"
     />
     <grid-list-desktop
       :data="data"
@@ -13,6 +14,7 @@
       :filter="filter"
       :expanded="expanded"
       :pagination="pagination"
+      :pageChanged="loadData"
     />
   </div>
 </template>
@@ -21,14 +23,20 @@
 import { Vue, Component } from 'vue-property-decorator';
 import GridListMobile from '../../components/tournament/GridListMobile.vue';
 import GridListDesktop from '../../components/tournament/GridListDesktop.vue';
+import { Team } from '../../../../shared/types/Tournament';
+import User from '../../../../shared/types/User';
+import api from './../../services/API/index';
+import { TournamentListData } from './types';
 @Component({
   components: { GridListMobile, GridListDesktop },
 })
 export default class TournamentsList extends Vue {
+  private trueData: TournamentListData[] | null = null;
   private filter = '';
   private expanded = '';
   private pagination = {
-    rowsPerPage: 0,
+    page: 1,
+    rowsPerPage: 1,
   };
   private columns = [
     {
@@ -91,5 +99,25 @@ export default class TournamentsList extends Vue {
       participants: 'No one',
     },
   ];
+
+  private async loadData(page: number) {
+    // const mapUsers = (teams: Team[]) => {
+    //   return teams.map((team: Team) => {
+    //     return team.members.map((user: User) => ({
+    //       firstName: user.firstName,
+    //       lastName: user.lastName,
+    //     }));
+    //   });
+    // };
+    const tournaments = await api.tournament.getAllTournaments(page, 20);
+    this.trueData = tournaments.map((el, index) => {
+      return {
+        id: el.id as string,
+        name: el.name,
+        status: el.isFinished === true ? 'Finished' : 'In progress',
+        participants: el.teams[index].members,
+      };
+    });
+  }
 }
 </script>

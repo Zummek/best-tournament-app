@@ -29,6 +29,11 @@ export interface getTournamentResponse {
     tournament: Tournament;
   };
 }
+export interface getTournamentsResponse {
+  data: {
+    tournaments: Tournament[];
+  };
+}
 
 export interface CreateTournamentPayload {
   name: string; // TODO: it is temporary as template

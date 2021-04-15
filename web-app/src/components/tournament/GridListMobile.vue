@@ -8,7 +8,7 @@
       row-key="name"
       :filter="filter"
       virtual-scroll
-      :pagination="pagination"
+      :pagination.sync="pagination"
       :rows-per-page-options="[0]"
       :expanded.sync="expanded"
     >

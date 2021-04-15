@@ -8,7 +8,7 @@
         row-key="name"
         :filter="filter"
         virtual-scroll
-        :pagination="pagination"
+        :pagination.sync="pagination"
         :rows-per-page-options="[0]"
         :expanded.sync="expanded"
       >
@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { IPagination, IData, IColumns } from '../models';
 
 @Component
@@ -99,6 +99,9 @@ export default class GridListDesktop extends Vue {
   @Prop({ type: Array, required: true }) readonly columns!: IColumns;
   @Prop({ type: Array, default: () => [] }) readonly data!: IData[];
   @Prop({ type: Object, required: true }) readonly pagination!: IPagination;
+
+  // @Watch('pagination.page')
+  // private load;
 }
 </script>
 <style lang="scss" scoped>
