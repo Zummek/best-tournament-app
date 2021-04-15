@@ -232,29 +232,5 @@ export default class TeamBuilder extends Vue {
       this.filterOptions = this.users;
     });
   }
-
-  private filterOptions: User[] = [];
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private selectFilter(val: string, update: any) {
-    if (val) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      update(() => {
-        const needle = val.toLowerCase();
-        this.filterOptions = this.users.filter(
-          user =>
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-            (user.firstName + ' ' + user.lastName)
-              .toLowerCase()
-              .indexOf(needle) > -1
-        );
-      });
-      return;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    update(() => {
-      this.filterOptions = this.users;
-    });
-  }
 }
 </script>

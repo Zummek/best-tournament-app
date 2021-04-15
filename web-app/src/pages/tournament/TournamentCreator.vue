@@ -221,28 +221,6 @@ export default class TournamentCreator extends Vue {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
   }
-
-  private validation() {
-    if (!this.tournamentName) {
-      this.isErrorTournamentName = true;
-      return false;
-    } else {
-      this.isErrorTournamentName = false;
-      return true;
-    }
-  }
-
-  private async created() {
-    await this.getUsers();
-  }
-  private async getUsers() {
-    this.users = await API.organization.getUsers();
-
-    this.users.forEach(function(user) {
-      user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
-    });
-  }
-  // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
 }
 </script>
 <style></style>
