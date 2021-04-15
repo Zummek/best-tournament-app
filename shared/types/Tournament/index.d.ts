@@ -38,14 +38,15 @@ export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
 
 export default interface Tournament {
   id?: string;
-  name: string;
-  ownerId: string;
+  name: string; 
+  owner: User;
   teams: Team[];
   matches: Match[];
 }
 // in db
 export interface TournamentWihtoutMS
-  extends Omit<Tournament, "teams" | "matches"> {
+  extends Omit<Tournament, "owner" | "teams" | "matches"> {
+  ownerId: string;
   teams: TeamWithoutMS[];
   matches: MatchWithoutMS[];
 }
