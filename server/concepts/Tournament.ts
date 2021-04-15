@@ -78,6 +78,8 @@ export default class Tournament implements TournamentWihtoutMS {
     const rawMatch = tournament?.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
+    if (rawMatch.isFinished) throw new AppError('Match is Finished', 404);
+
     const match = new Match(rawMatch);
 
     const hasOwnerRights = tournament.ownerId === currentUserId;
