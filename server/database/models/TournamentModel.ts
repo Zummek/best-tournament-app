@@ -39,17 +39,17 @@ TournamentSchema.pre(/^find/, function (next) {
   next();
 });
 
-interface MatchSideDocument extends Omit<MatchSideWithoutMS, 'team'>, Document {
-  team: TeamDocument;
-}
-export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'sideA'| 'sideB'>, Document {
-  sideA: MatchSideDocument
-  sideB: MatchSideDocument
-
+// interface MatchScoreDocument extends Omit<MatchScore, 'teamA' | 'teamB'>, Document {
+//   teamA: TeamDocument,
+//   teamB: TeamDocument,
+// }
+export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'>, Document {
+  teamA: TeamDocument,
+  teamB: TeamDocument,
 }
 export interface TournamentDocument extends Omit<TournamentWihtoutMS, 'id' | 'teams' | 'matches' >, Document {
   teams: TeamDocument[],
   matches: MatchDocument[]
 }
-export const MatchModel = mongoose.model<MatchDocument>('Match', MatchSchema);
+// export const MatchModel = mongoose.model<MatchDocument>('Match', MatchSchema);
 export default mongoose.model<TournamentDocument>('Tournament', TournamentSchema);

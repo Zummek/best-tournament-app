@@ -10,7 +10,7 @@ interface INewMatch {
 }
 
 export default class Match implements MatchWithoutMS {
-  _id?: string | undefined;
+  id?: string | undefined;
 
   teamA: TeamWithoutMS;
 

@@ -70,10 +70,12 @@ export default class Tournament implements TournamentWihtoutMS {
     matchId: string,
     currentUserId: string,
   ) {
+    if (data.teamA < 0 || data.teamB < 0) throw new AppError('Score can\'t be negative', 404);
+
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament does not exits', 404);
 
-    const rawMatch = tournament?.matches.find((match) => String(match._id) === matchId);
+    const rawMatch = tournament?.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
     const match = new Match(rawMatch);
@@ -94,19 +96,24 @@ export default class Tournament implements TournamentWihtoutMS {
         a: data.teamA,
         b: data.teamB,
       };
-      if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
     } else if (assignedTeam === 'teamB') {
       if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
       match.score.reportedByB = {
         a: data.teamA,
         b: data.teamB,
       };
-      if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
     } else {
       throw new AppError('You are not authorized to update this match', 403);
     }
-
-    await TournamentRepository.updateMatch(matchId, match);
+    // If both reported scores are the same, && both teams reported scores
+    if (match.score.reportedByA === match.score.reportedByB && match.score.reportedByA.a !== -1) {
+      match.score.final = {
+        a: match.score.reportedByA.a,
+        b: match.score.reportedByA.b,
+      };
+      match.isFinished = true;
+    }
+    await TournamentRepository.updateMatch(match);
   }
 
   public static async enrichWithMSUsers(

@@ -3,8 +3,6 @@ import { UserWithoutMS } from '../../../shared/types/User';
 import AppError from '../../utils/appError';
 import TeamModel, { TeamDocument, UserDocument } from '../models/TeamModel';
 
-// change _id to id and delete __v
-// This can't be done on mongoose layer
 interface UserDb extends Omit<UserWithoutMS, 'id'> {
   _id: string,
 }

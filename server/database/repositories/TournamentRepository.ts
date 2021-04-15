@@ -1,34 +1,20 @@
 import TournamentModel, { MatchDocument, TournamentDocument } from '../models/TournamentModel';
 import TeamModel from '../models/TeamModel';
 import { toTeamDb, toTeam, TeamDb } from './TeamRepository';
-import { TournamentWihtoutMS, MatchWithoutMS, MatchSideWithoutMS } from '../../../shared/types/Tournament';
+import { TournamentWihtoutMS, MatchWithoutMS } from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
 
-interface MatchSideDB extends Omit<MatchSideWithoutMS, 'team'>{
-  team: TeamDb,
-}
-interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'sideA' | 'sideB'> {
+interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'> {
   _id?:string,
-  sideA: MatchSideDB,
-  sideB: MatchSideDB
+  teamA: TeamDb,
+  teamB: TeamDb,
 }
 function toMatchDb(match: MatchWithoutMS) : MatchDb {
   const matchDb : MatchDb = {
     _id: match.id,
-    sideA: {
-      team: toTeamDb(match.sideA.team),
-      score: {
-        a: match.sideA.score.a,
-        b: match.sideA.score.b,
-      },
-    },
-    sideB: {
-      team: toTeamDb(match.sideB.team),
-      score: {
-        a: match.sideB.score.a,
-        b: match.sideB.score.b,
-      },
-    },
+    teamA: toTeamDb(match.teamA),
+    teamB: toTeamDb(match.teamB),
+    score: match.score,
     isFinished: match.isFinished,
   };
   return matchDb;
@@ -36,20 +22,9 @@ function toMatchDb(match: MatchWithoutMS) : MatchDb {
 function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
   const match : MatchWithoutMS = {
     id: matchDoc._id.toString(),
-    sideA: {
-      team: toTeam(matchDoc.sideA.team),
-      score: {
-        a: matchDoc.sideA.score.a,
-        b: matchDoc.sideA.score.b,
-      },
-    },
-    sideB: {
-      team: toTeam(matchDoc.sideB.team),
-      score: {
-        a: matchDoc.sideA.score.a,
-        b: matchDoc.sideA.score.b,
-      },
-    },
+    teamA: toTeam(matchDoc.teamA),
+    teamB: toTeam(matchDoc.teamB),
+    score: matchDoc.score,
     isFinished: matchDoc.isFinished,
   };
   return match;
