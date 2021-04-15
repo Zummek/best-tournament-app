@@ -175,7 +175,7 @@ export default class Tournament implements TournamentWithoutMS {
   }
 
   public static async enrichTournamentsWithMSUsers(
-    tournaments: Tournament[],
+    tournaments: TournamentWithoutMS[],
     token: string,
   ): Promise<ITournament[]> {
     const allUsers = await MSOrganization.getAllUsers(token);
