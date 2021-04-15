@@ -157,7 +157,7 @@ export default class Tournament implements TournamentWihtoutMS {
 
     const enrichedTournament: ITournament = {
       ...tournament,
-      // owner: getUserById(tournament.ownerId),
+      owner: getUserById(tournament.ownerId),
       teams: enrichedTeams,
       matches: enrichedMatches,
     };
