@@ -32,7 +32,7 @@ export default class Tournament implements TournamentWihtoutMS {
 
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
-    if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 406);
+    if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
     const matches = Tournament.generateMatches(teams);
     return TournamentRepository.create({
       name: data.name,
