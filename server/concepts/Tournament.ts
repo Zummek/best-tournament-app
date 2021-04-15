@@ -78,8 +78,6 @@ export default class Tournament implements TournamentWithoutMS {
     const rawMatch = tournament?.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
-    if (rawMatch.isFinished) throw new AppError('Match is Finished', 404);
-
     const match = new Match(rawMatch);
 
     const hasOwnerRights = tournament.ownerId === currentUserId;
@@ -92,29 +90,31 @@ export default class Tournament implements TournamentWithoutMS {
         b: data.teamB,
       };
       match.isFinished = true;
-    } else if (assignedTeam === 'teamA') {
-      if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
-      match.score.reportedByA = {
-        a: data.teamA,
-        b: data.teamB,
-      };
-    } else if (assignedTeam === 'teamB') {
-      if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
-      match.score.reportedByB = {
-        a: data.teamA,
-        b: data.teamB,
-      };
+    } else if (assignedTeam) {
+      if (assignedTeam === 'teamA') {
+        if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
+        match.score.reportedByA = {
+          a: data.teamA,
+          b: data.teamB,
+        };
+      } else if (assignedTeam === 'teamB') {
+        if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
+        match.score.reportedByB = {
+          a: data.teamA,
+          b: data.teamB,
+        };
+      }
+      if (match.score.reportedByA === match.score.reportedByB) {
+        match.score.final = {
+          a: match.score.reportedByA.a,
+          b: match.score.reportedByA.b,
+        };
+        match.isFinished = true;
+      }
     } else {
       throw new AppError('You are not authorized to update this match', 403);
     }
-    // If both reported scores are the same, && both teams reported scores
-    if (match.score.reportedByA === match.score.reportedByB && match.score.reportedByA.a !== -1) {
-      match.score.final = {
-        a: match.score.reportedByA.a,
-        b: match.score.reportedByA.b,
-      };
-      match.isFinished = true;
-    }
+
     await TournamentRepository.updateMatch(match);
   }
 
