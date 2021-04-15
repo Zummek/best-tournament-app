@@ -70,7 +70,7 @@ export default class Tournament implements TournamentWithoutMS {
     matchId: string,
     currentUserId: string,
   ) {
-    if (data.teamA < 0 || data.teamB < 0) throw new AppError('Score can\'t be negative', 404);
+    if (data.teamA < 0 || data.teamB < 0) throw new AppError('Score can not be negative', 404);
 
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament does not exits', 404);
