@@ -178,7 +178,6 @@ export default class TournamentCreator extends Vue {
   private users: User[] = [];
 
   private async submitAddTournament() {
-    // console.log('Creating tournament');
     if (this.validation()) {
       const responseData = await API.tournament.createTournament({
         name: this.tournamentName,
@@ -222,7 +221,6 @@ export default class TournamentCreator extends Vue {
       user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
     });
   }
-  // avatarSrc: 'https://cdn.quasar.dev/img/boy-avatar.png',
 }
 </script>
 <style></style>

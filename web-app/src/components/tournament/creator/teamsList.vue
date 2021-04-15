@@ -14,7 +14,7 @@
     <template v-slot:no-data>
       <div class="full-width row flex-center text-accent q-gutter-sm">
         <q-icon size="2em" name="sentiment_dissatisfied" /><br />
-        {{ $t('tournament.noTeamsAddedErrorCreator') }}
+        {{ $t('tournament.team.noTeamsAddedErrorCreator') }}
       </div>
     </template>
 
@@ -97,7 +97,6 @@ export default class TeamsList extends Vue {
 </script>
 <style lang="sass">
 .sticky-virtscroll-table
-  /* height or max-height is important */
   height: 75vh
 
   .q-table__top,

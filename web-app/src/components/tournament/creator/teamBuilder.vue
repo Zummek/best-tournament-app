@@ -14,12 +14,15 @@
           :error="isErrorInputTeamName"
         />
       </q-card-section>
-      <q-card-section class="q-ma-none q-py-none">
-        <q-virtual-scroll :items="players" separator style="max-height: 40vh">
+      <q-card-section
+        class="q-ma-none q-py-none"
+        style="max-height: 50%; overflow: auto"
+      >
+        <q-virtual-scroll :items="players" separator>
           <template v-slot="{ item }">
             <q-item dense>
               <q-item-section>
-                <q-item-label class="row">
+                <div class="row">
                   <q-item class="q-pa-none col-11">
                     <q-item-section avatar>
                       <q-avatar>
@@ -39,19 +42,19 @@
                     icon="close"
                     @click="deletePlayer(item)"
                   />
-                </q-item-label>
+                </div>
               </q-item-section>
             </q-item>
           </template>
         </q-virtual-scroll>
       </q-card-section>
-      <q-card-section class="row items-stretch content-center q-pb-none">
+      <q-card-section class="row  content-center">
         <q-select
-          :class="$q.screen.gt.xs ? 'col-11 q-pb-none' : 'col-12'"
+          class="col-xs-12 col-sm-11 q-pb-none"
           clearable
           filled
           use-input
-          v-model="player"
+          v-model="tempPlayer"
           input-debounce="100"
           :options="filterOptions"
           :label="$t('tournament.team.choosePlayer')"
@@ -63,14 +66,14 @@
           :error="isErrorSelectPlayer"
         >
           <template v-slot:selected-item>
-            <q-item v-if="player" class="q-pa-none">
+            <q-item v-if="tempPlayer" class="q-pa-none">
               <q-item-section avatar>
                 <q-avatar>
-                  <img :src="player.avatarSrc" />
+                  <img :src="tempPlayer.avatarSrc" />
                 </q-avatar>
               </q-item-section>
               <q-item-section>
-                {{ player.firstName }} {{ player.lastName }}
+                {{ tempPlayer.firstName }} {{ tempPlayer.lastName }}
               </q-item-section>
             </q-item>
           </template>
@@ -109,15 +112,15 @@
         :style="$q.screen.gt.xs ? 'position:absolute; bottom:0' : ''"
       >
         <q-btn
-          :disabled="players.length < 1"
+          :disabled="!players.length"
           :label="$t('tournament.team.add')"
           type="submit"
           color="primary"
           class="q-mt-md"
           :style="$q.screen.gt.xs ? '' : 'width:100%'"
         >
-          <q-tooltip v-if="players.length < 1" content-class="bg-accent">
-            {{ $t('tournament.atLeastOneMemberError') }}
+          <q-tooltip v-if="!players.length" content-class="bg-accent">
+            {{ $t('tournament.team.atLeastOneMemberError') }}
           </q-tooltip>
         </q-btn>
       </q-card-section>
@@ -139,18 +142,18 @@ export default class TeamBuilder extends Vue {
   private isErrorSelectPlayer = false;
   private isErrorInputTeamName = false;
   private teamName = '';
-  private player: User | null = null;
+  private tempPlayer: User | null = null;
   private filterOptions: User[] = [];
   private players: User[] = [];
 
   private addPlayerControl() {
-    if (this.$q.screen.lt.md) this.addPlayer();
+    if (this.$q.screen.lt.sm) this.addPlayer();
   }
 
   private addPlayer() {
     if (!this.validateTeamMember()) return;
-    if (this.player) this.players.push(this.player);
-    this.player = null;
+    if (this.tempPlayer) this.players.push(this.tempPlayer);
+    this.tempPlayer = null;
     this.isErrorSelectPlayer = false;
   }
 
@@ -169,15 +172,15 @@ export default class TeamBuilder extends Vue {
     this.$emit('team-added', teamToAdd);
 
     this.teamName = '';
-    this.player = null;
+    this.tempPlayer = null;
     this.players = [];
     this.isErrorInputTeamName = false;
     this.isErrorSelectPlayer = false;
   }
 
   private validateTeamMember() {
-    if (this.player) {
-      if (this.players.indexOf(this.player) !== -1) {
+    if (this.tempPlayer) {
+      if (this.players.indexOf(this.tempPlayer) !== -1) {
         this.isErrorSelectPlayer = true;
         this.playerSelectErrorMessage = this.$t(
           'tournament.alreadyIncludedPlayerError'
@@ -217,7 +220,6 @@ export default class TeamBuilder extends Vue {
         const needle = val.toLowerCase();
         this.filterOptions = this.users.filter(
           user =>
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             (user.firstName + ' ' + user.lastName)
               .toLowerCase()
               .indexOf(needle) > -1

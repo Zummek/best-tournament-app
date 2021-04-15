@@ -1,7 +1,7 @@
 import Tournament from 'app/../shared/types/Tournament';
 import { UpdateMatchOutcomes } from 'app/../shared/types/Tournament/apiInterface';
 import User from 'app/../shared/types/User';
-import {Create as tournamentCreate} from 'app/../shared/types/Tournament/apiInterface';
+import { Create as tournamentCreate } from 'app/../shared/types/Tournament/apiInterface';
 
 export interface AuthLoginResponse {
   data: Location;
@@ -37,8 +37,7 @@ export interface getTournamentsResponse {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CreateTournamentPayload extends tournamentCreate {}
+export type CreateTournamentPayload = tournamentCreate;
 
 export interface CreateTournamentResponse {
   data: {
