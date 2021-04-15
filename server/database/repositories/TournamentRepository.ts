@@ -41,6 +41,7 @@ function toTournamentDb(t: TournamentWithoutMS) : TournamentDb {
     ownerId: t.ownerId,
     teams: t.teams.map((team) => toTeamDb(team)),
     matches: t.matches.map((match) => toMatchDb(match)),
+    isFinished: t.isFinished,
   };
 }
 function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
@@ -50,6 +51,7 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
     name: tDoc.name,
     teams: tDoc.teams.map((teamDoc) => toTeam(teamDoc)),
     matches: tDoc.matches.map((matchDoc) => toMatch(matchDoc)),
+    isFinished: tDoc.isFinished,
   };
 }
 

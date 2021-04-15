@@ -28,6 +28,7 @@ const TournamentSchema = new Schema({
   ownerId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],
+  isFinished: { type: Boolean },
 });
 
 // query middlewares

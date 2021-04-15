@@ -42,6 +42,7 @@ export default interface Tournament {
   owner: User;
   teams: Team[];
   matches: Match[];
+  isFinished: boolean;
 }
 // in db
 export interface TournamentWithoutMS
