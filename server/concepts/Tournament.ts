@@ -45,7 +45,12 @@ export default class Tournament implements TournamentWihtoutMS {
   public static async delete(tournamentId: string, currentUserId : string) {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
-    if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament. Only owner of specified tournament can delete it', 403);
+    if (currentUserId !== tournament.ownerId) {
+      throw new AppError(
+        'You are not an owner of given tournament. Only owner of specified tournament can delete it',
+        403,
+      );
+    }
 
     await TournamentRepository.delete(tournamentId);
   }
@@ -167,11 +172,9 @@ export default class Tournament implements TournamentWihtoutMS {
     const allUsers = await MSOrganization.getAllUsers(token);
     const enrichedTournaments = [];
 
-    if (!(tournaments === [])) {
-      for (let i = 0; i < tournaments.length; i++) {
+    for (let i = 0; i < tournaments.length; i++) {
       // eslint-disable-next-line no-await-in-loop
-        enrichedTournaments.push(await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers));
-      }
+      enrichedTournaments.push(await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers));
     }
 
     return enrichedTournaments;

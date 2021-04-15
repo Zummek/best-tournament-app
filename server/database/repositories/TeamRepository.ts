@@ -9,16 +9,14 @@ interface UserDb extends Omit<UserWithoutMS, 'id'> {
   _id: string,
 }
 function toUserDb(usr: UserWithoutMS): UserDb {
-  const usrDb : UserDb = { _id: usr.id, ...usr };
-  return usrDb;
+  return { _id: usr.id, ...usr };
 }
 function toUser(usrDb: UserDocument): UserWithoutMS {
   // const usr : UserWithoutMS = {id: usrDb._id, ...usrDb}; <- tak nie mozna bo zworcimy wszystkie rzeczy z mongo
-  const usr : UserWithoutMS = {
+  return {
     id: usrDb._id.toString(),
     // .. more user fields
   };
-  return usr;
 }
 
 export interface TeamDb extends Omit<TeamWithoutMS, 'id' | 'members'> {
@@ -57,9 +55,9 @@ export default class TeamRepository {
     const teamsDb = teams.map((team) => toTeamDb(team));
 
     teamsDb.forEach(async (team) => {
-      if (team._id !== undefined) throw new AppError('New team should not contain id', 400);
+      if (!team._id) throw new AppError('New team should not contain id', 400);
     });
-    const teamDocs : TeamDocument[] = await TeamModel.insertMany(teamsDb);
+    const teamDocs = await TeamModel.insertMany(teamsDb);
     teams = teamDocs.map((team) => toTeam(team));
     return teams;
   };

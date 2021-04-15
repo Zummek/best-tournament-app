@@ -47,7 +47,6 @@ export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'sideA'| 'sid
   sideB: MatchSideDocument
 
 }
-
 export interface TournamentDocument extends Omit<TournamentWihtoutMS, 'id' | 'teams' | 'matches' >, Document {
   teams: TeamDocument[],
   matches: MatchDocument[]

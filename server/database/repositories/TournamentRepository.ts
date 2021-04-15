@@ -98,7 +98,7 @@ export default class TournamentRepository {
   public static async updateMatch(match: MatchWithoutMS) {
     if (!match.id) throw new AppError('Provided match does not contain id', 400);
     const matchDb = toMatchDb(match);
-    const tDoc: TournamentDocument | null = await TournamentModel.findOneAndUpdate(
+    const tDoc = await TournamentModel.findOneAndUpdate(
       { 'matches._id': matchDb._id },
       {
         $set: {
@@ -107,7 +107,7 @@ export default class TournamentRepository {
       },
       { new: true },
     ).exec();
-    if (!tDoc) throw new AppError('Attempting to update a non-existent match', 400);
+    if (!tDoc) throw new AppError('Match does not exist', 400);
     return toTournament(tDoc);
   }
 

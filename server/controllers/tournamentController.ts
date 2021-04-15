@@ -21,7 +21,7 @@ const getAllTournaments = catchAsync(async (req, res) => {
   const pageSize = Number(req.query.pageSize) || 100;
 
   const data = await TournamentRepository.getAll(page, pageSize);
-  const enrichedTournaments : Tournament[] = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, `Bearer ${req.cookies.jwt}`);
+  const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, `Bearer ${req.cookies.jwt}`);
 
   res.status(200).json({
     data: {
