@@ -45,7 +45,7 @@ export default class Tournament implements TournamentWihtoutMS {
   public static async delete(tournamentId: string, currentUserId : string) {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
-    if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament', 403);
+    if (currentUserId !== tournament.ownerId) throw new AppError('You are not an owner of given tournament. Only owner of specified tournament can delete it', 403);
 
     await TournamentRepository.delete(tournamentId);
   }
