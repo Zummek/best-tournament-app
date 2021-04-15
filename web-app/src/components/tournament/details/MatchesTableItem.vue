@@ -22,7 +22,7 @@
               [$q.screen.xs ? 'self-center' : 'self-end'],
             ]"
           >
-            {{ match.sideA.team.name }}
+            {{ match.teamA.name }}
           </div>
         </div>
 
@@ -41,7 +41,7 @@
           </q-avatar>
 
           <div class="q-mx-md self-center teamName">
-            {{ match.sideB.team.name }}
+            {{ match.teamB.name }}
           </div>
         </div>
       </div>
@@ -56,10 +56,8 @@
       >
         <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
         <q-btn
-          v-if="
-            (showActionButton && match.isFinished && getAssignedTeam) ||
-              (!match.isFinished && getAssignedTeam)
-          "
+          no-caps
+          v-if="isAllowedToEditMatchScore"
           class="q-my-auto q-mx-auto"
           :color="scoreActionBtnColor"
           :label="scoreActionBtnLabel"
@@ -67,15 +65,16 @@
           :size="$q.screen.xs ? '12px' : '13px'"
           padding="xs sm"
         />
-        <div v-else class="score q-my-auto">
-          {{ formatedScore }}
+        <div v-else style="text-align: center">
+          <div class="score q-mx-auto">{{ formatedScore }}</div>
+          <div class="status q-mx-auto">{{ getMatchStatus }}</div>
         </div>
       </div>
 
       <div v-if="$q.screen.gt.xs" style="flex: 1; min-width: 150px">
         <div class="row no-wrap justify-end">
           <div class="q-mx-md teamName self-end text-right">
-            {{ match.sideB.team.name }}
+            {{ match.teamB.name }}
           </div>
 
           <q-avatar class="self-end" size="xl">
@@ -108,6 +107,8 @@ import { UpdateTournamentMatchPayload } from 'src/services/API/apiResources/type
 @Component
 export default class OutcomeTableItem extends Vue {
   @Prop({ type: Object, required: true }) readonly match!: Match;
+  @Prop({ type: Boolean, required: true }) readonly isOwner!: boolean;
+  @Prop({ type: String, required: true }) readonly tournamentId!: string;
 
   private showActionButton = false;
 
@@ -120,70 +121,98 @@ export default class OutcomeTableItem extends Vue {
   // }
 
   get formatedScore() {
-    if (this.match.sideA.score.a === -1) return '- : -';
-    return `${this.match.sideA.score.a} : ${this.match.sideA.score.b}`;
+    if (this.match.score.final.a === -1) return '- : -';
+    return `${this.match.score.final.a} : ${this.match.score.final.b}`;
   }
 
   get scoreActionBtnLabel() {
-    if (this.match.sideA.score.a === -1) return this.$t('tournament.addScore');
-
-    return this.$t('tournament.reportScore');
+    if (this.isOwner && this.hasConflict)
+      return this.$t('tournament.resolveConflict');
+    return this.$t('tournament.addScore');
   }
 
   get scoreActionBtnColor() {
-    if (this.match.sideA.score.a === -1) return 'primary';
-
-    return 'negative';
+    if (this.isOwner && this.hasConflict) return 'negative';
+    return 'primary';
   }
 
   get scoreActionBtnOnClick() {
-    if (this.match.sideA.score.a === -1) return () => this.addScore();
-
-    return () => this.reportScore();
+    if (this.isOwner && this.hasConflict) return () => this.resolveConflict();
+    return () => this.addScore();
   }
 
   get getAssignedTeam() {
     const currentUserId = store.state.currentUser.id;
 
-    for (let i = 0; i < this.match.sideA.team.members.length; i++) {
-      if (this.match.sideA.team.members[i].id === currentUserId)
-        return 'sideA';
+    for (let i = 0; i < this.match.teamA.members.length; i++) {
+      if (this.match.teamA.members[i].id === currentUserId) return 'teamA';
     }
-    for (let i = 0; i < this.match.sideB.team.members.length; i++) {
-      if (this.match.sideB.team.members[i].id === currentUserId)
-        return 'sideB';
+    for (let i = 0; i < this.match.teamB.members.length; i++) {
+      if (this.match.teamB.members[i].id === currentUserId) return 'teamB';
     }
 
     return false;
   }
 
-  private reportScore() {
-    this.$q.notify({
-      message: 'Ta opcja jest jeszcze nie dostępna!',
-      color: 'warning',
-      textColor: 'black',
-    });
-    // second sprint
-    // this.$q
-    //   .dialog({
-    //     component: ScoreInputDialog,
-    //     mode: 'raport',
-    //     title: 'Zgłoś wynik',
-    //     message:
-    //       'Jeśli uważasz, że wprowadzony wynik jest błędny popraw poniższy wynik i prześlij. Organizator rozstrzygnie spór.',
-    //     sideAScore: this.match.sideA.score.a,
-    //     sideBScore: this.match.sideA.score.b,
-    //     sideAName: this.match.sideA.team.name,
-    //     sideBName: this.match.sideB.team.name,
-    //   })
-    //   .onOk(() => {
-    //     // TODO: call api, then
-    //     this.$q.notify({
-    //       message: 'Zgłoszono błędny wynik meczu!',
-    //       color: 'warning',
-    //       textColor: 'black',
-    //     });
-    //   });
+  get isMyTeamAlreadyReportedScore() {
+    if (this.getAssignedTeam === 'teamA')
+      return this.match.score.reportedByA.a !== -1;
+    else if (this.getAssignedTeam === 'teamB')
+      return this.match.score.reportedByB.a !== -1;
+    else return false;
+  }
+
+  get hasConflict() {
+    return (
+      this.match.score.reportedByA.a !== -1 &&
+      this.match.score.reportedByB.a !== -1 &&
+      JSON.stringify(this.match.score.reportedByA) !==
+        JSON.stringify(this.match.score.reportedByB) &&
+      !this.match.isFinished
+    );
+  }
+
+  get isAllowedToEditMatchScore() {
+    return (
+      (!this.match.isFinished &&
+        this.getAssignedTeam &&
+        !this.isMyTeamAlreadyReportedScore) ||
+      (this.isOwner && this.hasConflict)
+    );
+  }
+
+  get getMatchStatus() {
+    if (this.isMyTeamAlreadyReportedScore)
+      return this.$t('tournament.scorePendingApproval');
+    if (this.hasConflict) return this.$t('tournament.ownerMustResolveConflict');
+  }
+
+  private resolveConflict() {
+    this.$q
+      .dialog({
+        component: ScoreInputDialog,
+        parent: this,
+        mode: 'resolving',
+        teamAName: this.match.teamA.name,
+        teamBName: this.match.teamB.name,
+        score: this.match.score,
+        isOwner: this.isOwner,
+      })
+      .onOk(async (data: UpdateTournamentMatchPayload) => {
+        await API.tournament.updateTournamentMatch(
+          this.tournamentId,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.match._id!,
+          data
+        );
+        this.$q.notify({
+          message: this.$t(
+            'tournament.scoreInputDialog.disputeBetweenTeamsHasBeenResolved'
+          ).toString(),
+          color: 'primary',
+        });
+        this.$emit('refreshData');
+      });
   }
 
   private addScore() {
@@ -192,19 +221,25 @@ export default class OutcomeTableItem extends Vue {
         component: ScoreInputDialog,
         parent: this,
         mode: 'add',
-        title: this.$t('tournament.score').toString(),
-        message: this.$t('tournament.completeScoreAfterMatch').toString(),
-        note: this.$t('tournament.competitorCanReportConflictNote').toString(),
-        sideAName: this.match.sideA.team.name,
-        sideBName: this.match.sideB.team.name,
+        teamAName: this.match.teamA.name,
+        teamBName: this.match.teamB.name,
+        score: this.match.score,
+        isOwner: this.isOwner,
       })
       .onOk(async (data: UpdateTournamentMatchPayload) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        await API.tournament.updateTournamentMatch(this.match._id!, data);
+        await API.tournament.updateTournamentMatch(
+          this.tournamentId,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.match._id!,
+          data
+        );
         this.$q.notify({
-          message: this.$t('tournament.addedScoreToMatch').toString(),
+          message: this.$t(
+            'tournament.scoreInputDialog.addedScoreToMatch'
+          ).toString(),
           color: 'primary',
         });
+        this.$emit('refreshData');
       });
   }
 }
@@ -223,10 +258,16 @@ export default class OutcomeTableItem extends Vue {
 }
 
 .score {
-  display: inline-block;
   line-height: 1.12;
   font-size: xx-large;
   font-weight: 600;
+}
+
+.status {
+  font-size: 11px;
+  color: gray;
+  font-weight: 400;
+  max-width: 100px;
   text-align: center;
 }
 </style>

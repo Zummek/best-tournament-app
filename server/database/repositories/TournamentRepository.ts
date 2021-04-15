@@ -12,7 +12,7 @@ export default class TournamentRepository {
       if (!team._id) { throw new AppError('All teams should have ids.', 400); }
     });
     tournament.matches.forEach((match) => {
-      if (!match.sideA.team._id || !match.sideB.team._id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      if (!match.teamA._id || !match.teamB._id) { throw new AppError('All teams in matches entries should have ids', 400); }
     });
 
     return await TournamentModel.create(tournament);

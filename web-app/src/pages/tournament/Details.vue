@@ -1,11 +1,11 @@
 <template>
   <q-page class="flex flex-center">
-    <q-spinner
-      v-if="!tournament"
-      color="primary"
-      size="3em"
-    />
-    <q-card v-else class="q-px-xs-none q-px-sm-md">
+    <q-spinner v-if="isLoading" color="primary" size="3em" />
+    <q-card
+      v-else
+      class="q-px-xs-none q-px-sm-md"
+      :class="{ fit: $q.screen.xs }"
+    >
       <q-card-section>
         <div class="row">
           <q-input
@@ -51,11 +51,14 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="q-px-xs-sm">
+      <q-card-section class="q-px-xs-md">
         <matches-table-item
           :match="match"
           v-for="match in tournament.matches"
           :key="match._id"
+          :isOwner="isOwner"
+          :tournamentId="tournament._id"
+          @refreshData="getTournamentDetails"
         />
       </q-card-section>
     </q-card>
@@ -68,6 +71,7 @@ import Tournament from '../../../../shared/types/Tournament';
 import MatchesTableItem from '../../components/tournament/details/MatchesTableItem.vue';
 // import moment from 'moment';
 import API from 'src/services/API';
+import store from 'src/store';
 
 @Component({
   components: {
@@ -77,12 +81,17 @@ import API from 'src/services/API';
 export default class TournamentDetails extends Vue {
   private tournament: Tournament | null = null;
 
+  private isOwner = false;
+  private isLoading = true;
+
   private async created() {
     await this.getTournamentDetails();
+
+    this.isOwner = store.state.currentUser.id === this.tournament?.owner.id;
   }
 
   get completedMatchesFormated() {
-    if(this.tournament) {
+    if (this.tournament) {
       const allMatches = this.tournament.matches.length;
       let completedMatches = 0;
 
@@ -97,7 +106,7 @@ export default class TournamentDetails extends Vue {
   }
 
   get participantsAmount() {
-    if(this.tournament) {
+    if (this.tournament) {
       let participantsAmount = 0;
 
       for (let i = 0; i < this.tournament.teams.length; i++) {
@@ -109,12 +118,22 @@ export default class TournamentDetails extends Vue {
   }
 
   private async getTournamentDetails() {
-    this.tournament = await API.tournament.getTournament(this.$route.params.id);
+    this.isLoading = true;
+    try {
+      this.tournament = await API.tournament.getTournament(
+        this.$route.params.id
+      );
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.response.status === 404) void this.$router.push('/*');
+      return;
+    }
     this.sortMatches();
+    this.isLoading = false;
   }
 
   private sortMatches() {
-    if(this.tournament) {
+    if (this.tournament) {
       // sort array by isFinished and Date
       this.tournament.matches.sort((a, b) => {
         if (a.isFinished && b.isFinished) {

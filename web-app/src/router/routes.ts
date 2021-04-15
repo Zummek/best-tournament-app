@@ -35,6 +35,7 @@ const routes: RouteConfig[] = [
   {
     path: '*',
     component: () => import('pages/Error404.vue'),
+    meta: { public: true },
   },
 ];
 

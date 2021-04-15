@@ -11,6 +11,6 @@ export interface CreateTeam {
 }
 
 export interface UpdateMatchOutcomes {
-  sideA: number;
-  sideB: number;
+  teamA: number;
+  teamB: number;
 }

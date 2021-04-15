@@ -1,4 +1,5 @@
 import Tournament from 'app/../shared/types/Tournament';
+import { UpdateMatchOutcomes } from 'app/../shared/types/Tournament/apiInterface';
 import User from 'app/../shared/types/User';
 
 export interface AuthLoginResponse {
@@ -33,7 +34,4 @@ export interface CreateTournamentPayload {
   name: string; // TODO: it is temporary as template
 }
 
-export interface UpdateTournamentMatchPayload {
-  sideA: number;
-  sideB: number;
-}
+export type UpdateTournamentMatchPayload = UpdateMatchOutcomes;

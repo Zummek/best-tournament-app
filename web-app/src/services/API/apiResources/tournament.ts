@@ -16,8 +16,14 @@ export const getTournament = async (tournamentId: string) => {
 };
 
 export const updateTournamentMatch = async (
+  tournamentId: string,
   matchId: string,
   payload: types.UpdateTournamentMatchPayload
 ) => {
-  await axiosInstance.post(`v1/matches/${matchId}`, payload);
+  await axiosInstance.post(
+    `v1/tournaments/${encodeURIComponent(
+      tournamentId
+    )}/matches/${encodeURIComponent(matchId)}`,
+    payload
+  );
 };
