@@ -1,6 +1,6 @@
 import tournamentGenerator from 'tournament-generator';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWihtoutMS, Team as ITeam, Match as IMatch,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -10,8 +10,8 @@ import AppError from '../utils/appError';
 import Match from './Match';
 import MSOrganization from './MSOrganization';
 
-export default class Tournament implements TournamentWihtoutMS {
-  _id?: string;
+export default class Tournament implements TournamentWithoutMS {
+  id?: string;
 
   name: string;
 
@@ -22,7 +22,7 @@ export default class Tournament implements TournamentWihtoutMS {
   matches: MatchWithoutMS[];
 
   constructor(data: Tournament) {
-    this._id = data._id;
+    this.id = data.id;
     this.name = data.name;
     this.ownerId = data.ownerId;
     this.teams = data.teams;
@@ -32,14 +32,27 @@ export default class Tournament implements TournamentWihtoutMS {
 
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
+    if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
     const matches = Tournament.generateMatches(teams);
-
     return TournamentRepository.create({
       name: data.name,
       ownerId,
       teams,
       matches,
     });
+  }
+
+  public static async delete(tournamentId: string, currentUserId : string) {
+    const tournament = await TournamentRepository.getById(tournamentId);
+    if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
+    if (currentUserId !== tournament.ownerId) {
+      throw new AppError(
+        'You are not an owner of given tournament. Only owner of specified tournament can delete it',
+        403,
+      );
+    }
+
+    await TournamentRepository.delete(tournamentId);
   }
 
   private static generateMatches(teams: TeamWithoutMS[]): Match[] {
@@ -57,10 +70,12 @@ export default class Tournament implements TournamentWihtoutMS {
     matchId: string,
     currentUserId: string,
   ) {
+    if (data.teamA < 0 || data.teamB < 0) throw new AppError('Score can not be negative', 404);
+
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament does not exits', 404);
 
-    const rawMatch = tournament?.matches.find((match) => String(match._id) === matchId);
+    const rawMatch = tournament?.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
     const match = new Match(rawMatch);
@@ -75,25 +90,32 @@ export default class Tournament implements TournamentWihtoutMS {
         b: data.teamB,
       };
       match.isFinished = true;
-    } else if (assignedTeam === 'teamA') {
-      if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
-      match.score.reportedByA = {
-        a: data.teamA,
-        b: data.teamB,
-      };
-      if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
-    } else if (assignedTeam === 'teamB') {
-      if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
-      match.score.reportedByB = {
-        a: data.teamA,
-        b: data.teamB,
-      };
-      if (match.score.reportedByA === match.score.reportedByB) match.isFinished = true;
+    } else if (assignedTeam) {
+      if (assignedTeam === 'teamA') {
+        if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
+        match.score.reportedByA = {
+          a: data.teamA,
+          b: data.teamB,
+        };
+      } else if (assignedTeam === 'teamB') {
+        if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
+        match.score.reportedByB = {
+          a: data.teamA,
+          b: data.teamB,
+        };
+      }
+      if (match.score.reportedByA === match.score.reportedByB) {
+        match.score.final = {
+          a: match.score.reportedByA.a,
+          b: match.score.reportedByA.b,
+        };
+        match.isFinished = true;
+      }
     } else {
       throw new AppError('You are not authorized to update this match', 403);
     }
 
-    await TournamentRepository.updateMatch(matchId, match);
+    await TournamentRepository.updateMatch(match);
   }
 
   public static async enrichWithMSUsers(

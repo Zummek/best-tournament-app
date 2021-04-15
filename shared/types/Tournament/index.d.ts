@@ -2,11 +2,11 @@ import User, { UserWithoutMS } from "../User";
 export * as TournamentApi from "./apiInterface";
 
 export interface Team {
-  _id?: string;
+  id?: string;
   name: string;
   members: User[];
 }
-
+// in db
 export interface TeamWithoutMS extends Omit<Team, "members"> {
   members: UserWithoutMS[];
 }
@@ -23,7 +23,7 @@ export interface MatchScore {
 }
 
 export interface Match {
-  _id?: string;
+  id?: string;
   teamA: Team;
   teamB: Team;
   score: MatchScore;
@@ -37,14 +37,14 @@ export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
 }
 
 export default interface Tournament {
-  _id?: string;
-  name: string;
+  id?: string;
+  name: string; 
   owner: User;
   teams: Team[];
   matches: Match[];
 }
-
-export interface TournamentWihtoutMS
+// in db
+export interface TournamentWithoutMS
   extends Omit<Tournament, "owner" | "teams" | "matches"> {
   ownerId: string;
   teams: TeamWithoutMS[];

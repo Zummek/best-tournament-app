@@ -1,6 +1,5 @@
-export default interface User {
-  id: string;
-  alias?: string | null;
+// User with db fields and fields yielded form azure
+export default interface User extends UserWithoutMS {
   firstName: string;
   lastName: string;
   email: string;
@@ -13,5 +12,8 @@ export interface MSUser {
   surname: string;
   userPrincipalName: string;
 }
-
-export interface UserWithoutMS extends Pick<User, "id" | "alias"> {}
+// User in db
+export interface UserWithoutMS {
+  id: string;
+  alias?: string | null;
+}

@@ -10,7 +10,7 @@ const createTournament = catchAsync(
 
     res.status(201).json({
       data: {
-        _id: tournament._id,
+        id: tournament.id,
       },
     });
   },
@@ -21,12 +21,12 @@ const getAllTournaments = catchAsync(async (req, res) => {
   const pageSize = Number(req.query.pageSize) || 100;
 
   const data = await TournamentRepository.getAll(page, pageSize);
-  const enrichedTournament = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, `Bearer ${req.cookies.jwt}`);
+  const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, `Bearer ${req.cookies.jwt}`);
 
   res.status(200).json({
     data: {
       totalRows: data.totalRows,
-      tournaments: enrichedTournament,
+      tournaments: enrichedTournaments,
     },
   });
 });
@@ -56,10 +56,16 @@ const updateMatchScores = catchAsync(
     res.status(204).end();
   },
 );
+const deleteTournament = catchAsync(async (req, res) => {
+  const currentUserId = req.decoded.userMSId;
+  await Tournament.delete(req.params.id, currentUserId);
+  res.status(204).end();
+});
 
 export default {
   create: createTournament,
   getAll: getAllTournaments,
   get: getTournament,
+  deleteTournament,
   updateMatchScores,
 };
