@@ -25,7 +25,7 @@ const routes: RouteConfig[] = [
         meta: { public: true }, // TODO: change to false
       },
       {
-        path: 'tournament/create',
+        path: 'tournaments/create',
         name: 'TournamentCreator',
         // component: () => import('pages/tournament/TournamentCreator.vue'),
         component: () => import('pages/Index.vue'),
