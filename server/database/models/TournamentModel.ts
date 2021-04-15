@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { MatchWithoutMS, TournamentWihtoutMS } from '../../../shared/types/Tournament';
+import { MatchWithoutMS, TournamentWithoutMS } from '../../../shared/types/Tournament';
 import { TeamDocument } from './TeamModel';
 
 const ScoreSchema = new Schema({
@@ -47,7 +47,7 @@ export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'te
   teamA: TeamDocument,
   teamB: TeamDocument,
 }
-export interface TournamentDocument extends Omit<TournamentWihtoutMS, 'id' | 'teams' | 'matches' >, Document {
+export interface TournamentDocument extends Omit<TournamentWithoutMS, 'id' | 'teams' | 'matches' >, Document {
   teams: TeamDocument[],
   matches: MatchDocument[]
 }

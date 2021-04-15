@@ -44,7 +44,7 @@ export default interface Tournament {
   matches: Match[];
 }
 // in db
-export interface TournamentWihtoutMS
+export interface TournamentWithoutMS
   extends Omit<Tournament, "owner" | "teams" | "matches"> {
   ownerId: string;
   teams: TeamWithoutMS[];

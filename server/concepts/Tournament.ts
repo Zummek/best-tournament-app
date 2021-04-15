@@ -1,6 +1,6 @@
 import tournamentGenerator from 'tournament-generator';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWihtoutMS, Team as ITeam, Match as IMatch,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -10,7 +10,7 @@ import AppError from '../utils/appError';
 import Match from './Match';
 import MSOrganization from './MSOrganization';
 
-export default class Tournament implements TournamentWihtoutMS {
+export default class Tournament implements TournamentWithoutMS {
   id?: string;
 
   name: string;
