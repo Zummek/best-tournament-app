@@ -31,6 +31,7 @@ export interface getTournamentResponse {
 }
 export interface getTournamentsResponse {
   data: {
+    totalRows: number;
     tournaments: Tournament[];
   };
 }

@@ -1,42 +1,39 @@
 <template>
   <div>
     <grid-list-mobile
-      :data="data"
+      :data="trueData"
       :columns="columns"
       :filter="filter"
-      :expanded="expanded"
-      :pagination="pagination"
-      :pageChanged="loadData"
+      :pagination.sync="pagination"
     />
     <grid-list-desktop
-      :data="data"
+      :data="trueData"
       :columns="columns"
       :filter="filter"
-      :expanded="expanded"
-      :pagination="pagination"
-      :pageChanged="loadData"
+      :pagination.sync="pagination"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import GridListMobile from '../../components/tournament/GridListMobile.vue';
 import GridListDesktop from '../../components/tournament/GridListDesktop.vue';
 import { Team } from '../../../../shared/types/Tournament';
+import { IPagination } from './../../components/models';
 import User from '../../../../shared/types/User';
 import api from './../../services/API/index';
-import { TournamentListData } from './types';
+import { TournamentListData, ListUser } from './types';
 @Component({
   components: { GridListMobile, GridListDesktop },
 })
 export default class TournamentsList extends Vue {
-  private trueData: TournamentListData[] | null = null;
+  private trueData: TournamentListData[] = [];
   private filter = '';
-  private expanded = '';
-  private pagination = {
+  private pagination: IPagination = {
     page: 1,
     rowsPerPage: 1,
+    rowsNumber: 0,
   };
   private columns = [
     {
@@ -54,70 +51,46 @@ export default class TournamentsList extends Vue {
       field: 'status',
       sortable: true,
     },
-    {
-      name: 'participants',
-      align: 'right',
-      label: 'Participants',
-      field: 'participants',
-    },
-  ];
-  private data = [
-    {
-      id: '1',
-      name: 'Work',
-      status: 'In progress',
-      participants: 'You and I',
-    },
-    {
-      id: '2',
-      name: 'Tourn2',
-      status: 'Finished',
-      participants: 'You and I',
-    },
-    {
-      id: '3',
-      name: 'Tourn3',
-      status: 'Finished',
-      participants: 'No one',
-    },
-    {
-      id: '4',
-      name: 'Tourn4',
-      status: 'Finished',
-      participants: 'No one',
-    },
-    {
-      id: '5',
-      name: 'Tourn5',
-      status: 'Finished',
-      participants: 'No one',
-    },
-    {
-      id: '6',
-      name: 'Tourn6',
-      status: 'Finished',
-      participants: 'No one',
-    },
   ];
 
+  @Watch('pagination.page')
+  private async pageChanged() {
+    await this.loadData(this.pagination.page);
+  }
   private async loadData(page: number) {
-    // const mapUsers = (teams: Team[]) => {
-    //   return teams.map((team: Team) => {
-    //     return team.members.map((user: User) => ({
-    //       firstName: user.firstName,
-    //       lastName: user.lastName,
-    //     }));
-    //   });
-    // };
-    const tournaments = await api.tournament.getAllTournaments(page, 20);
-    this.trueData = tournaments.map((el, index) => {
+    //Funkcja wyciąga wszystkich uczestników danego turnieju.
+    const mapUsers = (teams: Team[]) => {
+      //1 etap - wynik: np. [[{firstName: "Artur", lastName: "Oswald"},{firstName: "Chris", lastName: "Green"}],[...]]
+      const mappedUsers = teams.map((team: Team) => {
+        return team.members.map((user: User) => ({
+          firstName: user.firstName,
+          lastName: user.lastName,
+        }));
+      });
+      //2 etap -> tworzenie jednej tablicy
+      const cleanUsers: ListUser[] = [];
+      mappedUsers.forEach(team => {
+        cleanUsers.push(...team);
+      });
+      return cleanUsers;
+    };
+
+    const tournamentsResponse = await api.tournament.getAllTournaments(page, 1);
+    this.pagination.rowsNumber = tournamentsResponse.totalRows;
+    this.trueData = tournamentsResponse.tournaments.map((el, index) => {
+      const cleanUsers = mapUsers(tournamentsResponse.tournaments[index].teams);
       return {
         id: el.id as string,
         name: el.name,
         status: el.isFinished === true ? 'Finished' : 'In progress',
-        participants: el.teams[index].members,
+        participants: cleanUsers,
       };
     });
+    console.log(this.trueData);
+  }
+
+  private async created() {
+    await this.loadData(1);
   }
 }
 </script>

@@ -4,5 +4,9 @@ export interface TournamentListData {
   id: string;
   name: string;
   status: string;
-  participants: User[];
+  participants: ListUser[];
+}
+export interface ListUser {
+  firstName: string;
+  lastName: string;
 }

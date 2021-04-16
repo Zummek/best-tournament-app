@@ -8,9 +8,9 @@
         row-key="name"
         :filter="filter"
         virtual-scroll
-        :pagination.sync="pagination"
+        :pagination.sync="childPagination"
         :rows-per-page-options="[0]"
-        :expanded.sync="expanded"
+        @request="loadNewPage"
       >
         <template v-slot:top-left>
           <div class="row">
@@ -90,18 +90,31 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { IPagination, IData, IColumns } from '../models';
+import { IPagination, IData, IColumns, IProps } from '../models';
 
 @Component
 export default class GridListDesktop extends Vue {
   @Prop({ type: String, default: () => '' }) filter!: string;
-  @Prop({ type: String, default: () => '' }) readonly expanded!: string;
   @Prop({ type: Array, required: true }) readonly columns!: IColumns;
   @Prop({ type: Array, default: () => [] }) readonly data!: IData[];
-  @Prop({ type: Object, required: true }) readonly pagination!: IPagination;
+  @Prop({ type: Object, required: true }) pagination!: IPagination;
 
-  // @Watch('pagination.page')
-  // private load;
+  private childPagination: IPagination = { ...this.pagination };
+
+  @Watch('pagination.rowsNumber')
+  private loadRowsNumber() {
+    this.childPagination.rowsNumber = this.pagination.rowsNumber;
+  }
+  @Watch('pagination.page')
+  private loadPage() {
+    this.childPagination.page = this.pagination.page;
+  }
+  private loadNewPage(props: IProps) {
+    const { page, rowsNumber } = props.pagination;
+    this.childPagination.page = page;
+    this.childPagination.rowsNumber = rowsNumber;
+    this.$emit('update:pagination', this.childPagination);
+  }
 }
 </script>
 <style lang="scss" scoped>

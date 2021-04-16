@@ -29,10 +29,7 @@ export const updateTournamentMatch = async (
   );
 };
 
-export const getAllTournaments = async (
-  page: number,
-  pageSize: number
-): Promise<Tournament[]> => {
+export const getAllTournaments = async (page: number, pageSize: number) => {
   const response = await axiosInstance.get<types.getTournamentsResponse>(
     'v1/tournaments',
     {
@@ -42,5 +39,5 @@ export const getAllTournaments = async (
       },
     }
   );
-  return response.data.data.tournaments;
+  return response.data.data;
 };

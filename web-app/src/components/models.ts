@@ -8,6 +8,14 @@ export interface Meta {
 }
 export interface IPagination {
   rowsPerPage: number;
+  page: number;
+  rowsNumber?: number;
+}
+export interface IPaginationLabel {
+  totalRowsNumber: number;
+}
+export interface IProps {
+  pagination: IPagination;
 }
 export interface IColumns {
   name?: string;
