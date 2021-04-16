@@ -21,6 +21,7 @@ export default class Match implements MatchWithoutMS {
   isFinished: boolean;
 
   constructor(data: MatchWithoutMS) {
+    this.id = data.id;
     this.teamA = data.teamA;
     this.teamB = data.teamB;
     this.score = data.score;
