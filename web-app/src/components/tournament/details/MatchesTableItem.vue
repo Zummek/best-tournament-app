@@ -202,7 +202,7 @@ export default class OutcomeTableItem extends Vue {
         await API.tournament.updateTournamentMatch(
           this.tournamentId,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.match._id!,
+          this.match.id!,
           data
         );
         this.$q.notify({
@@ -230,7 +230,7 @@ export default class OutcomeTableItem extends Vue {
         await API.tournament.updateTournamentMatch(
           this.tournamentId,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.match._id!,
+          this.match.id!,
           data
         );
         this.$q.notify({
