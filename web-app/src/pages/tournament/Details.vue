@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <q-spinner v-if="isLoading" color="primary" size="3em" />
+    <q-spinner v-if="isLoading || !tournament" color="primary" size="3em" />
     <q-card
       v-else
       class="q-px-xs-none q-px-sm-md"
@@ -55,9 +55,9 @@
         <matches-table-item
           :match="match"
           v-for="match in tournament.matches"
-          :key="match._id"
+          :key="match.id"
           :isOwner="isOwner"
-          :tournamentId="tournament._id"
+          :tournamentId="tournament.id"
           @refreshData="getTournamentDetails"
         />
       </q-card-section>
