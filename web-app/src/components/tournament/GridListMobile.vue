@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 <template>
   <div class="q-pa-md lt-sm">
-    {{ childPagination }}
     <q-table
       grid
       title="Tournaments"
