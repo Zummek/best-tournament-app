@@ -177,18 +177,23 @@ export default class TournamentCreator extends Vue {
   private teams: Team[] = [];
   private users: User[] = [];
 
+  private async created() {
+    await this.getUsers();
+  }
+
   private async submitAddTournament() {
     if (this.validation()) {
-      const responseData = await API.tournament.createTournament({
-        name: this.tournamentName,
-        teams: this.teams,
-      });
-      if (responseData?._id) {
+      try {
+        const responseData = await API.tournament.createTournament({
+          name: this.tournamentName,
+          teams: this.teams,
+        });
+
         void this.$router.push({
           name: 'TournamentDetails',
-          params: { id: responseData._id },
+          params: { id: responseData.id },
         });
-      } else {
+      } catch (error) {
         this.$q.notify({
           message: this.$t('tournament.addingTournamentError').toString(),
           color: 'warning',
@@ -197,6 +202,7 @@ export default class TournamentCreator extends Vue {
       }
     }
   }
+
   private addTeam(team: Team) {
     this.teams.push(team);
   }
@@ -211,9 +217,6 @@ export default class TournamentCreator extends Vue {
     }
   }
 
-  private async created() {
-    await this.getUsers();
-  }
   private async getUsers() {
     this.users = await API.organization.getUsers();
 

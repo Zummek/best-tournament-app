@@ -41,7 +41,7 @@ export type CreateTournamentPayload = tournamentCreate;
 
 export interface CreateTournamentResponse {
   data: {
-    _id: string;
+    id: string;
   };
 }
 

@@ -24,7 +24,7 @@ export default class Tournament implements TournamentWithoutMS {
   isFinished: boolean;
 
   constructor(data: Tournament) {
-    this._id = data._id;
+    this.id = data.id;
     this.name = data.name;
     this.ownerId = data.ownerId;
     this.teams = data.teams;
