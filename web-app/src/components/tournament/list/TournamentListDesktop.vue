@@ -8,7 +8,7 @@
         row-key="id"
         :filter="query"
         virtual-scroll
-        :pagination.sync="childPagination"
+        :pagination.sync="pagination"
         :rows-per-page-options="[0]"
       >
         <template v-slot:top-left>
@@ -44,15 +44,26 @@ import Tournament from 'app/../shared/types/Tournament';
 import { QTable } from 'quasar';
 import { Vue, Component, Prop, PropSync } from 'vue-property-decorator';
 import { IPagination } from '../../models';
+import UserAvatar from '../../UserAvatar.vue';
+import EmptyTournamentList from './EmptyTournamentList.vue';
+import TournamentItemDesktop from './TournamentItemDesktop.vue';
 
-@Component
+@Component({
+  components: {
+    UserAvatar,
+    EmptyTournamentList,
+    TournamentItemDesktop,
+  },
+})
 export default class GridListDesktop extends Vue {
-  @PropSync({ type: String, default: () => '' }) query!: string;
+  @PropSync('query', { type: String, default: '' }) query!: string;
   @Prop({ type: Array, required: true }) readonly columns!: QTable['columns'];
   @Prop({ type: Array, default: () => [] }) readonly tournaments!: Tournament[];
-  @PropSync({ type: Object, required: true }) pagination!: IPagination;
+  @PropSync('pagination', { type: Boolean, required: true })
+  pagination!: IPagination;
 }
 </script>
+
 <style lang="scss" scoped>
 .card__logo {
   display: flex;

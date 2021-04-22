@@ -1,13 +1,13 @@
 <template>
   <div>
-    <grid-list-mobile
-      :data="trueData"
+    <tournament-item-mobile
+      :tournaments="tournaments"
       :columns="columns"
       :query.sync="query"
       :pagination.sync="pagination"
     />
-    <grid-list-desktop
-      :data="trueData"
+    <tournament-item-desktop
+      :tournaments="tournaments"
       :columns="columns"
       :query.sync="query"
       :pagination.sync="pagination"
@@ -17,13 +17,14 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import GridListMobile from '../../components/tournament/GridListMobile.vue';
-import GridListDesktop from '../../components/tournament/GridListDesktop.vue';
+import TournamentItemMobile from '../../components/tournament/list/TournamentItemMobile.vue';
+import TournamentItemDesktop from '../../components/tournament/list/TournamentItemDesktop.vue';
 import { IPagination } from '../../components/models';
 import api from '../../services/API/index';
 import { QTable } from 'quasar';
+
 @Component({
-  components: { GridListMobile, GridListDesktop },
+  components: { TournamentItemMobile, TournamentItemDesktop },
 })
 export default class TournamentList extends Vue {
   private query = '';
@@ -51,12 +52,14 @@ export default class TournamentList extends Vue {
   ];
 
   get tournaments() {
-    const tournamentsResponse = await api.tournament.getAllTournaments(
-      this.pagination.page,
-      1
-    );
-    this.pagination.rowsNumber = tournamentsResponse.totalRows;
-    return tournamentsResponse.tournaments;
+    return (async () => {
+      const tournamentsResponse = await api.tournament.getAllTournaments(
+        this.pagination.page,
+        1
+      );
+      this.pagination.rowsNumber = tournamentsResponse.totalRows;
+      return tournamentsResponse.tournaments;
+    })();
   }
 }
 </script>

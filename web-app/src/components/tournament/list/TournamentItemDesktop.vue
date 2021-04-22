@@ -48,8 +48,13 @@
 import Tournament, { Team } from 'app/../shared/types/Tournament';
 import User from 'app/../shared/types/User';
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import UserAvatar from '../../UserAvatar.vue';
 
-@Component
+@Component({
+  components: {
+    UserAvatar,
+  },
+})
 export default class TournamentItemDesktop extends Vue {
   @Prop({ type: Object }) tournament!: Tournament;
 
