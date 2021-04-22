@@ -1,3 +1,4 @@
+import Tournament from 'app/../shared/types/Tournament';
 import axiosInstance from '../axiosInstance';
 import * as types from './types';
 
@@ -26,4 +27,17 @@ export const updateTournamentMatch = async (
     )}/matches/${encodeURIComponent(matchId)}`,
     payload
   );
+};
+
+export const getAllTournaments = async (page: number, pageSize: number) => {
+  const response = await axiosInstance.get<types.getTournamentsResponse>(
+    'v1/tournaments',
+    {
+      params: {
+        page,
+        pageSize,
+      },
+    }
+  );
+  return response.data.data;
 };

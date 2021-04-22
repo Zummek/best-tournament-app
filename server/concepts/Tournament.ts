@@ -21,6 +21,8 @@ export default class Tournament implements TournamentWithoutMS {
 
   matches: MatchWithoutMS[];
 
+  isFinished: boolean;
+
   constructor(data: Tournament) {
     this.id = data.id;
     this.name = data.name;
@@ -28,6 +30,7 @@ export default class Tournament implements TournamentWithoutMS {
     this.teams = data.teams;
     this.matches = data.matches instanceof Match
       ? data.matches : data.matches.map((match) => new Match(match));
+    this.isFinished = data.isFinished;
   }
 
   public static async create(data: TournamentApi.Create, ownerId: string) {
@@ -39,6 +42,7 @@ export default class Tournament implements TournamentWithoutMS {
       ownerId,
       teams,
       matches,
+      isFinished: false,
     });
   }
 
@@ -175,7 +179,7 @@ export default class Tournament implements TournamentWithoutMS {
   }
 
   public static async enrichTournamentsWithMSUsers(
-    tournaments: Tournament[],
+    tournaments: TournamentWithoutMS[],
     token: string,
   ): Promise<ITournament[]> {
     const allUsers = await MSOrganization.getAllUsers(token);
