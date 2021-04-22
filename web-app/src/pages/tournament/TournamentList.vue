@@ -25,13 +25,13 @@ import {
   IPagination,
   TournamentListData,
   ListUser,
-} from './../../components/models';
+} from '../../components/models';
 import User from '../../../../shared/types/User';
-import api from './../../services/API/index';
+import api from '../../services/API/index';
 @Component({
   components: { GridListMobile, GridListDesktop },
 })
-export default class TournamentsList extends Vue {
+export default class TournamentList extends Vue {
   private trueData: TournamentListData[] = [];
   private filter = '';
   private pagination: IPagination = {
