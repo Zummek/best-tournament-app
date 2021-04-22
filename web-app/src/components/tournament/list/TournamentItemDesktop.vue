@@ -61,9 +61,9 @@ export default class TournamentItemDesktop extends Vue {
   }
 
   get status() {
-    this.tournament.isFinished
-            ? (this.$t('tournament.isFinishedTrue') as string)
-            : (this.$t('tournament.isFinishedInProgress') as string),
+    return this.tournament.isFinished
+      ? (this.$t('tournament.isFinishedTrue') as string)
+      : (this.$t('tournament.isFinishedInProgress') as string);
   }
 }
 </script>

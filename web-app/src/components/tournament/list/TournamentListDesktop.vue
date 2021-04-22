@@ -10,7 +10,6 @@
         virtual-scroll
         :pagination.sync="childPagination"
         :rows-per-page-options="[0]"
-        @request="loadNewPage"
       >
         <template v-slot:top-left>
           <div class="row">
@@ -23,15 +22,13 @@
             />
           </div>
         </template>
+
         <template v-slot:top-right>
-          <search-bar v-model="query">
+          <search-bar :query.sync="query" />
         </template>
 
         <template v-slot:no-data>
-          <div class="full-width row flex-center text-accent q-gutter-sm">
-            <q-icon size="2em" name="sentiment_dissatisfied" /><br />
-            {{ $t('tournament.list.error.noTournaments') }}
-          </div>
+          <empty-tournament-list />
         </template>
 
         <template v-slot:item="props">
@@ -44,34 +41,16 @@
 
 <script lang="ts">
 import Tournament from 'app/../shared/types/Tournament';
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { IPagination, TournamentListData, IColumns, IProps } from '../../models';
+import { QTable } from 'quasar';
+import { Vue, Component, Prop, PropSync } from 'vue-property-decorator';
+import { IPagination } from '../../models';
 
 @Component
 export default class GridListDesktop extends Vue {
-  @Prop({ type: String, default: () => '' }) query!: string;
-  @Prop({ type: Array, required: true }) readonly columns!: IColumns[];
+  @PropSync({ type: String, default: () => '' }) query!: string;
+  @Prop({ type: Array, required: true }) readonly columns!: QTable['columns'];
   @Prop({ type: Array, default: () => [] }) readonly tournaments!: Tournament[];
-  @Prop({ type: Object, required: true }) pagination!: IPagination;
-
-  private childPagination: IPagination = { ...this.pagination };
-
-  @Watch('pagination.rowsNumber')
-  private loadRowsNumber() {
-    this.childPagination.rowsNumber = this.pagination.rowsNumber;
-  }
-
-  @Watch('pagination.page')
-  private loadPage() {
-    this.childPagination.page = this.pagination.page;
-  }
-
-  private loadNewPage(props: IProps) {
-    const { page, rowsNumber } = props.pagination;
-    this.childPagination.page = page;
-    this.childPagination.rowsNumber = rowsNumber;
-    this.$emit('update:pagination', this.childPagination);
-  }
+  @PropSync({ type: Object, required: true }) pagination!: IPagination;
 }
 </script>
 <style lang="scss" scoped>

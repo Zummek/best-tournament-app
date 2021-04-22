@@ -2,9 +2,10 @@
   <q-input
     dense
     debounce="300"
-    :value="value"
+    :value="query"
     @input="onInput"
     :placeholder="$t('tournament.list.search')"
+    :style="style"
   >
     <template v-slot:append>
       <q-icon name="search" />
@@ -17,10 +18,15 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
 export default class SearchBar extends Vue {
-  @Prop({ type: String }) value!: string;
+  @Prop({ type: String }) query!: string;
+  @Prop({ type: String, default: false }) mobile!: boolean;
 
-  onInput() {
-    this.$emit('input', this.value);
+  onInput(value: string) {
+    this.$emit('update:query', value);
+  }
+
+  get style(): string | undefined {
+    return this.mobile ? 'width:150px' : undefined;
   }
 }
 </script>
