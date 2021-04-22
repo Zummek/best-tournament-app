@@ -135,8 +135,8 @@
 <script lang="ts">
 import User from '../../../../shared/types/User';
 import { Vue, Component } from 'vue-property-decorator';
-import TeamsList from '../../components/tournament/creator/TeamsList.vue';
-import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
+import TeamsList from '../../components/tournament/creator/teamsList.vue';
+import TeamBuilder from '../../components/tournament/creator/teamBuilder.vue';
 import { Team } from '../../../../shared/types/Tournament';
 import API from 'src/services/API';
 
