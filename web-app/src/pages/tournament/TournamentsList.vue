@@ -20,10 +20,14 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import GridListMobile from '../../components/tournament/GridListMobile.vue';
 import GridListDesktop from '../../components/tournament/GridListDesktop.vue';
 import { Team } from '../../../../shared/types/Tournament';
-import { IPagination } from './../../components/models';
+import {
+  IColumns,
+  IPagination,
+  TournamentListData,
+  ListUser,
+} from './../../components/models';
 import User from '../../../../shared/types/User';
 import api from './../../services/API/index';
-import { TournamentListData, ListUser } from './types';
 @Component({
   components: { GridListMobile, GridListDesktop },
 })
@@ -35,11 +39,11 @@ export default class TournamentsList extends Vue {
     rowsPerPage: 1,
     rowsNumber: 0,
   };
-  private columns = [
+  private columns: IColumns[] = [
     {
-      name: 'desc',
+      name: 'name',
       required: true,
-      label: 'Tournament name',
+      label: this.$t('tournament.name') as string,
       align: 'left',
       field: 'name',
       sortable: true,
@@ -47,7 +51,7 @@ export default class TournamentsList extends Vue {
     {
       name: 'status',
       align: 'right',
-      label: 'Status',
+      label: this.$t('tournament.status') as string,
       field: 'status',
       sortable: true,
     },
@@ -82,11 +86,13 @@ export default class TournamentsList extends Vue {
       return {
         id: el.id as string,
         name: el.name,
-        status: el.isFinished === true ? 'Finished' : 'In progress',
+        status:
+          el.isFinished === true
+            ? (this.$t('tournament.isFinishedTrue') as string)
+            : (this.$t('tournament.isFinishedInProgress') as string),
         participants: cleanUsers,
       };
     });
-    console.log(this.trueData);
   }
 
   private async created() {

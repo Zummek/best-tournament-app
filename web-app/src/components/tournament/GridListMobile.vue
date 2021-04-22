@@ -2,10 +2,10 @@
   <div class="q-pa-md lt-sm">
     <q-table
       grid
-      title="Tournaments"
+      :title="$t('tournament.list.label')"
       :data="data"
       :columns="columns"
-      row-key="name"
+      row-key="id"
       :filter="filter"
       virtual-scroll
       :pagination.sync="childPagination"
@@ -17,13 +17,20 @@
           dense
           debounce="300"
           v-model="filter"
-          placeholder="Search"
+          :placeholder="$t('tournament.list.search')"
           style="width:150px"
         >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
+      </template>
+
+      <template v-slot:no-data>
+        <div class="full-width row flex-center text-accent q-gutter-sm">
+          <q-icon size="2em" name="sentiment_dissatisfied" /><br />
+          {{ $t('tournament.list.error.noTournaments') }}
+        </div>
       </template>
 
       <template v-slot:item="props">
@@ -40,16 +47,14 @@
                 class="col-6 overflow-hidden"
                 style="text-align:left"
               >
-                <div class="text-grey-14">
-                  Name:
-                </div>
+                <div class="text-grey-14">{{ $t('tournament.name') }}:</div>
                 <strong>{{ props.row.name }}</strong>
               </q-card-section>
               <q-card-section
                 class="col-6"
                 style="text-align:right"
                 :style="
-                  props.row.status === 'In progress'
+                  props.row.status === $t('tournament.isFinishedInProgress')
                     ? 'color: orange'
                     : 'color: green'
                 "
@@ -74,13 +79,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { IPagination, IData, IColumns, IProps } from '../models';
+import { IPagination, IColumns, IProps, TournamentListData } from '../models';
 
 @Component
 export default class GridListMobile extends Vue {
   @Prop({ type: String, default: () => '' }) filter!: string;
-  @Prop({ type: Array, required: true }) readonly columns!: IColumns;
-  @Prop({ type: Array, default: () => [] }) readonly data!: IData[];
+  @Prop({ type: Array, required: true }) readonly columns!: IColumns[];
+  @Prop({ type: Array, default: () => [] })
+  readonly data!: TournamentListData[];
   @Prop({ type: Object, required: true }) pagination!: IPagination;
 
   private childPagination = { ...this.pagination };

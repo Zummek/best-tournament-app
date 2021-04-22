@@ -1,6 +1,9 @@
 export default {
   name: 'Nazwa turnieju',
   organizer: 'Organizator',
+  status: 'Status',
+  isFinishedTrue: 'Zakończony',
+  isFinishedInProgress: 'W trakcie',
   participantsAmount: 'Liczba uczestników',
   matchesPlayed: 'Rozegrane mecze',
   team: 'Drużyna',
@@ -22,5 +25,15 @@ export default {
     solveConflictBetweenTeamsMessage:
       'Rozwiąż konflikt wyniku meczu pomiędzy drużynami. Zaakceptuj jeden z podaynch wyników lub wprowadz inny.',
     disputeBetweenTeamsHasBeenResolved: 'Rozwiązano spór między drużynami!',
+  },
+
+  list: {
+    label: 'Lista turniejów',
+    search: 'Wyszukaj turniej',
+    participants: 'Uczestnicy',
+    addNewBtn: 'Dodaj nowy',
+    error: {
+      noTournaments: 'Brak turniejów do wyświetlenia',
+    },
   },
 };

@@ -5,7 +5,7 @@
         grid
         :data="data"
         :columns="columns"
-        row-key="name"
+        row-key="id"
         :filter="filter"
         virtual-scroll
         :pagination.sync="childPagination"
@@ -14,12 +14,12 @@
       >
         <template v-slot:top-left>
           <div class="row">
-            <span class="title">Tournaments</span>
+            <span class="title">{{ $t('tournament.list.label') }}</span>
             <q-btn
               :to="{ name: 'TournamentCreator' }"
               push
               color="primary"
-              label="Add new"
+              :label="$t('tournament.list.addNewBtn')"
             />
           </div>
         </template>
@@ -28,12 +28,19 @@
             dense
             debounce="300"
             v-model="filter"
-            placeholder="Search"
+            :placeholder="$t('tournament.list.search')"
           >
             <template v-slot:append>
               <q-icon name="search" />
             </template>
           </q-input>
+        </template>
+
+        <template v-slot:no-data>
+          <div class="full-width row flex-center text-accent q-gutter-sm">
+            <q-icon size="2em" name="sentiment_dissatisfied" /><br />
+            {{ $t('tournament.list.error.noTournaments') }}
+          </div>
         </template>
 
         <template v-slot:item="props">
@@ -58,7 +65,10 @@
                       outline
                       rounded
                       :color="
-                        props.row.status === 'In progress' ? 'orange' : 'green'
+                        props.row.status ===
+                        $t('tournament.isFinishedInProgress')
+                          ? 'orange'
+                          : 'green'
                       "
                       style="height: 35px;"
                       :label="props.row.status"
@@ -66,13 +76,13 @@
                   </div>
 
                   <div class="text-grey-14 " style="text-align:left">
-                    Participants:
+                    {{ $t('tournament.list.participants') }}:
                   </div>
                   <q-chip size="1em">
                     <q-avatar>
                       <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
                     </q-avatar>
-                    Organizer
+                    {{ $t('tournament.organizer') }}
                   </q-chip>
                   <q-avatar size="2em" v-for="n in 10" :key="n" class="q-ml-xs">
                     <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
@@ -89,13 +99,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { IPagination, IData, IColumns, IProps } from '../models';
+import { IPagination, TournamentListData, IColumns, IProps } from '../models';
 
 @Component
 export default class GridListDesktop extends Vue {
   @Prop({ type: String, default: () => '' }) filter!: string;
-  @Prop({ type: Array, required: true }) readonly columns!: IColumns;
-  @Prop({ type: Array, default: () => [] }) readonly data!: IData[];
+  @Prop({ type: Array, required: true }) readonly columns!: IColumns[];
+  @Prop({ type: Array, default: () => [] })
+  readonly data!: TournamentListData[];
   @Prop({ type: Object, required: true }) pagination!: IPagination;
 
   private childPagination: IPagination = { ...this.pagination };

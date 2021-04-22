@@ -21,7 +21,7 @@ export interface IColumns {
   name?: string;
   required?: boolean;
   label?: string;
-  algin?: string;
+  align?: string;
   field?: string;
   sortable?: boolean;
 }
@@ -30,4 +30,15 @@ export interface IData {
   name?: string;
   status?: string;
   participants?: string;
+}
+
+export interface TournamentListData {
+  id: string;
+  name: string;
+  status: string;
+  participants: ListUser[];
+}
+export interface ListUser {
+  firstName: string;
+  lastName: string;
 }
