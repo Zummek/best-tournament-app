@@ -5,16 +5,24 @@ import {
 } from '../../shared/types/Tournament';
 
 interface INewMatch {
-  teamA: TeamWithoutMS;
-  teamB: TeamWithoutMS;
+  teamA?: TeamWithoutMS;
+  teamB?: TeamWithoutMS;
+  childMatchAId?: string;
+  childMatchBId?: string;
 }
 
 export default class Match implements MatchWithoutMS {
   id?: string | undefined;
 
-  teamA: TeamWithoutMS;
+  teamA?: TeamWithoutMS;
 
-  teamB: TeamWithoutMS;
+  teamB?: TeamWithoutMS;
+
+  childMatchAId?: string;
+
+  childMatchBId?: string;
+
+  childTeamsAmount?: number;
 
   score: MatchScore;
 
@@ -24,14 +32,15 @@ export default class Match implements MatchWithoutMS {
     this.id = data.id;
     this.teamA = data.teamA;
     this.teamB = data.teamB;
+    this.childMatchAId = data.childMatchAId;
+    this.childMatchBId = data.childMatchBId;
     this.score = data.score;
     this.isFinished = data.isFinished;
   }
 
-  public static getInstanceBasedOnTeams(data: INewMatch) {
+  public static getNewInstance(data: INewMatch) {
     return new Match({
-      teamA: data.teamA,
-      teamB: data.teamB,
+      ...data,
       score: {
         reportedByA: {
           a: -1,
@@ -51,11 +60,13 @@ export default class Match implements MatchWithoutMS {
   }
 
   public getAssignedTeam(userId: string) {
-    for (let i = 0; i < this.teamA.members.length; i++) {
-      if (this.teamA.members[i].id === userId) return 'teamA';
-    }
-    for (let i = 0; i < this.teamB.members.length; i++) {
-      if (this.teamB.members[i].id === userId) return 'teamB';
+    if (this.teamA && this.teamB) {
+      for (let i = 0; i < this.teamA?.members.length; i++) {
+        if (this.teamA.members[i].id === userId) return 'teamA';
+      }
+      for (let i = 0; i < this.teamB.members.length; i++) {
+        if (this.teamB.members[i].id === userId) return 'teamB';
+      }
     }
 
     return false;

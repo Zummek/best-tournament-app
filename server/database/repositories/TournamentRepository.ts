@@ -6,19 +6,21 @@ import AppError from '../../utils/appError';
 
 interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'> {
   _id?:string,
-  teamA: TeamDb,
-  teamB: TeamDb,
+  teamA?: TeamDb,
+  teamB?: TeamDb,
 }
+
 function toMatchDb(match: MatchWithoutMS) : MatchDb {
   const matchDb : MatchDb = {
     _id: match.id,
-    teamA: toTeamDb(match.teamA),
-    teamB: toTeamDb(match.teamB),
+    teamA: match.teamA ? toTeamDb(match.teamA) : undefined,
+    teamB: match.teamB ? toTeamDb(match.teamB) : undefined,
     score: match.score,
     isFinished: match.isFinished,
   };
   return matchDb;
 }
+
 function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
   const match : MatchWithoutMS = {
     id: matchDoc._id.toString(),
@@ -29,11 +31,13 @@ function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
   };
   return match;
 }
+
 interface TournamentDb extends Omit<TournamentWithoutMS, 'id' | 'teams' | 'matches'> {
   _id?: string,
   teams: TeamDb[],
   matches: MatchDb[]
 }
+
 function toTournamentDb(t: TournamentWithoutMS) : TournamentDb {
   return {
     _id: t.id,
@@ -42,8 +46,10 @@ function toTournamentDb(t: TournamentWithoutMS) : TournamentDb {
     teams: t.teams.map((team) => toTeamDb(team)),
     matches: t.matches.map((match) => toMatchDb(match)),
     isFinished: t.isFinished,
+    type: t.type,
   };
 }
+
 function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
   return {
     id: tDoc._id.toString(),
@@ -52,6 +58,7 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
     teams: tDoc.teams.map((teamDoc) => toTeam(teamDoc)),
     matches: tDoc.matches.map((matchDoc) => toMatch(matchDoc)),
     isFinished: tDoc.isFinished,
+    type: tDoc.type,
   };
 }
 
@@ -62,7 +69,7 @@ export default class TournamentRepository {
       if (!team.id) { throw new AppError('All teams should have ids.', 400); }
     });
     tournament.matches.forEach((match) => {
-      if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      if (!match.teamA?.id || !match.teamB?.id) { throw new AppError('All teams in matches entries should have ids', 400); }
     });
     const tDoc = await TournamentModel.create(toTournamentDb(tournament));
     const tour = await TournamentRepository.getById(tDoc._id);
