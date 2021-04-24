@@ -1,6 +1,7 @@
 export interface Create {
   name: string;
   teams: CreateTeam[];
+  type: "single-elimination" | "round-robin";
 }
 
 export interface CreateTeam {

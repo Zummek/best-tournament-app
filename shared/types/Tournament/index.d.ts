@@ -6,7 +6,7 @@ export interface Team {
   name: string;
   members: User[];
 }
-// in db
+
 export interface TeamWithoutMS extends Omit<Team, "members"> {
   members: UserWithoutMS[];
 }
@@ -24,16 +24,18 @@ export interface MatchScore {
 
 export interface Match {
   id?: string;
-  teamA: Team;
-  teamB: Team;
+  teamA?: Team;
+  teamB?: Team;
+  childMatchAId?: string;
+  childMatchBId?: string;
   score: MatchScore;
   isFinished: boolean;
-  // date: Date;
 }
 
 export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
-  teamA: TeamWithoutMS;
-  teamB: TeamWithoutMS;
+  teamA?: TeamWithoutMS;
+  teamB?: TeamWithoutMS;
+  childTeamsAmount?: number;
 }
 
 export default interface Tournament {
@@ -43,8 +45,9 @@ export default interface Tournament {
   teams: Team[];
   matches: Match[];
   isFinished: boolean;
+  type: "single-elimination" | "round-robin";
 }
-// in db
+
 export interface TournamentWithoutMS
   extends Omit<Tournament, "owner" | "teams" | "matches"> {
   ownerId: string;
