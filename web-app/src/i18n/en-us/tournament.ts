@@ -8,8 +8,8 @@ export default {
     inProgress: 'In progress',
   },
   type: {
-    roundRobin: 'Round robin',
-    singleElimination: 'Single elimination',
+    roundRobin: 'Round-robin',
+    singleElimination: 'Single-elimination',
   },
   error: {
     atLeastTwoTeams: 'Add at least two teams!',

@@ -35,7 +35,7 @@ export default {
     builderTitle: 'Kreator drużyny',
     error: {
       alreadyIncludedPlayer: 'Ten gracz jest już w drużynie!',
-      tooShortName: 'Nazwa drużyny jest za krótka!',
+      tooShortName: 'Nazwa drużyny jest za krótka! (min. 3 znaki)',
       tooLongName: 'Nazwa drużyny jest za długa!',
       atLeastOneMember: 'Dodaj przynajmniej jednego zawodnika!',
     },
