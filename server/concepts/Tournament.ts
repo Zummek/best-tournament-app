@@ -160,7 +160,10 @@ export default class Tournament implements TournamentWithoutMS {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament does not exits', 404);
 
-    const rawMatch = tournament?.matches.find((match) => String(match.id) === matchId);
+    if (tournament.type === 'single-elimination' && data.teamA === data.teamB)
+      throw new AppError('Scores can not be the same in single-elimination tournament', 400);
+
+    const rawMatch = tournament.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
     const match = new Match(rawMatch);
@@ -197,6 +200,36 @@ export default class Tournament implements TournamentWithoutMS {
       }
     } else {
       throw new AppError('You are not authorized to update this match', 403);
+    }
+
+    if (match.isFinished === true) {
+      if (tournament.type === 'single-elimination') {
+        const nextMatch = tournament.matches.find((m) => match.id === m.childMatchAId || match.id === m.childMatchBId);
+
+        if (nextMatch) {
+          const winner = match.getWinner() as TeamWithoutMS;
+          if (nextMatch.childMatchAId === match.id) nextMatch.teamA = winner;
+          else nextMatch.teamB = winner;
+
+          await TournamentRepository.updateMatch(nextMatch);
+        } else {
+          tournament.isFinished = true; // If there are no next matches it was the last one
+          // TODO: update tournament => TournamentRepository.update(tournament);
+        }
+      } else {
+        let tournamentIsFinishedFlag = false;
+        for (let i = 0; i < tournament.matches.length; i++) {
+          if (!tournament.matches[i].isFinished && tournament.matches[i].id !== match.id) {
+            tournamentIsFinishedFlag = true;
+            break;
+          }
+        }
+
+        if (tournamentIsFinishedFlag) {
+          tournament.isFinished = true;
+          // TODO: update tournament => TournamentRepository.update(tournament);
+        }
+      }
     }
 
     await TournamentRepository.updateMatch(match);
