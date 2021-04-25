@@ -139,7 +139,6 @@ export default class TournamentRepository {
   }
 
   public static async delete(id: string) {
-    if (!isValidObjectId(id)) return null;
     const tDoc = await TournamentModel.findById(id).exec();
     if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 400);
     const session = await TournamentModel.startSession();
