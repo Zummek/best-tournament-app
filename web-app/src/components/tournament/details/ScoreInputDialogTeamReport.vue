@@ -4,7 +4,7 @@
       <div class="row justify-between">
         <div class="q-dialog__message self-center">
           {{
-            $t('tournament.scoreInputDialog.teamXReportedResult', {
+            $t('tournament.match.scoreInputDialog.teamXReportedResult', {
               teamName: reportedByTeamName,
             })
           }}
@@ -13,7 +13,7 @@
           flat
           dense
           color="primary"
-          :label="$t('tournament.scoreInputDialog.acceptScore')"
+          :label="$t('tournament.match.scoreInputDialog.acceptScore')"
           size="12px"
           @click="acceptScore"
         />

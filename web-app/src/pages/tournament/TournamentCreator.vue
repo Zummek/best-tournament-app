@@ -45,7 +45,7 @@
                   :hint="$t('tournament.name')"
                   :rules="[
                     val =>
-                      validate(value) || $t('tournament.wrongInputLengthError'),
+                      validate(value) || $t('common.error.wrongInputLength'),
                   ]"
                   @input="emitValue"
                 >
@@ -81,7 +81,7 @@
             color="primary"
           >
             <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
-              {{ $t('tournament.atLeastTwoTeamsError') }}
+              {{ $t('tournament.error.atLeastTwoTeams') }}
             </q-tooltip>
             <q-icon class="q-mx-none" name="add" />
             {{ $t('common.create') }}
@@ -122,7 +122,7 @@
           color="primary"
         >
           <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
-            {{ $t('tournament.atLeastTwoTeamsError') }}
+            {{ $t('tournament.error.atLeastTwoTeams') }}
           </q-tooltip>
           <q-icon class="q-mx-none" name="add" />
           {{ $t('common.create') }}
@@ -195,7 +195,7 @@ export default class TournamentCreator extends Vue {
         });
       } catch (error) {
         this.$q.notify({
-          message: this.$t('tournament.addingTournamentError').toString(),
+          message: this.$t('tournament.error.addingTournament').toString(),
           color: 'warning',
           textColor: 'black',
         });

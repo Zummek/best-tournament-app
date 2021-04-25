@@ -4,4 +4,8 @@ export default {
   create: 'Stwórz',
   name: 'Nazwa',
   noSearchResults: 'Brak wyników wyszukiwania',
+  error: {
+    cannotBeBlank: 'Pole nie może być puste!',
+    wrongInputLength: 'Niepoprawna długość!',
+  },
 };

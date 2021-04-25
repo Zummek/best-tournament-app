@@ -47,7 +47,7 @@
             borderless
             readonly
             v-model="completedMatchesFormated"
-            :label="$t('tournament.matchesPlayed')"
+            :label="$t('tournament.match.played')"
           />
         </div>
       </q-card-section>
