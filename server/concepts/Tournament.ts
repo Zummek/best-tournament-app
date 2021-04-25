@@ -1,4 +1,5 @@
 import tournamentGenerator from 'tournament-generator';
+import _ from 'lodash';
 import ITournament, {
   MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch,
 } from '../../shared/types/Tournament';
@@ -71,7 +72,7 @@ export default class Tournament implements TournamentWithoutMS {
       roundAmount++;
     } while (2 ** roundAmount < teams.length);
     const firstRoundTeamsAmount = teams.length * 2 - minPowerTwo;
-    const teamsToAssign = [...teams];
+    const teamsToAssign = _.shuffle(teams);
     const matchesForFirstRound = matches.slice(matches.length - firstRoundTeamsAmount / 2);
     matches[0].childTeamsAmount = tournament.teams.length;
 
