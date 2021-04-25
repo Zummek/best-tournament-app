@@ -5,11 +5,15 @@ import * as types from './types';
 export const createTournament = async (
   payload: types.CreateTournamentPayload
 ) => {
-  await axiosInstance.post('v1/tournaments', payload);
+  const response = await axiosInstance.post<types.CreateTournamentResponse>(
+    'v1/tournaments',
+    payload
+  );
+  return response.data.data;
 };
 
 export const getTournament = async (tournamentId: string) => {
-  const response = await axiosInstance.get<types.getTournamentResponse>(
+  const response = await axiosInstance.get<types.GetTournamentResponse>(
     `v1/tournaments/${encodeURIComponent(tournamentId)}`
   );
 

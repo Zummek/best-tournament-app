@@ -15,21 +15,19 @@ const routes: RouteConfig[] = [
         path: 'tournaments',
         name: 'TournamentsList',
         component: () => import('src/pages/tournament/TournamentsList.vue'),
-        meta: { public: true }, //TODO change to false
-      },
-      {
-        path: 'tournaments/:id',
-        name: 'TournamentDetails',
-        // component: () => import('pages/tournament/Details.vue'),
-        component: () => import('pages/Index.vue'),
-        meta: { public: true }, // TODO: change to false
+        meta: { public: false },
       },
       {
         path: 'tournaments/create',
         name: 'TournamentCreator',
-        // component: () => import('pages/tournament/TournamentCreator.vue'),
-        component: () => import('pages/Index.vue'),
-        meta: { public: true }, // TODO: change to false
+        component: () => import('pages/tournament/TournamentCreator.vue'),
+        meta: { public: false },
+      },
+      {
+        path: 'tournaments/:id',
+        name: 'TournamentDetails',
+        component: () => import('pages/tournament/Details.vue'),
+        meta: { public: false },
       },
     ],
   },
@@ -39,6 +37,7 @@ const routes: RouteConfig[] = [
     children: [
       {
         path: 'login',
+        name: 'login',
         component: () => import('pages/Login.vue'),
         meta: { public: true },
       },

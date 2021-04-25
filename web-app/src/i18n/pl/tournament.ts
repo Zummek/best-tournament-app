@@ -6,7 +6,6 @@ export default {
   isFinishedInProgress: 'W trakcie',
   participantsAmount: 'Liczba uczestników',
   matchesPlayed: 'Rozegrane mecze',
-  team: 'Drużyna',
   addScore: 'Dodaj wynik',
   resolveConflict: 'Rozwiąż konflikt',
   scorePendingApproval: 'wynik oczekuje na akceptację',
@@ -35,5 +34,24 @@ export default {
     error: {
       noTournaments: 'Brak turniejów do wyświetlenia',
     },
+  },
+  wrongInputLengthError: 'Niepoprawna długość!',
+  atLeastTwoTeamsError: 'Dodaj przynajmniej dwie drużyny!',
+  tournamentCreatorTitle: 'Kreator turnieju',
+  cannotBeBlankError: 'Pole nie może być puste!',
+  alreadyIncludedPlayerError: 'Ten graczj jest już w drużynie!',
+  tooShortTeamNameError: 'Nazwa drużyny jest za krótka!',
+  tooLongTeamNameError: 'Nazwa drużyny jest za długa!',
+  addingTournamentError:
+    'Ups... coś poszło nietak. Turniej nie został poprawnie utworzony',
+  team: {
+    label: 'Drużyna',
+    name: 'Nazwa Drużyny',
+    list: 'Lista Drużyn',
+    noTeamsAddedErrorCreator: 'Dodaj drużynę za pomocą kreatora drużyny!',
+    choosePlayer: 'Wybierz zawodnika',
+    add: 'Dodaj drużynę',
+    builderTitle: 'Kreator drużyny',
+    atLeastOneMemberError: 'Dodaj przynajmniej jednego zawodnika!',
   },
 };

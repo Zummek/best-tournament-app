@@ -30,7 +30,7 @@
           <q-input
             style="width: 45%"
             v-model="valueTeamAScore"
-            :label="`${$t('tournament.team')} ${teamAName}`"
+            :label="`${$t('tournament.team.label')} ${teamAName}`"
             :placeholder="$t('tournament.scoreInputDialog.score')"
             stack-label
             type="number"
@@ -44,7 +44,7 @@
           <q-input
             style="width: 45%"
             v-model="valueTeamBScore"
-            :label="`${$t('tournament.team')} ${teamBName}`"
+            :label="`${$t('tournament.team.label')} ${teamBName}`"
             :placeholder="$t('tournament.scoreInputDialog.score')"
             stack-label
             type="number"

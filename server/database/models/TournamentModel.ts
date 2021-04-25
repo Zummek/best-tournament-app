@@ -23,8 +23,15 @@ const MatchSchema = new Schema({
 });
 
 const TournamentSchema = new Schema({
-  // _id
-  name: { type: Schema.Types.String },
+  name: {
+    type: Schema.Types.String,
+    required: [true, 'No tournament name was specified'],
+    minLength: [3, 'Tournament name should be at least 3 characters long'],
+    maxLength: [
+      40,
+      'Tournament name cannot exceed 40 characters',
+    ] /* unique: true */,
+  },
   ownerId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],

@@ -1,6 +1,7 @@
 import Tournament from 'app/../shared/types/Tournament';
 import { UpdateMatchOutcomes } from 'app/../shared/types/Tournament/apiInterface';
 import User from 'app/../shared/types/User';
+import { Create as tournamentCreate } from 'app/../shared/types/Tournament/apiInterface';
 
 export interface AuthLoginResponse {
   data: Location;
@@ -24,7 +25,7 @@ export interface GetUserPhotoResponse {
   };
 }
 
-export interface getTournamentResponse {
+export interface GetTournamentResponse {
   data: {
     tournament: Tournament;
   };
@@ -36,8 +37,12 @@ export interface getTournamentsResponse {
   };
 }
 
-export interface CreateTournamentPayload {
-  name: string; // TODO: it is temporary as template
+export type CreateTournamentPayload = tournamentCreate;
+
+export interface CreateTournamentResponse {
+  data: {
+    id: string;
+  };
 }
 
 export type UpdateTournamentMatchPayload = UpdateMatchOutcomes;
