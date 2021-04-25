@@ -4,10 +4,12 @@ export default {
   participantsAmount: 'Liczba uczestników',
   status: {
     label: 'Status',
-    isFinished: {
-      true: 'Zakończony',
-      inProgress: 'W trakcie',
-    },
+    finished: 'Zakończony',
+    inProgress: 'W trakcie',
+  },
+  type: {
+    roundRobin: 'Każdy z każdym',
+    singleElimination: 'System pucharowy',
   },
   error: {
     atLeastTwoTeams: 'Dodaj przynajmniej dwie drużyny!',

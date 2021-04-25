@@ -4,10 +4,12 @@ export default {
   participantsAmount: 'Number of participants',
   status: {
     label: 'Status',
-    isFinished: {
-      true: 'Finished',
-      inProgress: 'In progress',
-    },
+    finished: 'Finished',
+    inProgress: 'In progress',
+  },
+  type: {
+    roundRobin: 'Round robin',
+    singleElimination: 'Single elimination',
   },
   error: {
     atLeastTwoTeams: 'Add at least two teams!',
@@ -32,7 +34,7 @@ export default {
     builderTitle: 'Team creator',
     error: {
       alreadyIncludedPlayer: 'That player is already in the team !',
-      tooShortName: 'Team name too short!',
+      tooShortName: 'Team name too short! (min. 3 characters)',
       tooLongName: 'Team name too long!',
       atLeastOneMember: 'Add at least one team member!',
     },

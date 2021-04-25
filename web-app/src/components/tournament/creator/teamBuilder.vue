@@ -12,6 +12,8 @@
           :label="$t('tournament.team.name')"
           :error-message="teamNameErrorMessage"
           :error="isErrorInputTeamName"
+          counter
+          maxlength="40"
         />
       </q-card-section>
       <q-card-section

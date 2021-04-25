@@ -66,7 +66,7 @@
                       rounded
                       :color="
                         props.row.status ===
-                        $t('tournament.status.isFinished.inProgress')
+                        $t('tournament.status.inProgress')
                           ? 'orange'
                           : 'green'
                       "

@@ -88,8 +88,8 @@ export default class TournamentsList extends Vue {
         name: el.name,
         status:
           el.isFinished === true
-            ? (this.$t('tournament.status.isFinished.true') as string)
-            : (this.$t('tournament.status.isFinished.inProgress') as string),
+            ? (this.$t('tournament.status.finished') as string)
+            : (this.$t('tournament.status.inProgress') as string),
         participants: cleanUsers,
       };
     });

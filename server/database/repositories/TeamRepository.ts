@@ -17,20 +17,20 @@ function toUser(usrDb: UserDocument): UserWithoutMS {
   };
 }
 
-export interface TeamDb extends Omit<TeamWithoutMS, 'id' | 'members'> {
-  _id?:string
+export interface TeamDb extends Omit<TeamWithoutMS, "id" | "members"> {
+  _id?: string;
   members: UserDb[];
 }
-export function toTeamDb(team: TeamWithoutMS) : TeamDb {
-  const teamDb : TeamDb = {
+export function toTeamDb(team: TeamWithoutMS): TeamDb {
+  const teamDb: TeamDb = {
     _id: team.id,
     name: team.name,
     members: team.members.map((user) => toUserDb(user)),
   };
   return teamDb;
 }
-export function toTeam(teamDb: TeamDocument) : TeamWithoutMS {
-  const team : TeamWithoutMS = {
+export function toTeam(teamDb: TeamDocument): TeamWithoutMS {
+  const team: TeamWithoutMS = {
     id: teamDb._id.toString(),
     name: teamDb.name,
     members: teamDb.members.map((userDoc) => toUser(userDoc)),
@@ -41,7 +41,8 @@ export function toTeam(teamDb: TeamDocument) : TeamWithoutMS {
 export default class TeamRepository {
   public static create = async (team: TeamWithoutMS) => {
     const teamDb = toTeamDb(team);
-    if (teamDb._id !== undefined) throw new AppError('New team should not contain id', 400);
+    if (teamDb._id !== undefined)
+      throw new AppError("New team should not contain id", 400);
     const teamWithoutMS = toTeam(await TeamModel.create(teamDb));
     return teamWithoutMS;
   };
@@ -53,7 +54,8 @@ export default class TeamRepository {
     const teamsDb = teams.map((team) => toTeamDb(team));
 
     teamsDb.forEach(async (team) => {
-      if (!team._id) throw new AppError('New team should not contain id', 400);
+      if (team._id !== undefined)
+        throw new AppError("New team should not contain id", 400);
     });
     const teamDocs = await TeamModel.insertMany(teamsDb);
     teams = teamDocs.map((team) => toTeam(team));
