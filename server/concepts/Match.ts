@@ -71,4 +71,13 @@ export default class Match implements MatchWithoutMS {
 
     return false;
   }
+
+  public getWinner() {
+    if (!this.isFinished) return null;
+
+    if (this.score.final.a > this.score.final.b) return this.teamA as TeamWithoutMS;
+    if (this.score.final.b > this.score.final.a) return this.teamA as TeamWithoutMS;
+
+    return 'draw';
+  }
 }
