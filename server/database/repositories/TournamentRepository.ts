@@ -90,7 +90,7 @@ export default class TournamentRepository {
   }
 
   public static async updateMatch(match: MatchWithoutMS) {
-    if (!match.id || !isValidObjectId(match.id)) throw new AppError('Provided match does not contain id', 400);
+    if (!match.id || !isValidObjectId(match.id)) throw new AppError('Provided match does not contain id', 404);
     const matchDb = toMatchDb(match);
     const tournamentDocument = await TournamentModel.findOneAndUpdate(
       { 'matches._id': matchDb._id },
