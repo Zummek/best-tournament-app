@@ -45,10 +45,10 @@ export default class Tournament implements TournamentWithoutMS {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
     let newMatches = [];
-    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
-    else newMatches = Tournament.generateEmptyMatches(teams.length - 1);
+    if (data.type === 'round-robin')newMatches = Tournament.generateRoundRobinMatches(teams);
+    else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
 
-    const tournament = await TournamentRepository.createRoundRobin({
+    const tournament = await TournamentRepository.create({
       name: data.name,
       ownerId,
       teams,
@@ -59,8 +59,7 @@ export default class Tournament implements TournamentWithoutMS {
 
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
-      // TODO: update tournament's matches after changes => update tournament?
-      // TournamentRepository.update(tournament);
+      TournamentRepository.updateMatches(tournament);
     }
 
     return tournament;
@@ -144,7 +143,7 @@ export default class Tournament implements TournamentWithoutMS {
     }));
   }
 
-  private static generateEmptyMatches(matchAmount: number): Match[] {
+  private static generateEmptySingleEliminationMatches(matchAmount: number): Match[] {
     const newMatches = [];
 
     for (let i = 0; i < matchAmount; i++) {
@@ -221,21 +220,19 @@ export default class Tournament implements TournamentWithoutMS {
 
           await TournamentRepository.updateMatch(nextMatch);
         } else {
-          tournament.isFinished = true; // If there are no next matches it was the last one
-          // TODO: update tournament => TournamentRepository.update(tournament);
+          TournamentRepository.markAsFinished(tournament);
         }
       } else {
-        let tournamentIsFinishedFlag = false;
+        let tournamentIsFinishedFlag = true;
         for (let i = 0; i < tournament.matches.length; i++) {
           if (!tournament.matches[i].isFinished && tournament.matches[i].id !== match.id) {
-            tournamentIsFinishedFlag = true;
+            tournamentIsFinishedFlag = false;
             break;
           }
         }
 
         if (tournamentIsFinishedFlag) {
-          tournament.isFinished = true;
-          // TODO: update tournament => TournamentRepository.update(tournament);
+          await TournamentRepository.markAsFinished(tournament);
         }
       }
     }

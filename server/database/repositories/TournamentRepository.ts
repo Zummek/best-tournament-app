@@ -67,15 +67,17 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
 }
 
 export default class TournamentRepository {
-  public static async createRoundRobin(tournament: TournamentWithoutMS) {
+  public static async create(tournament: TournamentWithoutMS) {
     if (tournament.id) { throw new AppError('New tournament should not have id', 400); }
     tournament.teams.forEach((team) => {
       if (!team.id) { throw new AppError('All teams should have ids.', 400); }
     });
-    tournament.matches.forEach((match) => {
-      if (!match.teamA || !match.teamB) { throw new AppError('All matches should contain teams', 400); }
-      if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
 
+    tournament.matches.forEach((match) => {
+      if (tournament.type === 'round-robin') {
+        if (!match.teamA || !match.teamB) { throw new AppError('All matches should contain teams', 400); }
+        if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      }
       if (match.id) { throw new AppError('All matches should not contain id', 400); }
     });
 
@@ -139,5 +141,27 @@ export default class TournamentRepository {
       await tDoc.deleteOne();
     });
     session.endSession();
+  }
+
+  public static async updateMatches(t: TournamentWithoutMS) {
+    if (!t.id) throw new AppError('Tournament should contain id', 404);
+    const results = [];
+    for (let i = 0; i < t.matches.length; i++) {
+      results.push(TournamentRepository.updateMatch(t.matches[i]));
+    }
+    await Promise.all(results);
+    const tournament = TournamentRepository.getById(t.id);
+    if (!tournament) throw new AppError('Error while updating matches', 400);
+    return tournament;
+  }
+
+  public static async markAsFinished(t: TournamentWithoutMS) {
+    if (!t.id) throw new AppError('Missing Tournament.id property', 400);
+    const tDoc: TournamentDocument | null = await TournamentModel.findById(t.id).exec();
+    if (!tDoc) throw new AppError('No tournament with such id', 400);
+    if (tDoc.isFinished) throw new AppError('Tournament is already finished', 400);
+    tDoc.isFinished = true;
+    const tour = await tDoc.save();
+    return toTournament(tour);
   }
 }
