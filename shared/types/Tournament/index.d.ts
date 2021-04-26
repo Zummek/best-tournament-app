@@ -35,7 +35,6 @@ export interface Match {
 export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
   teamA?: TeamWithoutMS;
   teamB?: TeamWithoutMS;
-  childTeamsAmount?: number;
 }
 
 export default interface Tournament {

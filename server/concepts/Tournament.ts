@@ -11,6 +11,10 @@ import AppError from '../utils/appError';
 import Match from './Match';
 import MSOrganization from './MSOrganization';
 
+interface SingleEliminationCreatorMatch extends MatchWithoutMS {
+  childTeamsAmount?: number;
+}
+
 export default class Tournament implements TournamentWithoutMS {
   id?: string;
 
@@ -64,7 +68,9 @@ export default class Tournament implements TournamentWithoutMS {
   }
 
   private static setSingleEliminationMatches(tournament: Tournament) {
-    const { matches, teams } = tournament;
+    // eslint-disable-next-line prefer-destructuring
+    const matches: SingleEliminationCreatorMatch[] = tournament.matches;
+    const { teams } = tournament;
     let minPowerTwo = 1;
     for (let i = 0; minPowerTwo < teams.length; i++) minPowerTwo = 2 ** i;
     let roundAmount = 0;
@@ -74,20 +80,19 @@ export default class Tournament implements TournamentWithoutMS {
     const firstRoundTeamsAmount = teams.length * 2 - minPowerTwo;
     const teamsToAssign = _.shuffle(teams);
     const matchesForFirstRound = matches.slice(matches.length - firstRoundTeamsAmount / 2);
-    matches[0].childTeamsAmount = tournament.teams.length;
+    matches[0].childTeamsAmount = teams.length;
 
     for (let i = 0; i < roundAmount - 1; i++) {
       for (let ii = 0; ii < 2 ** i; ii++) {
         const { childTeamsAmount } = matches[2 ** i - 1 + ii];
         if (childTeamsAmount) {
-          const temp = childTeamsAmount / 2;
-          const childTeamsAmountInA = Math.ceil(temp);
-          const childTeamsAmountInB = Math.floor(temp);
+          const childTeamsAmountInA = Math.ceil(childTeamsAmount / 2);
+          const childTeamsAmountInB = Math.floor(childTeamsAmount / 2);
 
           if (childTeamsAmountInA === 1) {
             matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift();
           } else {
-            let assignedMatch: MatchWithoutMS;
+            let assignedMatch: SingleEliminationCreatorMatch;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
             else assignedMatch = matches[(2 ** i - 1 + ii) * 2 + 1];
 
@@ -102,7 +107,7 @@ export default class Tournament implements TournamentWithoutMS {
           if (childTeamsAmountInB === 1) {
             matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift();
           } else {
-            let assignedMatch: MatchWithoutMS;
+            let assignedMatch: SingleEliminationCreatorMatch;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
             else assignedMatch = matches[(2 ** i - 1 + ii) * 2 + 2];
 
