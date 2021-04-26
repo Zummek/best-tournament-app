@@ -8,6 +8,7 @@ export default {
     inProgress: 'W trakcie',
   },
   type: {
+    label: 'Typ turnieju',
     roundRobin: 'Każdy z każdym',
     singleElimination: 'System pucharowy',
   },

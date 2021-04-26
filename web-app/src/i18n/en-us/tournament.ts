@@ -8,6 +8,7 @@ export default {
     inProgress: 'In progress',
   },
   type: {
+    label: 'Tournament type',
     roundRobin: 'Round-robin',
     singleElimination: 'Single-elimination',
   },
