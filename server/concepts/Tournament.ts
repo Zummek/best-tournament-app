@@ -132,7 +132,7 @@ export default class Tournament implements TournamentWithoutMS {
   }
 
   private static generateRoundRobinMatches(teams: TeamWithoutMS[]): Match[] {
-    const { data } = tournamentGenerator(teams, { type: 'single-round' });
+    const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
     return data.map((match) => Match.getNewInstance({
       teamA: match.homeTeam,
