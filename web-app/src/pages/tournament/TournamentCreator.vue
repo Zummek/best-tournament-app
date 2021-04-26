@@ -5,50 +5,34 @@
       vertical
       color="primary"
       animated
+      flat
       class="col-12"
       style="max-width:1500px"
     >
       <q-step
         :name="1"
-        title="Select tournament type"
+        :title="$t('tournament.stepper.tournamentType')"
         icon="settings"
         :done="step > 1"
       >
-        <div class="row col-12 justify-center">
-          <selectable-tournament-type 
-            :tournamentTypeName="$t('tournament.type.roundRobin')"
-            iconName="warning"
-            @updateTournamentType="updateTournamentType"
-          />
-          <selectable-tournament-type 
-            :tournamentTypeName="$t('tournament.type.singleElimination')"
-            iconName="settings"
-            @updateTournamentType="updateTournamentType"
-          />
+        <tournament-type-selector />
 
-          <!-- <div class="col-8">
-            <strong> {{ $t('tournament.type.label') }}: </strong>
-            <q-option-group
-              :options="tournamentTypesOptions"
-              type="radio"
-              v-model="tournamentType"
-              inline
-              dense
-            />
-          </div> -->
-        </div>
-
-        <q-stepper-navigation>
-          <q-btn @click="step = 2" color="primary" label="Continue" />
-        </q-stepper-navigation>
+        <!-- <q-stepper-navigation>
+          <q-btn
+            :disable="!activeTournamentType.length"
+            @click="step = 2"
+            color="primary"
+            label="Continue"
+          />
+        </q-stepper-navigation> -->
       </q-step>
       <q-step
         :name="2"
-        title="Build your teams"
+        :title="$t('tournament.stepper.buildTeams')"
         icon="settings"
         :done="step > 2"
       >
-        <div class="col-12 q-pa-lg ">
+        <div class="col-12 " :class="$q.screen.gt.xs ? 'q-px-lg' : 'q-px-none'">
           <div class="row justify-between">
             <div
               :class="$q.screen.gt.xs ? 'col-6' : 'col-12'"
@@ -188,38 +172,23 @@ import User from '../../../../shared/types/User';
 import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/teamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/teamBuilder.vue';
-import SelectableTournamentType from '../../components/tournament/creator/selectableTournamentType.vue';
+import TournamentTypeSelector from '../../components/tournament/creator/tournamentTypeSelector.vue';
 import { Team } from '../../../../shared/types/Tournament';
+import EventBus from '../../services/EventBus';
 import API from 'src/services/API';
 
 @Component({
-  components: { TeamsList, TeamBuilder, SelectableTournamentType },
+  components: { TeamsList, TeamBuilder, TournamentTypeSelector },
 })
 export default class TournamentCreator extends Vue {
   private step = 1;
-  private tournamentType = '';
+  private activeTournamentType = '';
   private initTournamentName = '[Tournament name]';
   private tournamentName = this.initTournamentName;
   private isErrorTournamentName = false;
   private pagination = {
     rowsPerPage: 0,
   };
-
-  private updateTournamentType(tournType: string){
-    this.tournamentType = tournType;
-    console.log(this.tournamentType);
-  }
-
-  private tournamentTypesOptions = [
-    {
-      label: this.$t('tournament.type.roundRobin') as string,
-      value: 'round-robin',
-    },
-    {
-      label: this.$t('tournament.type.singleElimination') as string,
-      value: 'single-elimination',
-    },
-  ];
 
   private columns = [
     {
@@ -249,6 +218,18 @@ export default class TournamentCreator extends Vue {
 
   private async created() {
     await this.getUsers();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    EventBus.$on('updateActiveTournamentType', this.updateActiveTournamentType);
+  }
+
+  private beforeDestroy() {
+    EventBus.$off('updateActiveTournamentType');
+  }
+
+  private updateActiveTournamentType(newTournamentType: string) {
+    this.activeTournamentType = newTournamentType;
+    console.log(this.activeTournamentType);
+    this.step = 2;
   }
 
   private async submitAddTournament() {
@@ -296,4 +277,8 @@ export default class TournamentCreator extends Vue {
   }
 }
 </script>
-<style></style>
+<style>
+.q-stepper--vertical .q-stepper__step-inner {
+  padding: 0 24px 8px 24px;
+}
+</style>

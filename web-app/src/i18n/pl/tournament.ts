@@ -2,6 +2,10 @@ export default {
   name: 'Nazwa turnieju',
   organizer: 'Organizator',
   participantsAmount: 'Liczba uczestników',
+  stepper: {
+    tournamentType: 'Wybierz typ turnieju',
+    buildTeams: 'Stwórz drużyny',
+  },
   status: {
     label: 'Status',
     finished: 'Zakończony',

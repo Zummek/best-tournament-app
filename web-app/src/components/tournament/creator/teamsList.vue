@@ -103,7 +103,7 @@ export default class TeamsList extends Vue {
 </script>
 <style lang="sass">
 .sticky-virtscroll-table
-  height: 75vh
+  height: 65vh
 
   .q-table__top,
   .q-table__bottom,

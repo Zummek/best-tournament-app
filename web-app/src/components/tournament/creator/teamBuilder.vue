@@ -1,6 +1,6 @@
 <template>
   <q-form @submit.prevent="submitAddTeam">
-    <q-card :style="$q.screen.lt.sm ? '' : 'height:75vh'">
+    <q-card :style="$q.screen.lt.sm ? '' : 'height:65vh'">
       <q-card-section class="q-ma-none q-pb-none">
         <div class="text-h6">{{ $t('tournament.team.builderTitle') }}</div>
 
@@ -18,7 +18,7 @@
       </q-card-section>
       <q-card-section
         class="q-ma-none q-py-none"
-        style="max-height: 50%; overflow: auto"
+        style="max-height: 45%; overflow: auto"
       >
         <q-virtual-scroll :items="players" separator>
           <template v-slot="{ item }">
