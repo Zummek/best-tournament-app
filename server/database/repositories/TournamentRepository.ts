@@ -6,15 +6,17 @@ import AppError from '../../utils/appError';
 
 interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'> {
   _id?:string,
-  teamA?: TeamDb,
-  teamB?: TeamDb,
+  teamA: TeamDb | null,
+  teamB: TeamDb | null,
 }
 
 function toMatchDb(match: MatchWithoutMS) : MatchDb {
   const matchDb : MatchDb = {
     _id: match.id,
-    teamA: match.teamA ? toTeamDb(match.teamA) : undefined,
-    teamB: match.teamB ? toTeamDb(match.teamB) : undefined,
+    teamA: match.teamA ? toTeamDb(match.teamA) : null,
+    teamB: match.teamB ? toTeamDb(match.teamB) : null,
+    childMatchAId: match.childMatchAId,
+    childMatchBId: match.childMatchBId,
     score: match.score,
     isFinished: match.isFinished,
   };
@@ -24,8 +26,10 @@ function toMatchDb(match: MatchWithoutMS) : MatchDb {
 function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
   const match : MatchWithoutMS = {
     id: matchDoc._id.toString(),
-    teamA: toTeam(matchDoc.teamA),
-    teamB: toTeam(matchDoc.teamB),
+    teamA: matchDoc.teamA ? toTeam(matchDoc.teamA) : null,
+    teamB: matchDoc.teamB ? toTeam(matchDoc.teamB) : null,
+    childMatchAId: matchDoc.childMatchAId,
+    childMatchBId: matchDoc.childMatchBId,
     score: matchDoc.score,
     isFinished: matchDoc.isFinished,
   };
@@ -63,14 +67,18 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
 }
 
 export default class TournamentRepository {
-  public static async create(tournament: TournamentWithoutMS) {
+  public static async createRoundRobin(tournament: TournamentWithoutMS) {
     if (tournament.id) { throw new AppError('New tournament should not have id', 400); }
     tournament.teams.forEach((team) => {
       if (!team.id) { throw new AppError('All teams should have ids.', 400); }
     });
     tournament.matches.forEach((match) => {
-      if (!match.teamA?.id || !match.teamB?.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      if (!match.teamA || !match.teamB) { throw new AppError('All matches should contain teams', 400); }
+      if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+
+      if (match.id) { throw new AppError('All matches should not contain id', 400); }
     });
+
     const tDoc = await TournamentModel.create(toTournamentDb(tournament));
     const tour = await TournamentRepository.getById(tDoc._id);
     if (!tour) { throw new AppError('Error while creating tournament', 400); }

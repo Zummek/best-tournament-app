@@ -15,10 +15,13 @@ const MatchScoreSchema = new Schema({
 
 const MatchSchema = new Schema({
   // _id
-  teamA: { type: Schema.Types.ObjectId, ref: 'Team', required: [true, 'Missing team'] },
-  teamB: { type: Schema.Types.ObjectId, ref: 'Team', required: [true, 'Missing team'] },
+  teamA: { type: Schema.Types.ObjectId, ref: 'Team' },
+  teamB: { type: Schema.Types.ObjectId, ref: 'Team' },
+  childMatchAId: { type: Schema.Types.String },
+  childMatchBId: { type: Schema.Types.String },
   score: MatchScoreSchema,
-  isFinished: Schema.Types.Boolean,
+  isFinished: { type: Schema.Types.Boolean },
+
   // date: Schema.Types.Date,
 });
 
@@ -28,7 +31,12 @@ const TournamentSchema = new Schema({
   ownerId: Schema.Types.String,
   teams: [{ type: Schema.Types.ObjectId, ref: 'Team' }],
   matches: [MatchSchema],
-  isFinished: { type: Boolean },
+  isFinished: { type: Schema.Types.Boolean },
+  type: {
+    type: Schema.Types.String,
+    enum: ['round-robin', 'single-elimination'],
+    required: [true, 'Missing tournament type'],
+  },
 });
 
 // query middlewares

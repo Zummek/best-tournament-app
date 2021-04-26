@@ -24,8 +24,8 @@ export interface MatchScore {
 
 export interface Match {
   id?: string;
-  teamA?: Team;
-  teamB?: Team;
+  teamA: Team | null;
+  teamB: Team | null;
   childMatchAId?: string;
   childMatchBId?: string;
   score: MatchScore;
@@ -33,9 +33,12 @@ export interface Match {
 }
 
 export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
-  teamA?: TeamWithoutMS;
-  teamB?: TeamWithoutMS;
+  teamA: TeamWithoutMS | null;
+  teamB: TeamWithoutMS | null;
+  childTeamsAmount?: number;
 }
+
+export type TournamentType = "round-robin" | "single-elimination";
 
 export default interface Tournament {
   id?: string;
@@ -44,7 +47,7 @@ export default interface Tournament {
   teams: Team[];
   matches: Match[];
   isFinished: boolean;
-  type: "single-elimination" | "round-robin";
+  type: TournamentType;
 }
 
 export interface TournamentWithoutMS

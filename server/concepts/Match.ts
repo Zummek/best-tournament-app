@@ -5,8 +5,8 @@ import {
 } from '../../shared/types/Tournament';
 
 interface INewMatch {
-  teamA?: TeamWithoutMS;
-  teamB?: TeamWithoutMS;
+  teamA: TeamWithoutMS | null;
+  teamB: TeamWithoutMS | null;
   childMatchAId?: string;
   childMatchBId?: string;
 }
@@ -14,9 +14,9 @@ interface INewMatch {
 export default class Match implements MatchWithoutMS {
   id?: string | undefined;
 
-  teamA?: TeamWithoutMS;
+  teamA: TeamWithoutMS | null;
 
-  teamB?: TeamWithoutMS;
+  teamB: TeamWithoutMS | null;
 
   childMatchAId?: string;
 

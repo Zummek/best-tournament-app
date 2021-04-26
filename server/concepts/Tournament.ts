@@ -44,12 +44,11 @@ export default class Tournament implements TournamentWithoutMS {
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
-
     let newMatches = [];
     if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
     else newMatches = Tournament.generateEmptyMatches(teams.length - 1);
 
-    const tournament = await TournamentRepository.create({
+    const tournament = await TournamentRepository.createRoundRobin({
       name: data.name,
       ownerId,
       teams,
@@ -90,7 +89,7 @@ export default class Tournament implements TournamentWithoutMS {
           const childTeamsAmountInB = Math.floor(childTeamsAmount / 2);
 
           if (childTeamsAmountInA === 1) {
-            matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift();
+            matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift() || null;
           } else {
             let assignedMatch: SingleEliminationCreatorMatch;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
@@ -99,13 +98,13 @@ export default class Tournament implements TournamentWithoutMS {
             assignedMatch.childTeamsAmount = childTeamsAmountInA;
             matches[2 ** i - 1 + ii].childMatchAId = assignedMatch.id;
             if (childTeamsAmountInA === 2 && i === roundAmount - 2) {
-              assignedMatch.teamA = teamsToAssign.shift();
-              assignedMatch.teamB = teamsToAssign.shift();
+              assignedMatch.teamA = teamsToAssign.shift() || null;
+              assignedMatch.teamB = teamsToAssign.shift() || null;
             }
           }
 
           if (childTeamsAmountInB === 1) {
-            matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift();
+            matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift() || null;
           } else {
             let assignedMatch: SingleEliminationCreatorMatch;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
@@ -114,8 +113,8 @@ export default class Tournament implements TournamentWithoutMS {
             assignedMatch.childTeamsAmount = childTeamsAmountInB;
             matches[2 ** i - 1 + ii].childMatchBId = assignedMatch.id;
             if (childTeamsAmountInB === 2 && i === roundAmount - 2) {
-              assignedMatch.teamA = teamsToAssign.shift();
-              assignedMatch.teamB = teamsToAssign.shift();
+              assignedMatch.teamA = teamsToAssign.shift() || null;
+              assignedMatch.teamB = teamsToAssign.shift() || null;
             }
           }
         }
@@ -149,7 +148,10 @@ export default class Tournament implements TournamentWithoutMS {
     const newMatches = [];
 
     for (let i = 0; i < matchAmount; i++) {
-      newMatches.push(Match.getNewInstance({}));
+      newMatches.push(Match.getNewInstance({
+        teamA: null,
+        teamB: null,
+      }));
     }
 
     return newMatches;
