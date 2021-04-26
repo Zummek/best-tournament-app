@@ -127,8 +127,8 @@ export default class OutcomeTableItem extends Vue {
 
   get scoreActionBtnLabel() {
     if (this.isOwner && this.hasConflict)
-      return this.$t('tournament.resolveConflict');
-    return this.$t('tournament.addScore');
+      return this.$t('tournament.match.resolveConflict');
+    return this.$t('tournament.match.addScore');
   }
 
   get scoreActionBtnColor() {
@@ -183,8 +183,8 @@ export default class OutcomeTableItem extends Vue {
 
   get getMatchStatus() {
     if (this.isMyTeamAlreadyReportedScore)
-      return this.$t('tournament.scorePendingApproval');
-    if (this.hasConflict) return this.$t('tournament.ownerMustResolveConflict');
+      return this.$t('tournament.match.scorePendingApproval');
+    if (this.hasConflict) return this.$t('tournament.match.ownerMustResolveConflict');
   }
 
   private resolveConflict() {
@@ -207,7 +207,7 @@ export default class OutcomeTableItem extends Vue {
         );
         this.$q.notify({
           message: this.$t(
-            'tournament.scoreInputDialog.disputeBetweenTeamsHasBeenResolved'
+            'tournament.match.scoreInputDialog.disputeBetweenTeamsHasBeenResolved'
           ).toString(),
           color: 'primary',
         });
@@ -235,7 +235,7 @@ export default class OutcomeTableItem extends Vue {
         );
         this.$q.notify({
           message: this.$t(
-            'tournament.scoreInputDialog.addedScoreToMatch'
+            'tournament.match.scoreInputDialog.addedScoreToMatch'
           ).toString(),
           color: 'primary',
         });

@@ -51,7 +51,7 @@ export default class TournamentsList extends Vue {
     {
       name: 'status',
       align: 'right',
-      label: this.$t('tournament.status') as string,
+      label: this.$t('tournament.status.label') as string,
       field: 'status',
       sortable: true,
     },
@@ -88,8 +88,8 @@ export default class TournamentsList extends Vue {
         name: el.name,
         status:
           el.isFinished === true
-            ? (this.$t('tournament.isFinishedTrue') as string)
-            : (this.$t('tournament.isFinishedInProgress') as string),
+            ? (this.$t('tournament.status.finished') as string)
+            : (this.$t('tournament.status.inProgress') as string),
         participants: cleanUsers,
       };
     });

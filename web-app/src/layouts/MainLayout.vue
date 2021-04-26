@@ -12,13 +12,13 @@
           >
             <q-route-tab
               :to="{ name: 'News' }"
-              label="News"
+              :label="$t('mainLayout.tab.news')"
               name="News"
-              style="max-width:80px"
+              style="max-width:130px"
             />
             <q-route-tab
               :to="{ name: 'TournamentsList' }"
-              label="Tournaments"
+              :label="$t('mainLayout.tab.tournaments')"
               name="Tournaments"
               style="max-width:150px"
             />
@@ -42,7 +42,7 @@
             <q-menu anchor="bottom right" self="top right">
               <div class="row no-wrap q-pa-md">
                 <div class="column" style="flex: 2">
-                  <div class="text-h6 q-mb-md">Settings</div>
+                  <div class="text-h6 q-mb-md">{{ $t('mainLayout.settings.label') }}</div>
                   It's me mario here.<br />
                   I will provide some setting here later.
                 </div>
@@ -61,7 +61,7 @@
 
                   <q-btn
                     color="primary"
-                    label="Logout"
+                    :label="$t('mainLayout.logout')"
                     push
                     size="sm"
                     v-close-popup
@@ -93,7 +93,7 @@
 
                     <q-btn
                       color="primary"
-                      label="Logout"
+                      :label="$t('mainLayout.logout')"
                       push
                       size="sm"
                       v-close-popup
@@ -103,7 +103,7 @@
                 <q-separator horizontal class="q-mx-xs" />
                 <div class="row  q-pa-md">
                   <div class="column items-center">
-                    <div class="text-h6 q-mb-md">Settings</div>
+                    <div class="text-h6 q-mb-md">{{ $t('mainLayout.settings.label') }}</div>
                     It's me Mario here. I will provide some setting later.
                   </div>
                 </div>
@@ -123,14 +123,14 @@
       >
         <q-route-tab
           :to="{ name: 'News' }"
-          label="News"
+          :label="$t('mainLayout.tab.news')"
           name="News"
           class="row col-6"
         />
         <q-separator vertical class="q-mx-xs" />
         <q-route-tab
           :to="{ name: 'TournamentsList' }"
-          label="Tournaments"
+          :label="$t('mainLayout.tab.tournaments')"
           name="Tournaments"
           class="row col-6"
         />

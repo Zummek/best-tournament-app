@@ -31,27 +31,27 @@
             style="width: 45%"
             v-model="valueTeamAScore"
             :label="`${$t('tournament.team.label')} ${teamAName}`"
-            :placeholder="$t('tournament.scoreInputDialog.score')"
+            :placeholder="$t('tournament.match.score')"
             stack-label
             type="number"
             autofocus
             :rules="[
               val =>
                 (val && Number.isInteger(+val) && val >= 0) ||
-                $t('tournament.scoreInputDialog.scoreShouldBePositiveInteger'),
+                $t('tournament.match.scoreInputDialog.scoreShouldBePositiveInteger'),
             ]"
           />
           <q-input
             style="width: 45%"
             v-model="valueTeamBScore"
             :label="`${$t('tournament.team.label')} ${teamBName}`"
-            :placeholder="$t('tournament.scoreInputDialog.score')"
+            :placeholder="$t('tournament.match.score')"
             stack-label
             type="number"
             :rules="[
               val =>
                 (val && Number.isInteger(+val) && val >= 0) ||
-                $t('tournament.scoreInputDialog.scoreShouldBePositiveInteger'),
+                $t('tournament.match.scoreInputDialog.scoreShouldBePositiveInteger'),
             ]"
           />
         </q-card-section>
@@ -100,20 +100,20 @@ export default class ScoreInputDialog extends Vue {
 
   get getTitle() {
     if (this.mode === 'resolving')
-      return this.$t('tournament.scoreInputDialog.resolveConflict');
-    else return this.$t('tournament.scoreInputDialog.score');
+      return this.$t('tournament.match.resolveConflict');
+    else return this.$t('tournament.match.score');
   }
 
   get getMessage() {
     if (this.mode === 'resolving')
       return this.$t(
-        'tournament.scoreInputDialog.solveConflictBetweenTeamsMessage'
+        'tournament.match.scoreInputDialog.solveConflictBetweenTeamsMessage'
       );
     if (this.score.reportedByA.a !== -1 || this.score.reportedByB.a !== -1)
       return this.$t(
-        'tournament.scoreInputDialog.enterScoreOrAcceptAlreadyGiven'
+        'tournament.match.scoreInputDialog.enterScoreOrAcceptAlreadyGiven'
       );
-    else return this.$t('tournament.scoreInputDialog.completeScoreAfterMatch');
+    else return this.$t('tournament.match.scoreInputDialog.completeScoreAfterMatch');
   }
 
   show() {

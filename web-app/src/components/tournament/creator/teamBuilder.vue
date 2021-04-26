@@ -12,6 +12,8 @@
           :label="$t('tournament.team.name')"
           :error-message="teamNameErrorMessage"
           :error="isErrorInputTeamName"
+          counter
+          maxlength="40"
         />
       </q-card-section>
       <q-card-section
@@ -120,7 +122,7 @@
           :style="$q.screen.gt.xs ? '' : 'width:100%'"
         >
           <q-tooltip v-if="!players.length" content-class="bg-accent">
-            {{ $t('tournament.team.atLeastOneMemberError') }}
+            {{ $t('tournament.team.error.atLeastOneMember') }}
           </q-tooltip>
         </q-btn>
       </q-card-section>
@@ -137,8 +139,8 @@ import User from '../../../../../shared/types/User';
 export default class TeamBuilder extends Vue {
   @Prop({ type: Array, required: true }) readonly users!: User[];
 
-  private teamNameErrorMessage = this.$t('tournament.tooShortTeamNameError');
-  private playerSelectErrorMessage = this.$t('tournament.cannotBeBlankError');
+  private teamNameErrorMessage = this.$t('tournament.team.error.tooShortTeam');
+  private playerSelectErrorMessage = this.$t('common.error.cannotBeBlank');
   private isErrorSelectPlayer = false;
   private isErrorInputTeamName = false;
   private teamName = '';
@@ -183,12 +185,12 @@ export default class TeamBuilder extends Vue {
       if (this.players.indexOf(this.tempPlayer) !== -1) {
         this.isErrorSelectPlayer = true;
         this.playerSelectErrorMessage = this.$t(
-          'tournament.alreadyIncludedPlayerError'
+          'tournament.team.error.alreadyIncludedPlayer'
         );
       } else this.isErrorSelectPlayer = false;
     } else {
       this.isErrorSelectPlayer = true;
-      this.playerSelectErrorMessage = this.$t('tournament.cannotBeBlankError');
+      this.playerSelectErrorMessage = this.$t('common.error.cannotBeBlank');
     }
 
     if (this.isErrorSelectPlayer) {
@@ -199,10 +201,7 @@ export default class TeamBuilder extends Vue {
   private validationName() {
     if (this.teamName.length <= 3) {
       this.isErrorInputTeamName = true;
-      this.teamNameErrorMessage = this.$t('tournament.tooShortTeamNameError');
-    } else if (this.teamName.length > 40) {
-      this.isErrorInputTeamName = true;
-      this.teamNameErrorMessage = this.$t('tournament.tooLongTeamNameError');
+      this.teamNameErrorMessage = this.$t('tournament.team.error.tooShortName');
     } else {
       this.isErrorInputTeamName = false;
     }
