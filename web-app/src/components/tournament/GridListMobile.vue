@@ -54,7 +54,7 @@
                 class="col-6"
                 style="text-align:right"
                 :style="
-                  props.row.status === $t('tournament.status.isFinished.inProgress')
+                  props.row.status === $t('tournament.status.inProgress')
                     ? 'color: orange'
                     : 'color: green'
                 "

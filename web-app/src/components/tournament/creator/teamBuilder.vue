@@ -202,9 +202,6 @@ export default class TeamBuilder extends Vue {
     if (this.teamName.length <= 3) {
       this.isErrorInputTeamName = true;
       this.teamNameErrorMessage = this.$t('tournament.team.error.tooShortName');
-    } else if (this.teamName.length > 40) {
-      this.isErrorInputTeamName = true;
-      this.teamNameErrorMessage = this.$t('tournament.team.error.tooLongName');
     } else {
       this.isErrorInputTeamName = false;
     }

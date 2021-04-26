@@ -35,7 +35,6 @@ export default {
     error: {
       alreadyIncludedPlayer: 'That player is already in the team !',
       tooShortName: 'Team name too short! (min. 3 characters)',
-      tooLongName: 'Team name too long!',
       atLeastOneMember: 'Add at least one team member!',
     },
   },
