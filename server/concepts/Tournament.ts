@@ -173,6 +173,10 @@ export default class Tournament implements TournamentWithoutMS {
     const rawMatch = tournament.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
+    // TO DO - possibility to change score in sigle elimination by owner (it may influence matches tree)
+    if (tournament.type === 'single-elimination' && rawMatch.isFinished)
+      throw new AppError('The Match has finished', 400);
+
     const match = new Match(rawMatch);
 
     const hasOwnerRights = tournament.ownerId === currentUserId;
@@ -185,20 +189,21 @@ export default class Tournament implements TournamentWithoutMS {
       };
       match.isFinished = true;
     } else if (assignedTeam) {
+      if (match.isFinished) throw new AppError('Match was finished (owner set score) before', 400);
       if (assignedTeam === 'teamA') {
-        if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
+        if (match.score.reportedByA.a !== -1 || match.isFinished) throw new AppError('The match result has already been reported', 400);
         match.score.reportedByA = {
           a: data.teamA,
           b: data.teamB,
         };
       } else if (assignedTeam === 'teamB') {
-        if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
+        if (match.score.reportedByB.a !== -1 || match.isFinished) throw new AppError('The match result has already been reported', 400);
         match.score.reportedByB = {
           a: data.teamA,
           b: data.teamB,
         };
       }
-      if (match.score.reportedByA === match.score.reportedByB) {
+      if (JSON.stringify(match.score.reportedByA) === JSON.stringify(match.score.reportedByB)) {
         match.score.final = {
           a: match.score.reportedByA.a,
           b: match.score.reportedByA.b,
@@ -222,7 +227,7 @@ export default class Tournament implements TournamentWithoutMS {
         } else {
           TournamentRepository.markAsFinished(tournament);
         }
-      } else {
+      } else if (tournament.type === 'round-robin') {
         let tournamentIsFinishedFlag = true;
         for (let i = 0; i < tournament.matches.length; i++) {
           if (!tournament.matches[i].isFinished && tournament.matches[i].id !== match.id) {
