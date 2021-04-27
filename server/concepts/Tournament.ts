@@ -66,8 +66,8 @@ export default class Tournament implements TournamentWithoutMS {
   }
 
   private static setSingleEliminationMatches(tournament: Tournament) {
-    // eslint-disable-next-line prefer-destructuring
-    const matches: SingleEliminationCreatorMatch[] = tournament.matches;
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    const { matches } = tournament;
     const { teams } = tournament;
     let minPowerTwo = 1;
     for (let i = 0; minPowerTwo < teams.length; i++) minPowerTwo = 2 ** i;
@@ -88,7 +88,7 @@ export default class Tournament implements TournamentWithoutMS {
           const childTeamsAmountInB = Math.floor(childTeamsAmount / 2);
 
           if (childTeamsAmountInA === 1) {
-            matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift() || null;
+            matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift()!;
           } else {
             let assignedMatch: SingleEliminationCreatorMatch;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
@@ -97,13 +97,13 @@ export default class Tournament implements TournamentWithoutMS {
             assignedMatch.childTeamsAmount = childTeamsAmountInA;
             matches[2 ** i - 1 + ii].childMatchAId = assignedMatch.id;
             if (childTeamsAmountInA === 2 && i === roundAmount - 2) {
-              assignedMatch.teamA = teamsToAssign.shift() || null;
-              assignedMatch.teamB = teamsToAssign.shift() || null;
+              assignedMatch.teamA = teamsToAssign.shift()!;
+              assignedMatch.teamB = teamsToAssign.shift()!;
             }
           }
 
           if (childTeamsAmountInB === 1) {
-            matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift() || null;
+            matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift()!;
           } else {
             let assignedMatch: SingleEliminationCreatorMatch;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
@@ -112,13 +112,14 @@ export default class Tournament implements TournamentWithoutMS {
             assignedMatch.childTeamsAmount = childTeamsAmountInB;
             matches[2 ** i - 1 + ii].childMatchBId = assignedMatch.id;
             if (childTeamsAmountInB === 2 && i === roundAmount - 2) {
-              assignedMatch.teamA = teamsToAssign.shift() || null;
-              assignedMatch.teamB = teamsToAssign.shift() || null;
+              assignedMatch.teamA = teamsToAssign.shift()!;
+              assignedMatch.teamB = teamsToAssign.shift()!;
             }
           }
         }
       }
     }
+    /* eslint-enable @typescript-eslint/no-non-null-assertion */
   }
 
   public static async delete(tournamentId: string, currentUserId : string) {
