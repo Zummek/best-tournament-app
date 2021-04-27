@@ -1,7 +1,7 @@
 import tournamentGenerator from 'tournament-generator';
 import _ from 'lodash';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch, TournamentType,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -28,7 +28,7 @@ export default class Tournament implements TournamentWithoutMS {
 
   isFinished: boolean;
 
-  type: 'single-elimination' | 'round-robin';
+  type: TournamentType;
 
   constructor(data: Tournament) {
     this.id = data.id;
