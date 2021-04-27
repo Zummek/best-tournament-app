@@ -30,7 +30,12 @@ export default class SelectableTournamentType extends Vue {
 </script>
 
 <style scoped>
+.tournamentTypeCard {
+  transition-duration: 0.5s;
+}
 .tournamentTypeCard:hover {
   background-color: lightgray;
+  transition-duration: 0.5s;
 }
+
 </style>
