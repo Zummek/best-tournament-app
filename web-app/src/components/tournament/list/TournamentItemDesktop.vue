@@ -9,7 +9,7 @@
     >
       <q-card class="flex row">
         <q-card-section class="col-4 overflow-hidden card__logo">
-          <q-icon size="5em" name="emoji_events" />
+          <q-icon size="5em" :name="tournament.type==='single-elimination' ? 'emoji_events' : 'groups'" />
         </q-card-section>
 
         <q-card-section class="col-8">
