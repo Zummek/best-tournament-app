@@ -9,14 +9,13 @@ const routes: RouteConfig[] = [
         path: 'tournaments',
         name: 'TournamentsList',
         component: () => import('pages/tournament/TournamentList.vue'),
-        meta: { public: true }, //TODO change to false
+        meta: { public: false },
       },
       {
         path: 'tournaments/create',
         name: 'TournamentCreator',
-        // component: () => import('pages/tournament/TournamentCreator.vue'),
-        component: () => import('pages/tournament/Details.vue'),
-        meta: { public: true }, // TODO: change to false
+        component: () => import('pages/tournament/TournamentCreator.vue'),
+        meta: { public: false },
       },
       {
         path: 'tournaments/:id',

@@ -9,7 +9,14 @@
     >
       <q-card class="flex row">
         <q-card-section class="col-4 overflow-hidden card__logo">
-          <q-icon size="5em" :name="tournament.type==='single-elimination' ? 'emoji_events' : 'groups'" />
+          <q-icon
+            size="5em"
+            :name="
+              tournament.type === 'single-elimination'
+                ? 'emoji_events'
+                : 'groups'
+            "
+          />
         </q-card-section>
 
         <q-card-section class="col-8">
@@ -72,8 +79,8 @@ export default class TournamentItemDesktop extends Vue {
 
   get status() {
     return this.tournament.isFinished
-      ? (this.$t('tournament.isFinishedTrue') as string)
-      : (this.$t('tournament.isFinishedInProgress') as string);
+      ? (this.$t('tournament.status.finished') as string)
+      : (this.$t('tournament.status.inProgress') as string);
   }
 }
 </script>
