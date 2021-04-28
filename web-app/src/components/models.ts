@@ -13,8 +13,9 @@ export interface IPagination {
 export interface IPaginationLabel {
   totalRowsNumber: number;
 }
-export interface IProps {
+export interface IListProps {
   pagination: IPagination;
+  filter: string;
 }
 
 export interface IData {

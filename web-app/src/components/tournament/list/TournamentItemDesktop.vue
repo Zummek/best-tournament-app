@@ -12,7 +12,7 @@
           <q-icon size="5em" name="emoji_events" />
         </q-card-section>
 
-        <q-card-section class="col-8 overflow-hidden">
+        <q-card-section class="col-8">
           <div class="row justify-between items-center">
             <h3 class="card__header">{{ tournament.name }}</h3>
             <q-badge
@@ -25,19 +25,24 @@
             />
           </div>
 
-          <div class="text-grey-14 " style="text-align:left">
-            {{ $t('tournament.list.participants') }}:
+          <div class="text-grey-14 card__participants">
+            <div style="width: 100%">
+              {{ $t('tournament.list.participants') }}:
+              <br />
+              <q-chip size="1em">
+                <user-avatar :user="tournament.owner" />
+                {{
+                  tournament.owner.firstName + ' ' + tournament.owner.lastName
+                }}
+              </q-chip>
+              <user-avatar
+                v-for="(member, i) in members"
+                :key="member.id + ' ' + i"
+                :user="member"
+                :avatar-props="{ size: '2em', class: 'q-ml-xs' }"
+              />
+            </div>
           </div>
-          <q-chip size="1em">
-            <user-avatar :user="tournament.owner" />
-            {{ $t('tournament.organizer') }}
-          </q-chip>
-          <user-avatar
-            v-for="member in members"
-            :key="member.id"
-            :user="member"
-            :avatar-props="{ size: '2em', class: 'q-ml-xs' }"
-          />
         </q-card-section>
       </q-card>
     </q-btn>
@@ -72,3 +77,34 @@ export default class TournamentItemDesktop extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.card__logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card__header {
+  font-size: 25px;
+  font-weight: 400;
+  width: 65%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.card__participants {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  height: 88px;
+  overflow-x: auto;
+}
+.title {
+  font-size: 20px;
+  letter-spacing: 0.005 em;
+  font-weight: 400;
+  padding-right: 10px;
+}
+</style>

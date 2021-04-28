@@ -5,10 +5,11 @@
         grid
         :data="tournaments"
         :columns="columns"
-        row-key="id"
-        :filter="query"
+        row-key="name"
+        :filter.sync="queryLocal"
         virtual-scroll
-        :pagination.sync="pagination"
+        :pagination.sync="paginationLocal"
+        @request="loadNewPage"
         :rows-per-page-options="[0]"
       >
         <template v-slot:top-left>
@@ -24,7 +25,7 @@
         </template>
 
         <template v-slot:top-right>
-          <search-bar :query.sync="query" />
+          <search-bar :query.sync="queryLocal" :isMobile="false" />
         </template>
 
         <template v-slot:no-data>
@@ -43,8 +44,9 @@
 import Tournament from 'app/../shared/types/Tournament';
 import { QTable } from 'quasar';
 import { Vue, Component, Prop, PropSync } from 'vue-property-decorator';
-import { IPagination } from '../../models';
+import { IPagination, IListProps } from '../../models';
 import UserAvatar from '../../UserAvatar.vue';
+import SearchBar from './../../SearchBar.vue';
 import EmptyTournamentList from './EmptyTournamentList.vue';
 import TournamentItemDesktop from './TournamentItemDesktop.vue';
 
@@ -53,14 +55,22 @@ import TournamentItemDesktop from './TournamentItemDesktop.vue';
     UserAvatar,
     EmptyTournamentList,
     TournamentItemDesktop,
+    SearchBar,
   },
 })
-export default class GridListDesktop extends Vue {
-  @PropSync('query', { type: String, default: '' }) query!: string;
+export default class TournamentListDesktop extends Vue {
+  @PropSync('query', { type: String, default: '' }) queryLocal!: string;
   @Prop({ type: Array, required: true }) readonly columns!: QTable['columns'];
   @Prop({ type: Array, default: () => [] }) readonly tournaments!: Tournament[];
-  @PropSync('pagination', { type: Boolean, required: true })
-  pagination!: IPagination;
+  @PropSync('pagination', { type: Object, required: true })
+  paginationLocal!: IPagination;
+
+  private loadNewPage(props: IListProps) {
+    const { page, rowsNumber } = props.pagination;
+    this.paginationLocal.page = page;
+    this.paginationLocal.rowsNumber = rowsNumber;
+    this.$emit('update:pagination', this.paginationLocal);
+  }
 }
 </script>
 

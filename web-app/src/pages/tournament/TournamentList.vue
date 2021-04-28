@@ -1,12 +1,14 @@
 <template>
   <div>
-    <tournament-item-mobile
+    <tournament-list-mobile
+      v-if="tournaments"
       :tournaments="tournaments"
       :columns="columns"
       :query.sync="query"
       :pagination.sync="pagination"
     />
-    <tournament-item-desktop
+    <tournament-list-desktop
+      v-if="tournaments"
       :tournaments="tournaments"
       :columns="columns"
       :query.sync="query"
@@ -17,20 +19,24 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import TournamentItemMobile from '../../components/tournament/list/TournamentItemMobile.vue';
-import TournamentItemDesktop from '../../components/tournament/list/TournamentItemDesktop.vue';
+import AsyncComputed from 'vue-async-computed-decorator';
+
+import AsyncComputedPlugin from 'vue-async-computed';
+import TournamentListMobile from '../../components/tournament/list/TournamentListMobile.vue';
+import TournamentListDesktop from '../../components/tournament/list/TournamentListDesktop.vue';
 import { IPagination } from '../../components/models';
 import api from '../../services/API/index';
 import { QTable } from 'quasar';
 
+Vue.use(AsyncComputedPlugin);
 @Component({
-  components: { TournamentItemMobile, TournamentItemDesktop },
+  components: { TournamentListMobile, TournamentListDesktop },
 })
 export default class TournamentList extends Vue {
   private query = '';
   private pagination: IPagination = {
     page: 1,
-    rowsPerPage: 1,
+    rowsPerPage: 2,
     rowsNumber: 0,
   };
   private columns: QTable['columns'] = [
@@ -51,15 +57,15 @@ export default class TournamentList extends Vue {
     },
   ];
 
-  get tournaments() {
-    return (async () => {
-      const tournamentsResponse = await api.tournament.getAllTournaments(
-        this.pagination.page,
-        1
-      );
-      this.pagination.rowsNumber = tournamentsResponse.totalRows;
-      return tournamentsResponse.tournaments;
-    })();
+  @AsyncComputed()
+  async tournaments() {
+    const tournamentsResponse = await api.tournament.getAllTournaments(
+      this.pagination.page,
+      2
+    );
+    // console.log(tournamentsResponse);
+    this.pagination.rowsNumber = tournamentsResponse.totalRows;
+    return tournamentsResponse.tournaments;
   }
 }
 </script>
