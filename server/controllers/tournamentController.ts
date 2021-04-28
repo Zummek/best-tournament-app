@@ -56,6 +56,7 @@ const updateMatchScores = catchAsync(
     res.status(204).end();
   },
 );
+
 const deleteTournament = catchAsync(async (req, res) => {
   const currentUserId = req.decoded.userMSId;
   await Tournament.delete(req.params.id, currentUserId);
