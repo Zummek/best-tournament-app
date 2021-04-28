@@ -1,4 +1,3 @@
-import Tournament from 'app/../shared/types/Tournament';
 import axiosInstance from '../axiosInstance';
 import * as types from './types';
 

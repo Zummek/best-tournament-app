@@ -19,7 +19,7 @@ export interface Score {
 export interface MatchScore {
   reportedByA: Score;
   reportedByB: Score;
-  final: Score
+  final: Score;
 }
 
 export interface Match {
@@ -41,10 +41,11 @@ export type TournamentType = "round-robin" | "single-elimination";
 
 export default interface Tournament {
   id?: string;
-  name: string; 
+  name: string;
   owner: User;
   teams: Team[];
   matches: Match[];
+  // type: string;
   isFinished: boolean;
   type: TournamentType;
 }

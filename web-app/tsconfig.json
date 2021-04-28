@@ -1,6 +1,7 @@
 {
   "extends": "@quasar/app/tsconfig-preset",
   "compilerOptions": {
+    "target": "ES2019",
     "baseUrl": ".",
     "experimentalDecorators": true
   }
