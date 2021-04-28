@@ -1,52 +1,30 @@
 <template>
-  <q-card class="q-pa-sm-xs q-mb-md">
-    <q-card-section class="row no-wrap q-py-sm q-px-xs-sm q-px-sm-md">
-      <div style="flex: 1; min-width: 150px">
-        <div class="row no-wrap">
-          <q-avatar
-            class="self-end"
-            size="md"
-            style="margin-right: -8px; z-index: 10"
-          >
-            <!-- <img :src="match.sideA.team.members[1].avatarSrc" /> -->
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-          <q-avatar class="self-end" :size="$q.screen.xs ? 'lg' : 'xl'">
-            <!-- <img :src="match.sideA.team.members[0].avatarSrc" /> -->
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-
-          <div
-            :class="[
-              'q-mx-md teamName',
-              [$q.screen.xs ? 'self-center' : 'self-end'],
-            ]"
-          >
-            {{ match.teamA.name }}
-          </div>
-        </div>
-
-        <div v-if="$q.screen.xs" class="row no-wrap q-mt-sm">
-          <q-avatar
-            class="self-end"
-            size="md"
-            style="margin-right: -8px; z-index: 10"
-          >
-            <!-- <img :src="match.sideB.team.members[1].avatarSrc" /> -->
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-          <q-avatar class="self-end" size="lg">
-            <!-- <img :src="match.sideB.team.members[0].avatarSrc" /> -->
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-
-          <div class="q-mx-md self-center teamName">
-            {{ match.teamB.name }}
-          </div>
-        </div>
+  <q-card
+    class="q-pa-sm-xs q-mb-md"
+    :style="small ? 'min-width: 300px' : 'min-width: 500px'"
+  >
+    <q-card-section
+      class="row no-wrap q-py-sm"
+      :class="[small ? 'q-px-sm' : 'q-px-md']"
+    >
+      <div style="flex: 1; min-width: 180px">
+        <team-component
+          :team="match.teamA"
+          flat
+          :smallIcon="small"
+          :textCenter="small"
+        />
+        <team-component
+          v-if="small"
+          textCenter
+          smallIcon
+          :team="match.teamB"
+          flat
+          class="q-mt-sm"
+        />
       </div>
 
-      <q-separator v-if="$q.screen.xs" vertical inset />
+      <q-separator v-if="small" vertical inset />
 
       <div
         @mouseover="showActionButton = true"
@@ -62,7 +40,7 @@
           :color="scoreActionBtnColor"
           :label="scoreActionBtnLabel"
           @click="scoreActionBtnOnClick"
-          :size="$q.screen.xs ? '12px' : '13px'"
+          :size="small ? '12px' : '13px'"
           padding="xs sm"
         />
         <div v-else style="text-align: center">
@@ -71,25 +49,8 @@
         </div>
       </div>
 
-      <div v-if="$q.screen.gt.xs" style="flex: 1; min-width: 150px">
-        <div class="row no-wrap justify-end">
-          <div class="q-mx-md teamName self-end text-right">
-            {{ match.teamB.name }}
-          </div>
-
-          <q-avatar class="self-end" size="xl">
-            <!-- <img :src="match.sideB.team.members[0].avatarSrc" /> -->
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-          <q-avatar
-            class="self-end"
-            size="md"
-            style="margin-left: -8px; z-index: 10"
-          >
-            <!-- <img :src="match.sideA.team.members[1].avatarSrc" /> -->
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-        </div>
+      <div v-if="!small" style="flex: 1">
+        <team-component :team="match.teamB" flat inverted />
       </div>
     </q-card-section>
   </q-card>
@@ -101,14 +62,20 @@ import store from '../../../store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 // import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
+import TeamComponent from '../details/TeamComponent.vue';
 import API from 'src/services/API';
 import { UpdateTournamentMatchPayload } from 'src/services/API/apiResources/types';
 
-@Component
-export default class OutcomeTableItem extends Vue {
+@Component({
+  components: {
+    TeamComponent,
+  },
+})
+export default class MatchComponent extends Vue {
   @Prop({ type: Object, required: true }) readonly match!: Match;
   @Prop({ type: Boolean, required: true }) readonly isOwner!: boolean;
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
+  @Prop({ type: Boolean, default: false }) readonly small!: boolean;
 
   private showActionButton = false;
 
@@ -144,12 +111,15 @@ export default class OutcomeTableItem extends Vue {
   get getAssignedTeam() {
     const currentUserId = store.state.currentUser.id;
 
-    for (let i = 0; i < this.match.teamA.members.length; i++) {
-      if (this.match.teamA.members[i].id === currentUserId) return 'teamA';
-    }
-    for (let i = 0; i < this.match.teamB.members.length; i++) {
-      if (this.match.teamB.members[i].id === currentUserId) return 'teamB';
-    }
+    if (this.match.teamA)
+      for (let i = 0; i < this.match.teamA.members.length; i++) {
+        if (this.match.teamA.members[i].id === currentUserId) return 'teamA';
+      }
+
+    if (this.match.teamB)
+      for (let i = 0; i < this.match.teamB.members.length; i++) {
+        if (this.match.teamB.members[i].id === currentUserId) return 'teamB';
+      }
 
     return false;
   }
@@ -193,8 +163,8 @@ export default class OutcomeTableItem extends Vue {
         component: ScoreInputDialog,
         parent: this,
         mode: 'resolving',
-        teamAName: this.match.teamA.name,
-        teamBName: this.match.teamB.name,
+        teamAName: this.match.teamA?.name,
+        teamBName: this.match.teamB?.name,
         score: this.match.score,
         isOwner: this.isOwner,
       })
@@ -221,8 +191,8 @@ export default class OutcomeTableItem extends Vue {
         component: ScoreInputDialog,
         parent: this,
         mode: 'add',
-        teamAName: this.match.teamA.name,
-        teamBName: this.match.teamB.name,
+        teamAName: this.match.teamA?.name,
+        teamBName: this.match.teamB?.name,
         score: this.match.score,
         isOwner: this.isOwner,
       })
@@ -251,10 +221,6 @@ export default class OutcomeTableItem extends Vue {
   font-size: smaller;
   text-align: center;
   line-height: 1.2;
-}
-
-.teamName {
-  font-size: 15px;
 }
 
 .score {

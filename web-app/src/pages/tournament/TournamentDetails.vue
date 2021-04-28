@@ -51,15 +51,34 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="q-px-xs-md">
-        <matches-table-item
+      <q-card-section
+        class="q-px-xs-md"
+        v-if="tournament.type === 'round-robin'"
+      >
+        <match-component
           :match="match"
           v-for="match in tournament.matches"
           :key="match.id"
           :isOwner="isOwner"
           :tournamentId="tournament.id"
+          :small="$q.screen.xs"
           @refreshData="getTournamentDetails"
         />
+      </q-card-section>
+      <q-card-section class="q-px-none" v-else>
+        <div
+          style="display: flex; overflow-x: auto; flex-wrap: nowrap; max-width: 1500px"
+        >
+          <tournament-bracket
+            style="flex: 0 0 auto; padding: 5px "
+            :matches="tournament.matches"
+            :nextMatchId="tournament.matches[0].id"
+            :isOwner="isOwner"
+            :tournamentId="tournament.id"
+            :remainingRounds="roundAmount"
+            @refreshData="getTournamentDetails"
+          />
+        </div>
       </q-card-section>
     </q-card>
   </q-page>
@@ -68,14 +87,16 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import Tournament from '../../../../shared/types/Tournament';
-import MatchesTableItem from '../../components/tournament/details/MatchesTableItem.vue';
+import MatchComponent from '../../components/tournament/details/MatchComponent.vue';
+import TournamentBracket from '../../components/tournament/details/TournamentBracket.vue';
 // import moment from 'moment';
 import API from 'src/services/API';
 import store from 'src/store';
 
 @Component({
   components: {
-    MatchesTableItem,
+    MatchComponent,
+    TournamentBracket,
   },
 })
 export default class TournamentDetails extends Vue {
@@ -103,6 +124,16 @@ export default class TournamentDetails extends Vue {
 
       return `${completedMatches} / ${allMatches}`;
     }
+  }
+
+  get roundAmount() {
+    let roundAmount = 0;
+    do {
+      roundAmount++;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    } while (2 ** roundAmount < this.tournament!.teams.length);
+
+    return roundAmount;
   }
 
   get participantsAmount() {
