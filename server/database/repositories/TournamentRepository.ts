@@ -6,15 +6,17 @@ import AppError from '../../utils/appError';
 
 interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'> {
   _id?:string,
-  teamA?: TeamDb,
-  teamB?: TeamDb,
+  teamA: TeamDb | null,
+  teamB: TeamDb | null,
 }
 
 function toMatchDb(match: MatchWithoutMS) : MatchDb {
   const matchDb : MatchDb = {
     _id: match.id,
-    teamA: match.teamA ? toTeamDb(match.teamA) : undefined,
-    teamB: match.teamB ? toTeamDb(match.teamB) : undefined,
+    teamA: match.teamA ? toTeamDb(match.teamA) : null,
+    teamB: match.teamB ? toTeamDb(match.teamB) : null,
+    childMatchAId: match.childMatchAId,
+    childMatchBId: match.childMatchBId,
     score: match.score,
     isFinished: match.isFinished,
   };
@@ -24,8 +26,10 @@ function toMatchDb(match: MatchWithoutMS) : MatchDb {
 function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
   const match : MatchWithoutMS = {
     id: matchDoc._id.toString(),
-    teamA: toTeam(matchDoc.teamA),
-    teamB: toTeam(matchDoc.teamB),
+    teamA: matchDoc.teamA ? toTeam(matchDoc.teamA) : null,
+    teamB: matchDoc.teamB ? toTeam(matchDoc.teamB) : null,
+    childMatchAId: matchDoc.childMatchAId,
+    childMatchBId: matchDoc.childMatchBId,
     score: matchDoc.score,
     isFinished: matchDoc.isFinished,
   };
@@ -68,9 +72,15 @@ export default class TournamentRepository {
     tournament.teams.forEach((team) => {
       if (!team.id) { throw new AppError('All teams should have ids.', 400); }
     });
+
     tournament.matches.forEach((match) => {
-      if (!match.teamA?.id || !match.teamB?.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      if (tournament.type === 'round-robin') {
+        if (!match.teamA || !match.teamB) { throw new AppError('All matches should contain teams', 400); }
+        if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
+      }
+      if (match.id) { throw new AppError('All matches should not contain id', 400); }
     });
+
     const tDoc = await TournamentModel.create(toTournamentDb(tournament));
     const tour = await TournamentRepository.getById(tDoc._id);
     if (!tour) { throw new AppError('Error while creating tournament', 400); }
@@ -115,14 +125,17 @@ export default class TournamentRepository {
   public static async getMatchById(matchId: string) {
     const tDoc = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
     if (!tDoc) return null;
+
     const matchDoc = tDoc.matches.find((match) => match._id === matchId);
     if (!matchDoc) return null;
+
     return toMatch(matchDoc);
   }
 
-  public static async delete(id: string) {
-    const tDoc = await TournamentModel.findById(id).exec();
-    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 400);
+  public static async delete(tournamentId: string) {
+    const tDoc = await TournamentModel.findById(tournamentId).exec();
+    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 404);
+
     const session = await TournamentModel.startSession();
     await session.withTransaction(async () => {
       tDoc.teams.forEach(async (team) => {
@@ -131,5 +144,30 @@ export default class TournamentRepository {
       await tDoc.deleteOne();
     });
     session.endSession();
+  }
+
+  public static async updateMatches(tournament: TournamentWithoutMS) {
+    if (!tournament.id) throw new AppError('Tournament should contain id', 400);
+
+    const results = [];
+    for (let i = 0; i < tournament.matches.length; i++) {
+      results.push(TournamentRepository.updateMatch(tournament.matches[i]));
+    }
+    await Promise.all(results);
+
+    const updatedTournament = TournamentRepository.getById(tournament.id);
+    if (!updatedTournament) throw new AppError('Error while updating matches', 400);
+
+    return updatedTournament;
+  }
+
+  public static async markAsFinished(tournamentId: string) {
+    const tournamentDoc: TournamentDocument | null = await TournamentModel.findById(tournamentId).exec();
+    if (!tournamentDoc) throw new AppError('No tournament with such id', 404);
+    if (tournamentDoc.isFinished) throw new AppError('Tournament is already finished', 400);
+
+    tournamentDoc.isFinished = true;
+    const updatedTournament = await tournamentDoc.save();
+    return toTournament(updatedTournament);
   }
 }

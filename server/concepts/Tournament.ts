@@ -1,7 +1,7 @@
 import tournamentGenerator from 'tournament-generator';
 import _ from 'lodash';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch, TournamentType,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -11,7 +11,7 @@ import AppError from '../utils/appError';
 import Match from './Match';
 import MSOrganization from './MSOrganization';
 
-interface SingleEliminationCreatorMatch extends MatchWithoutMS {
+interface SingleEliminationMatchCreator extends MatchWithoutMS {
   childTeamsAmount?: number;
 }
 
@@ -28,7 +28,7 @@ export default class Tournament implements TournamentWithoutMS {
 
   isFinished: boolean;
 
-  type: 'single-elimination' | 'round-robin';
+  type: TournamentType;
 
   constructor(data: Tournament) {
     this.id = data.id;
@@ -44,10 +44,9 @@ export default class Tournament implements TournamentWithoutMS {
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
-
     let newMatches = [];
-    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
-    else newMatches = Tournament.generateEmptyMatches(teams.length - 1);
+    if (data.type === 'round-robin')newMatches = Tournament.generateRoundRobinMatches(teams);
+    else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
 
     const tournament = await TournamentRepository.create({
       name: data.name,
@@ -60,16 +59,16 @@ export default class Tournament implements TournamentWithoutMS {
 
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
-      // TODO: update tournament's matches after changes => update tournament?
-      // TournamentRepository.update(tournament);
+      TournamentRepository.updateMatches(tournament);
     }
 
     return tournament;
   }
 
   private static setSingleEliminationMatches(tournament: Tournament) {
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     // eslint-disable-next-line prefer-destructuring
-    const matches: SingleEliminationCreatorMatch[] = tournament.matches;
+    const matches: SingleEliminationMatchCreator[] = tournament.matches;
     const { teams } = tournament;
     let minPowerTwo = 1;
     for (let i = 0; minPowerTwo < teams.length; i++) minPowerTwo = 2 ** i;
@@ -90,37 +89,38 @@ export default class Tournament implements TournamentWithoutMS {
           const childTeamsAmountInB = Math.floor(childTeamsAmount / 2);
 
           if (childTeamsAmountInA === 1) {
-            matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift();
+            matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift()!;
           } else {
-            let assignedMatch: SingleEliminationCreatorMatch;
+            let assignedMatch: SingleEliminationMatchCreator;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
             else assignedMatch = matches[(2 ** i - 1 + ii) * 2 + 1];
 
             assignedMatch.childTeamsAmount = childTeamsAmountInA;
             matches[2 ** i - 1 + ii].childMatchAId = assignedMatch.id;
             if (childTeamsAmountInA === 2 && i === roundAmount - 2) {
-              assignedMatch.teamA = teamsToAssign.shift();
-              assignedMatch.teamB = teamsToAssign.shift();
+              assignedMatch.teamA = teamsToAssign.shift()!;
+              assignedMatch.teamB = teamsToAssign.shift()!;
             }
           }
 
           if (childTeamsAmountInB === 1) {
-            matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift();
+            matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift()!;
           } else {
-            let assignedMatch: SingleEliminationCreatorMatch;
+            let assignedMatch: SingleEliminationMatchCreator;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
             else assignedMatch = matches[(2 ** i - 1 + ii) * 2 + 2];
 
             assignedMatch.childTeamsAmount = childTeamsAmountInB;
             matches[2 ** i - 1 + ii].childMatchBId = assignedMatch.id;
             if (childTeamsAmountInB === 2 && i === roundAmount - 2) {
-              assignedMatch.teamA = teamsToAssign.shift();
-              assignedMatch.teamB = teamsToAssign.shift();
+              assignedMatch.teamA = teamsToAssign.shift()!;
+              assignedMatch.teamB = teamsToAssign.shift()!;
             }
           }
         }
       }
     }
+    /* eslint-enable @typescript-eslint/no-non-null-assertion */
   }
 
   public static async delete(tournamentId: string, currentUserId : string) {
@@ -145,11 +145,11 @@ export default class Tournament implements TournamentWithoutMS {
     }));
   }
 
-  private static generateEmptyMatches(matchAmount: number): Match[] {
+  private static generateEmptySingleEliminationMatches(matchAmount: number): Match[] {
     const newMatches = [];
 
     for (let i = 0; i < matchAmount; i++) {
-      newMatches.push(Match.getNewInstance({}));
+      newMatches.push(Match.getNewInstance());
     }
 
     return newMatches;
@@ -172,6 +172,10 @@ export default class Tournament implements TournamentWithoutMS {
     const rawMatch = tournament.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
+    // TODO: possibility to change score in sigle elimination by owner (it may influence matches tree)
+    if (tournament.type === 'single-elimination' && rawMatch.isFinished)
+      throw new AppError('The Match has finished', 400);
+
     const match = new Match(rawMatch);
 
     const hasOwnerRights = tournament.ownerId === currentUserId;
@@ -184,20 +188,21 @@ export default class Tournament implements TournamentWithoutMS {
       };
       match.isFinished = true;
     } else if (assignedTeam) {
+      if (match.isFinished) throw new AppError('Match was finished (owner set score) before', 400);
       if (assignedTeam === 'teamA') {
-        if (match.score.reportedByA.a !== -1) throw new AppError('The match result has already been reported', 400);
+        if (match.score.reportedByA.a !== -1 || match.isFinished) throw new AppError('The match result has already been reported', 400);
         match.score.reportedByA = {
           a: data.teamA,
           b: data.teamB,
         };
       } else if (assignedTeam === 'teamB') {
-        if (match.score.reportedByB.a !== -1) throw new AppError('The match result has already been reported', 400);
+        if (match.score.reportedByB.a !== -1 || match.isFinished) throw new AppError('The match result has already been reported', 400);
         match.score.reportedByB = {
           a: data.teamA,
           b: data.teamB,
         };
       }
-      if (match.score.reportedByA === match.score.reportedByB) {
+      if (JSON.stringify(match.score.reportedByA) === JSON.stringify(match.score.reportedByB)) {
         match.score.final = {
           a: match.score.reportedByA.a,
           b: match.score.reportedByA.b,
@@ -219,21 +224,21 @@ export default class Tournament implements TournamentWithoutMS {
 
           await TournamentRepository.updateMatch(nextMatch);
         } else {
-          tournament.isFinished = true; // If there are no next matches it was the last one
-          // TODO: update tournament => TournamentRepository.update(tournament);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          TournamentRepository.markAsFinished(tournament.id!);
         }
-      } else {
-        let tournamentIsFinishedFlag = false;
+      } else if (tournament.type === 'round-robin') {
+        let tournamentIsFinishedFlag = true;
         for (let i = 0; i < tournament.matches.length; i++) {
           if (!tournament.matches[i].isFinished && tournament.matches[i].id !== match.id) {
-            tournamentIsFinishedFlag = true;
+            tournamentIsFinishedFlag = false;
             break;
           }
         }
 
         if (tournamentIsFinishedFlag) {
-          tournament.isFinished = true;
-          // TODO: update tournament => TournamentRepository.update(tournament);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          await TournamentRepository.markAsFinished(tournament.id!);
         }
       }
     }
