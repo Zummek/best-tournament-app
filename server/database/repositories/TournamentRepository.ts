@@ -125,14 +125,17 @@ export default class TournamentRepository {
   public static async getMatchById(matchId: string) {
     const tDoc = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
     if (!tDoc) return null;
+
     const matchDoc = tDoc.matches.find((match) => match._id === matchId);
     if (!matchDoc) return null;
+
     return toMatch(matchDoc);
   }
 
-  public static async delete(id: string) {
-    const tDoc = await TournamentModel.findById(id).exec();
-    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 400);
+  public static async delete(tournamentId: string) {
+    const tDoc = await TournamentModel.findById(tournamentId).exec();
+    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 404);
+
     const session = await TournamentModel.startSession();
     await session.withTransaction(async () => {
       tDoc.teams.forEach(async (team) => {
@@ -143,25 +146,28 @@ export default class TournamentRepository {
     session.endSession();
   }
 
-  public static async updateMatches(t: TournamentWithoutMS) {
-    if (!t.id) throw new AppError('Tournament should contain id', 404);
+  public static async updateMatches(tournament: TournamentWithoutMS) {
+    if (!tournament.id) throw new AppError('Tournament should contain id', 400);
+
     const results = [];
-    for (let i = 0; i < t.matches.length; i++) {
-      results.push(TournamentRepository.updateMatch(t.matches[i]));
+    for (let i = 0; i < tournament.matches.length; i++) {
+      results.push(TournamentRepository.updateMatch(tournament.matches[i]));
     }
     await Promise.all(results);
-    const tournament = TournamentRepository.getById(t.id);
-    if (!tournament) throw new AppError('Error while updating matches', 400);
-    return tournament;
+
+    const updatedTournament = TournamentRepository.getById(tournament.id);
+    if (!updatedTournament) throw new AppError('Error while updating matches', 400);
+
+    return updatedTournament;
   }
 
-  public static async markAsFinished(t: TournamentWithoutMS) {
-    if (!t.id) throw new AppError('Missing Tournament.id property', 400);
-    const tDoc: TournamentDocument | null = await TournamentModel.findById(t.id).exec();
-    if (!tDoc) throw new AppError('No tournament with such id', 400);
-    if (tDoc.isFinished) throw new AppError('Tournament is already finished', 400);
-    tDoc.isFinished = true;
-    const tour = await tDoc.save();
-    return toTournament(tour);
+  public static async markAsFinished(tournamentId: string) {
+    const tournamentDoc: TournamentDocument | null = await TournamentModel.findById(tournamentId).exec();
+    if (!tournamentDoc) throw new AppError('No tournament with such id', 404);
+    if (tournamentDoc.isFinished) throw new AppError('Tournament is already finished', 400);
+
+    tournamentDoc.isFinished = true;
+    const updatedTournament = await tournamentDoc.save();
+    return toTournament(updatedTournament);
   }
 }

@@ -5,8 +5,8 @@ import {
 } from '../../shared/types/Tournament';
 
 interface INewMatch {
-  teamA: TeamWithoutMS | null;
-  teamB: TeamWithoutMS | null;
+  teamA?: TeamWithoutMS | null;
+  teamB?: TeamWithoutMS | null;
   childMatchAId?: string;
   childMatchBId?: string;
 }
@@ -38,8 +38,10 @@ export default class Match implements MatchWithoutMS {
     this.isFinished = data.isFinished;
   }
 
-  public static getNewInstance(data: INewMatch) {
+  public static getNewInstance(data?: INewMatch) {
     return new Match({
+      teamA: null,
+      teamB: null,
       ...data,
       score: {
         reportedByA: {

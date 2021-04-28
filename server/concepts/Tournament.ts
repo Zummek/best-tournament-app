@@ -11,7 +11,7 @@ import AppError from '../utils/appError';
 import Match from './Match';
 import MSOrganization from './MSOrganization';
 
-interface SingleEliminationCreatorMatch extends MatchWithoutMS {
+interface SingleEliminationMatchCreator extends MatchWithoutMS {
   childTeamsAmount?: number;
 }
 
@@ -67,7 +67,8 @@ export default class Tournament implements TournamentWithoutMS {
 
   private static setSingleEliminationMatches(tournament: Tournament) {
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const { matches } = tournament;
+    // eslint-disable-next-line prefer-destructuring
+    const matches: SingleEliminationMatchCreator[] = tournament.matches;
     const { teams } = tournament;
     let minPowerTwo = 1;
     for (let i = 0; minPowerTwo < teams.length; i++) minPowerTwo = 2 ** i;
@@ -90,7 +91,7 @@ export default class Tournament implements TournamentWithoutMS {
           if (childTeamsAmountInA === 1) {
             matches[2 ** i - 1 + ii].teamA = teamsToAssign.shift()!;
           } else {
-            let assignedMatch: SingleEliminationCreatorMatch;
+            let assignedMatch: SingleEliminationMatchCreator;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
             else assignedMatch = matches[(2 ** i - 1 + ii) * 2 + 1];
 
@@ -105,7 +106,7 @@ export default class Tournament implements TournamentWithoutMS {
           if (childTeamsAmountInB === 1) {
             matches[2 ** i - 1 + ii].teamB = teamsToAssign.shift()!;
           } else {
-            let assignedMatch: SingleEliminationCreatorMatch;
+            let assignedMatch: SingleEliminationMatchCreator;
             if (i === roundAmount - 2) assignedMatch = matchesForFirstRound.shift() as Match;
             else assignedMatch = matches[(2 ** i - 1 + ii) * 2 + 2];
 
@@ -148,10 +149,7 @@ export default class Tournament implements TournamentWithoutMS {
     const newMatches = [];
 
     for (let i = 0; i < matchAmount; i++) {
-      newMatches.push(Match.getNewInstance({
-        teamA: null,
-        teamB: null,
-      }));
+      newMatches.push(Match.getNewInstance());
     }
 
     return newMatches;
@@ -174,7 +172,7 @@ export default class Tournament implements TournamentWithoutMS {
     const rawMatch = tournament.matches.find((match) => String(match.id) === matchId);
     if (!rawMatch) throw new AppError('Match does not exits', 404);
 
-    // TO DO - possibility to change score in sigle elimination by owner (it may influence matches tree)
+    // TODO: possibility to change score in sigle elimination by owner (it may influence matches tree)
     if (tournament.type === 'single-elimination' && rawMatch.isFinished)
       throw new AppError('The Match has finished', 400);
 
@@ -226,7 +224,8 @@ export default class Tournament implements TournamentWithoutMS {
 
           await TournamentRepository.updateMatch(nextMatch);
         } else {
-          TournamentRepository.markAsFinished(tournament);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          TournamentRepository.markAsFinished(tournament.id!);
         }
       } else if (tournament.type === 'round-robin') {
         let tournamentIsFinishedFlag = true;
@@ -238,7 +237,8 @@ export default class Tournament implements TournamentWithoutMS {
         }
 
         if (tournamentIsFinishedFlag) {
-          await TournamentRepository.markAsFinished(tournament);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          await TournamentRepository.markAsFinished(tournament.id!);
         }
       }
     }
