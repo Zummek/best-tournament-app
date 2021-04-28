@@ -25,7 +25,7 @@
         </template>
 
         <template v-slot:top-right>
-          <search-bar :query.sync="queryLocal" :isMobile="false" />
+          <search-bar :query.sync="queryLocal" :mobile="false" />
         </template>
 
         <template v-slot:no-data>

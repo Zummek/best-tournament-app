@@ -19,15 +19,14 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 @Component
 export default class SearchBar extends Vue {
   @Prop({ type: String }) query!: string;
-  @Prop({ type: Boolean, default: false }) isMobile!: boolean;
+  @Prop({ type: Boolean, default: false }) mobile!: boolean;
 
   onInput(value: string) {
-    console.log(value);
     this.$emit('update:query', value);
   }
 
   get style(): string | undefined {
-    return this.isMobile ? 'width:150px' : undefined;
+    return this.mobile ? 'width:150px' : undefined;
   }
 }
 </script>

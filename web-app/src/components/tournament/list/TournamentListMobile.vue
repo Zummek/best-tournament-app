@@ -13,7 +13,7 @@
       :rows-per-page-options="[0]"
     >
       <template v-slot:top-right>
-        <search-bar :query.sync="queryLocal" isMobile />
+        <search-bar :query.sync="queryLocal" mobile />
       </template>
 
       <template v-slot:no-data>
@@ -62,7 +62,6 @@ export default class TournamentListMobile extends Vue {
 
   private updateProps(props: IListProps) {
     const { page, rowsNumber } = props.pagination;
-    // console.log(props);
     this.paginationLocal.page = page;
     this.paginationLocal.rowsNumber = rowsNumber;
 

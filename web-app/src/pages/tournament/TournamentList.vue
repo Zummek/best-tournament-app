@@ -20,15 +20,12 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import AsyncComputed from 'vue-async-computed-decorator';
-
-import AsyncComputedPlugin from 'vue-async-computed';
 import TournamentListMobile from '../../components/tournament/list/TournamentListMobile.vue';
 import TournamentListDesktop from '../../components/tournament/list/TournamentListDesktop.vue';
 import { IPagination } from '../../components/models';
 import api from '../../services/API/index';
 import { QTable } from 'quasar';
 
-Vue.use(AsyncComputedPlugin);
 @Component({
   components: { TournamentListMobile, TournamentListDesktop },
 })
