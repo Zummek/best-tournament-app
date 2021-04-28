@@ -238,6 +238,7 @@ export default class TournamentCreator extends Vue {
         const responseData = await API.tournament.createTournament({
           name: this.tournamentName,
           teams: this.teams,
+          type: this.activeTournamentType,
         });
 
         void this.$router.push({

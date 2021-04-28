@@ -45,7 +45,7 @@ export default interface Tournament {
   owner: User;
   teams: Team[];
   matches: Match[];
-  // type: string;
+  type: string;
   isFinished: boolean;
   type: TournamentType;
 }
