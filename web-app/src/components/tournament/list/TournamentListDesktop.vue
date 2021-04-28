@@ -9,7 +9,7 @@
         :filter.sync="queryLocal"
         virtual-scroll
         :pagination.sync="paginationLocal"
-        @request="loadNewPage"
+        @request="updateProps"
         :rows-per-page-options="[0]"
       >
         <template v-slot:top-left>
@@ -65,7 +65,7 @@ export default class TournamentListDesktop extends Vue {
   @PropSync('pagination', { type: Object, required: true })
   paginationLocal!: IPagination;
 
-  private loadNewPage(props: IListProps) {
+  private updateProps(props: IListProps) {
     const { page, rowsNumber } = props.pagination;
     this.paginationLocal.page = page;
     this.paginationLocal.rowsNumber = rowsNumber;

@@ -12,20 +12,8 @@
       @request="updateProps"
       :rows-per-page-options="[0]"
     >
-      <!-- <template v-slot:top-right>
-        <search-bar :query.sync="queryLocal" isMobile />
-      </template> -->
       <template v-slot:top-right>
-        <q-input
-          dense
-          debounce="300"
-          v-model="queryLocal"
-          :placeholder="$t('tournament.list.search')"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <search-bar :query.sync="queryLocal" isMobile />
       </template>
 
       <template v-slot:no-data>
@@ -67,23 +55,18 @@ export default class TournamentListMobile extends Vue {
   @PropSync('pagination', { type: Object, required: true })
   paginationLocal!: IPagination;
 
-  @Watch('queryLocal')
-  private display() {
-    console.log(this.queryLocal);
-  }
-  //   private data = [
-  //       {
-  //           name: "Taki turniej",
-  //           id: 1,
-
-  //       }
-  //   ]
+  //   @Watch('queryLocal')
+  //   private display() {
+  //     console.log(this.queryLocal);
+  //   }
 
   private updateProps(props: IListProps) {
     const { page, rowsNumber } = props.pagination;
     // console.log(props);
     this.paginationLocal.page = page;
     this.paginationLocal.rowsNumber = rowsNumber;
+
+    //trzeba dopiąć pobieranie nowych danych z serwera w zależności od filtra
     // this.queryLocal = props.filter;
     // this.$emit('update:query', this.queryLocal);
     this.$emit('update:pagination', this.paginationLocal);
