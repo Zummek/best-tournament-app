@@ -250,11 +250,10 @@ export default class TournamentCreator extends Vue {
 
   private validation() {
     if (
-      this.activeTournamentType === 'single-elimination' ||
-      this.activeTournamentType === 'round-robin'
+      this.activeTournamentType != 'single-elimination' &&
+      this.activeTournamentType != 'round-robin'
     )
-      return true;
-    else return false;
+      return false;
 
     if (!this.tournamentName) {
       this.isErrorTournamentName = true;
