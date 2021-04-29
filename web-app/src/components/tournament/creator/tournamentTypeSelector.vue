@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import SelectableTournamentType from './selectableTournamentType.vue';
+import SelectableTournamentType from './TournamentTypeSelectorItem.vue';
 
 @Component({
   components: { SelectableTournamentType },

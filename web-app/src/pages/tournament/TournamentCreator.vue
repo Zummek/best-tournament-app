@@ -16,15 +16,6 @@
         :done="step > 1"
       >
         <tournament-type-selector />
-
-        <!-- <q-stepper-navigation>
-          <q-btn
-            :disable="!activeTournamentType.length"
-            @click="step = 2"
-            color="primary"
-            label="Continue"
-          />
-        </q-stepper-navigation> -->
       </q-step>
       <q-step
         :name="2"
@@ -170,9 +161,9 @@
 <script lang="ts">
 import User from '../../../../shared/types/User';
 import { Vue, Component } from 'vue-property-decorator';
-import TeamsList from '../../components/tournament/creator/teamsList.vue';
-import TeamBuilder from '../../components/tournament/creator/teamBuilder.vue';
-import TournamentTypeSelector from '../../components/tournament/creator/tournamentTypeSelector.vue';
+import TeamsList from '../../components/tournament/creator/TeamsList.vue';
+import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
+import TournamentTypeSelector from '../../components/tournament/creator/TournamentTypeSelector.vue';
 import { Team } from '../../../../shared/types/Tournament';
 import EventBus from '../../services/EventBus';
 import API from 'src/services/API';
