@@ -134,14 +134,10 @@ export default class Tournament implements TournamentWithoutMS {
     const data = await TournamentRepository.getAll(page, pageSize);
     const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, token);
 
-    const enrichedData: {
-      totalRows: number,
-      tournaments: ITournament[],
-    } = {
+    return {
       totalRows: data.totalRows,
       tournaments: enrichedTournaments,
     };
-    return enrichedData;
   }
 
   public static async delete(tournamentId: string, currentUserId : string) {
