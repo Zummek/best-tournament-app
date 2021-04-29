@@ -130,7 +130,7 @@ export default class Tournament implements TournamentWithoutMS {
     return enrichedTournament;
   }
 
-  public static async getAll(page :number, pageSize: number, token: string) {
+  public static async getAll(page: number, pageSize: number, token: string) {
     const data = await TournamentRepository.getAll(page, pageSize);
     const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, token);
 
