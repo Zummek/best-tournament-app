@@ -1,3 +1,4 @@
+import { isValidObjectId } from 'mongoose';
 import TournamentModel, { MatchDocument, TournamentDocument } from '../models/TournamentModel';
 import TeamModel from '../models/TeamModel';
 import { toTeamDb, toTeam, TeamDb } from './TeamRepository';
@@ -89,7 +90,7 @@ export default class TournamentRepository {
   }
 
   public static async updateMatch(match: MatchWithoutMS) {
-    if (!match.id) throw new AppError('Provided match does not contain id', 400);
+    if (!match.id || !isValidObjectId(match.id)) throw new AppError('Provided match does not contain id', 404);
     const matchDb = toMatchDb(match);
     const tournamentDocument = await TournamentModel.findOneAndUpdate(
       { 'matches._id': matchDb._id },
@@ -106,7 +107,7 @@ export default class TournamentRepository {
 
   public static getAll = async (page: number, pageSize: number) => {
     const skip = (page - 1) * pageSize;
-    const totalRows = await TournamentModel.aggregate([{
+    const totalRowsData = await TournamentModel.aggregate([{
       $group: {
         _id: null,
         count: { $sum: 1 },
@@ -114,16 +115,20 @@ export default class TournamentRepository {
     }]);
     const tDocs: TournamentDocument[] = await TournamentModel.find().skip(skip).limit(pageSize).exec();
     const tournaments: TournamentWithoutMS[] = tDocs.map((tDoc) => toTournament(tDoc));
-    return { totalRows: totalRows[0].count, tournaments };
+    let totalRows = 0;
+    if (totalRowsData[0]) totalRows = totalRowsData[0].count;
+    return { totalRows, tournaments };
   };
 
   public static getById = async (id: string) => {
+    if (!isValidObjectId(id)) return null;
     const tDoc: TournamentDocument | null = await TournamentModel.findById(id).exec();
     if (!tDoc) return null;
     return toTournament(tDoc);
   };
 
   public static async getMatchById(matchId: string) {
+    if (!isValidObjectId(matchId)) return null;
     const tDoc = await TournamentModel.findOne({ 'matches._id': matchId }).exec();
     if (!tDoc) return null;
 
@@ -133,10 +138,9 @@ export default class TournamentRepository {
     return toMatch(matchDoc);
   }
 
-  public static async delete(tournamentId: string) {
-    const tDoc = await TournamentModel.findById(tournamentId).exec();
-    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 404);
-
+  public static async delete(id: string) {
+    const tDoc = await TournamentModel.findById(id).exec();
+    if (!tDoc) throw new AppError('Can not delete tournament which does not exist', 400);
     const session = await TournamentModel.startSession();
     await session.withTransaction(async () => {
       tDoc.teams.forEach(async (team) => {

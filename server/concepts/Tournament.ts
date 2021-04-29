@@ -123,6 +123,23 @@ export default class Tournament implements TournamentWithoutMS {
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
   }
 
+  public static async getById(tournamenId: string, token: string) {
+    const tournament = await TournamentRepository.getById(tournamenId);
+    if (!tournament) return null;
+    const enrichedTournament = await Tournament.enrichWithMSUsers(tournament, token);
+    return enrichedTournament;
+  }
+
+  public static async getAll(page: number, pageSize: number, token: string) {
+    const data = await TournamentRepository.getAll(page, pageSize);
+    const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, token);
+
+    return {
+      totalRows: data.totalRows,
+      tournaments: enrichedTournaments,
+    };
+  }
+
   public static async delete(tournamentId: string, currentUserId : string) {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) throw new AppError('Tournament with such ID does not exist', 404);
