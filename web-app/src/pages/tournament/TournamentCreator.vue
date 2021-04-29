@@ -227,7 +227,8 @@ export default class TournamentCreator extends Vue {
         const responseData = await API.tournament.createTournament({
           name: this.tournamentName,
           teams: this.teams,
-          type: this.activeTournamentType,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          type: this.activeTournamentType!,
         });
 
         void this.$router.push({

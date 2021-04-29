@@ -3,7 +3,7 @@ import {TournamentType} from './index'
 export interface Create {
   name: string;
   teams: CreateTeam[];
-  type: TournamentType | null;
+  type: TournamentType;
 }
 
 export interface CreateTeam {

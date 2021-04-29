@@ -86,13 +86,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { IPagination, IColumns } from 'src/components/models';
+import { IPagination } from 'src/components/models';
 import { Team } from '../../../../../shared/types/Tournament';
+import { QTable } from 'quasar/dist/types';
 
 @Component
 export default class TeamsList extends Vue {
   @Prop({ type: Object, required: true }) readonly pagination!: IPagination;
-  @Prop({ type: Array, required: true }) readonly columns!: IColumns;
+  @Prop({ type: Array, required: true }) readonly columns!: QTable['columns'];
   @Prop({ type: String, default: () => '' }) readonly expanded!: string;
   @Prop({ type: Array, default: () => [] }) readonly data!: Team[];
 
