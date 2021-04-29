@@ -1,6 +1,5 @@
 import Tournament from '../concepts/Tournament';
 import catchAsync from '../utils/catchAsync';
-import TournamentRepository from '../database/repositories/TournamentRepository';
 
 const createTournament = catchAsync(
   async (req, res) => {
@@ -20,29 +19,22 @@ const getAllTournaments = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1;
   const pageSize = Number(req.query.pageSize) || 100;
 
-  const data = await TournamentRepository.getAll(page, pageSize);
-  const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(data.tournaments, `Bearer ${req.cookies.jwt}`);
-
+  const enrichedData = await Tournament.getAll(page, pageSize, `Bearer ${req.cookies.jwt}`);
   res.status(200).json({
-    data: {
-      totalRows: data.totalRows,
-      tournaments: enrichedTournaments,
-    },
+    data: enrichedData,
   });
 });
 
 const getTournament = catchAsync(async (req, res) => {
-  const tournament = await TournamentRepository.getById(req.params.id);
+  const tournament = await Tournament.getById(req.params.id, `Bearer ${req.cookies.jwt}`);
 
   if (!tournament) {
     res.status(404).end();
     return;
   }
 
-  const enrichedTournament = await Tournament.enrichWithMSUsers(tournament, `Bearer ${req.cookies.jwt}`);
-
   res.status(200).json({
-    data: { tournament: enrichedTournament },
+    data: { tournament },
   });
 });
 

@@ -107,7 +107,7 @@ export default class TournamentRepository {
 
   public static getAll = async (page: number, pageSize: number) => {
     const skip = (page - 1) * pageSize;
-    const totalRows = await TournamentModel.aggregate([{
+    const totalRowsData = await TournamentModel.aggregate([{
       $group: {
         _id: null,
         count: { $sum: 1 },
@@ -115,9 +115,9 @@ export default class TournamentRepository {
     }]);
     const tDocs: TournamentDocument[] = await TournamentModel.find().skip(skip).limit(pageSize).exec();
     const tournaments: TournamentWithoutMS[] = tDocs.map((tDoc) => toTournament(tDoc));
-    let totalRowsCount = 0;
-    if (totalRows[0]) totalRowsCount = totalRows[0].count;
-    return { totalRows: totalRowsCount, tournaments };
+    let totalRows = 0;
+    if (totalRowsData[0]) totalRows = totalRowsData[0].count;
+    return { totalRows, tournaments };
   };
 
   public static getById = async (id: string) => {
