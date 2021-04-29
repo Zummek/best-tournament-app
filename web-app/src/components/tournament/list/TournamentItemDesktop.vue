@@ -26,7 +26,7 @@
               align="middle"
               outline
               rounded
-              :color="tournament.isFinished ? 'orange' : 'green'"
+              :color="tournament.isFinished ? 'green' : 'orange'"
               style="height: 35px;"
               :label="status"
             />

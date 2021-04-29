@@ -36,7 +36,7 @@
                 <h5 class="q-my-md">
                   {{ tournamentName }}
                   <q-badge
-                    v-if="tournamentName === initTournamentName"
+                    v-if="tournamentName === $t('tournament.initName')"
                     rounded
                     outline
                     color="grey"
@@ -164,7 +164,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/TeamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
 import TournamentTypeSelector from '../../components/tournament/creator/TournamentTypeSelector.vue';
-import { Team } from '../../../../shared/types/Tournament';
+import { Team, TournamentType } from '../../../../shared/types/Tournament';
 import EventBus from '../../services/EventBus';
 import API from 'src/services/API';
 
@@ -173,9 +173,8 @@ import API from 'src/services/API';
 })
 export default class TournamentCreator extends Vue {
   private step = 1;
-  private activeTournamentType = '';
-  private initTournamentName = '[Tournament name]';
-  private tournamentName = this.initTournamentName;
+  private activeTournamentType: TournamentType | null = null;
+  private tournamentName = this.$t('tournament.initName') as string;
   private isErrorTournamentName = false;
   private pagination = {
     rowsPerPage: 0,
@@ -217,9 +216,8 @@ export default class TournamentCreator extends Vue {
     EventBus.$off('updateActiveTournamentType');
   }
 
-  private updateActiveTournamentType(newTournamentType: string) {
+  private updateActiveTournamentType(newTournamentType: TournamentType) {
     this.activeTournamentType = newTournamentType;
-    console.log(this.activeTournamentType);
     this.step = 2;
   }
 
@@ -251,6 +249,13 @@ export default class TournamentCreator extends Vue {
   }
 
   private validation() {
+    if (
+      this.activeTournamentType === 'single-elimination' ||
+      this.activeTournamentType === 'round-robin'
+    )
+      return true;
+    else return false;
+
     if (!this.tournamentName) {
       this.isErrorTournamentName = true;
       return false;

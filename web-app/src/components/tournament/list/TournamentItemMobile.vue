@@ -20,7 +20,7 @@
                 ? 'emoji_events'
                 : 'groups'
             "
-            :style="tournament.isFinished ? 'color: orange' : 'color: green'"
+            :style="tournament.isFinished ? 'color: green' : 'color: orange'"
           />
         </q-card-section>
       </q-card>

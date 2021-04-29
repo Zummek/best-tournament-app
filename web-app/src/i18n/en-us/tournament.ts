@@ -1,5 +1,6 @@
 export default {
   name: 'Tournament name',
+  initName: '[Tournament name]',
   organizer: 'Organizer',
   participantsAmount: 'Number of participants',
   stepper: {
@@ -13,8 +14,8 @@ export default {
   },
   type: {
     label: 'Tournament type',
-    roundRobin: 'Round-robin',
-    singleElimination: 'Single-elimination',
+    'round-robin': 'Round-robin',
+    'single-elimination': 'Single elimination',
   },
   error: {
     atLeastTwoTeams: 'Add at least two teams!',

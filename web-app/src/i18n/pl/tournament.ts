@@ -1,5 +1,6 @@
 export default {
   name: 'Nazwa turnieju',
+  initName: '[Nazwa turnieju]',
   organizer: 'Organizator',
   participantsAmount: 'Liczba uczestników',
   stepper: {
@@ -13,8 +14,8 @@ export default {
   },
   type: {
     label: 'Typ turnieju',
-    roundRobin: 'Każdy z każdym',
-    singleElimination: 'System pucharowy',
+    'round-robin': 'Każdy z każdym',
+    'single-elimination': 'System pucharowy',
   },
   error: {
     atLeastTwoTeams: 'Dodaj przynajmniej dwie drużyny!',
