@@ -26,7 +26,7 @@
     "vuex-persistedstate": "^4.0.0-beta.3"
   },
   "devDependencies": {
-    "@quasar/app": "^2.0.0",
+    "@quasar/app": "^2.2.4",
     "@quasar/quasar-app-extension-dotenv": "^1.1.0",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/lodash": "^4.14.168",

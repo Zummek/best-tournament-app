@@ -78,6 +78,7 @@ export default class TournamentRepository {
         if (!match.teamA || !match.teamB) { throw new AppError('All matches should contain teams', 400); }
         if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
       }
+
       if (match.id) { throw new AppError('All matches should not contain id', 400); }
     });
 

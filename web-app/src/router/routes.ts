@@ -20,7 +20,7 @@ const routes: RouteConfig[] = [
       {
         path: 'tournaments/:id',
         name: 'TournamentDetails',
-        component: () => import('pages/tournament/Details.vue'),
+        component: () => import('pages/tournament/TournamentDetails.vue'),
         meta: { public: false },
       },
     ],

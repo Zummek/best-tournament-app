@@ -45,7 +45,7 @@ export default class Tournament implements TournamentWithoutMS {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
     let newMatches = [];
-    if (data.type === 'round-robin')newMatches = Tournament.generateRoundRobinMatches(teams);
+    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
     else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
 
     const tournament = await TournamentRepository.create({
