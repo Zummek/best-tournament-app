@@ -7,8 +7,7 @@
         @click="updateTournamentType"
       >
         <q-icon class="col-12" :name="iconName" style="font-size: 1000%" />
-        <!-- <div class="text-h6">{{ tournamentTypeName }}</div> -->
-        <div class="text-h6">{{ $t('tournament.type.' + tournamentType) }}</div>
+        <div class="text-h6">{{ tournamentTypeName }}</div>
       </q-card>
     </q-btn>
   </div>
