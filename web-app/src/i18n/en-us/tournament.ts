@@ -1,15 +1,21 @@
 export default {
   name: 'Tournament name',
+  initName: '[Tournament name]',
   organizer: 'Organizer',
   participantsAmount: 'Number of participants',
+  stepper: {
+    tournamentType: 'Choose tournament type',
+    buildTeams: 'Create teams',
+  },
   status: {
     label: 'Status',
     finished: 'Finished',
     inProgress: 'In progress',
   },
   type: {
-    roundRobin: 'Round-robin',
-    singleElimination: 'Single-elimination',
+    label: 'Tournament type',
+    'round-robin': 'Round-robin',
+    'single-elimination': 'Single elimination',
   },
   error: {
     atLeastTwoTeams: 'Add at least two teams!',

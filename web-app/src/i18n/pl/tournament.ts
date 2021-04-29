@@ -1,15 +1,21 @@
 export default {
   name: 'Nazwa turnieju',
+  initName: '[Nazwa turnieju]',
   organizer: 'Organizator',
   participantsAmount: 'Liczba uczestników',
+  stepper: {
+    tournamentType: 'Wybierz typ turnieju',
+    buildTeams: 'Stwórz drużyny',
+  },
   status: {
     label: 'Status',
     finished: 'Zakończony',
     inProgress: 'W trakcie',
   },
   type: {
-    roundRobin: 'Każdy z każdym',
-    singleElimination: 'System pucharowy',
+    label: 'Typ turnieju',
+    'round-robin': 'Każdy z każdym',
+    'single-elimination': 'System pucharowy',
   },
   error: {
     atLeastTwoTeams: 'Dodaj przynajmniej dwie drużyny!',

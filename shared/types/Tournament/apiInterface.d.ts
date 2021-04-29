@@ -1,7 +1,9 @@
+import {TournamentType} from './index'
+
 export interface Create {
   name: string;
   teams: CreateTeam[];
-  type: "single-elimination" | "round-robin";
+  type: TournamentType | null;
 }
 
 export interface CreateTeam {
