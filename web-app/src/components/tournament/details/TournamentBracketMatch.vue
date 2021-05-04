@@ -1,9 +1,9 @@
 <template>
   <q-card
     class="q-my-sm"
+    :class="[borderClass, { matchAsButton: isAllowedToEditMatchScore }]"
     style="width: 250px; height: 81px"
-    @mouseover="showActionButton = true"
-    @mouseleave="showActionButton = false"
+    @click="scoreActionOnClick"
   >
     <q-card-section class="row no-wrap q-pa-xs" style="padding: 6px">
       <div style="flex: 1">
@@ -46,6 +46,13 @@
         </div>
       </div>
     </q-card-section>
+    <q-tooltip
+      v-model="isAllowedToEditMatchScore"
+      :content-class="tooltipColor"
+      content-style="font-size: 13px"
+    >
+      {{ tooltipContent }}
+    </q-tooltip>
   </q-card>
 </template>
 
@@ -69,8 +76,6 @@ export default class TournamentBracketMatch extends Vue {
   @Prop({ type: Boolean, required: true }) readonly isOwner!: boolean;
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
 
-  private showActionButton = false;
-
   // get matchFormatedDate() {
   //   return (
   //     moment(this.match.date).format('L') +
@@ -79,23 +84,27 @@ export default class TournamentBracketMatch extends Vue {
   //   );
   // }
 
-  get formatedScore() {
-    if (this.match.score.final.a === -1) return '- : -';
-    return `${this.match.score.final.a} : ${this.match.score.final.b}`;
+  get borderClass() {
+    if (!this.isAllowedToEditMatchScore) return '';
+
+    if (this.isOwner && this.hasConflict) return 'bracketMatchConflicts';
+    return 'bracketMatchNewScore';
   }
 
-  get scoreActionBtnLabel() {
+  get tooltipContent() {
     if (this.isOwner && this.hasConflict)
-      return this.$t('tournament.resolveConflict');
-    return this.$t('tournament.addScore');
+      return this.$t('tournament.match.resolveConflict');
+    return this.$t('tournament.match.addScore');
   }
 
-  get scoreActionBtnColor() {
-    if (this.isOwner && this.hasConflict) return 'negative';
-    return 'primary';
+  get tooltipColor() {
+    if (this.isOwner && this.hasConflict) return 'bg-negative';
+    return 'bg-primary';
   }
 
-  get scoreActionBtnOnClick() {
+  get scoreActionOnClick() {
+    if (!this.isAllowedToEditMatchScore) return null;
+
     if (this.isOwner && this.hasConflict) return () => this.resolveConflict();
     return () => this.addScore();
   }
@@ -138,15 +147,18 @@ export default class TournamentBracketMatch extends Vue {
     return (
       (!this.match.isFinished &&
         this.getAssignedTeam &&
-        !this.isMyTeamAlreadyReportedScore) ||
+        !this.isMyTeamAlreadyReportedScore &&
+        this.match.teamA !== null &&
+        this.match.teamB !== null) ||
       (this.isOwner && this.hasConflict)
     );
   }
 
   get getMatchStatus() {
     if (this.isMyTeamAlreadyReportedScore)
-      return this.$t('tournament.scorePendingApproval');
-    if (this.hasConflict) return this.$t('tournament.ownerMustResolveConflict');
+      return this.$t('tournament.match.scorePendingApproval');
+    if (this.hasConflict)
+      return this.$t('tournament.match.ownerMustResolveConflict');
   }
 
   private resolveConflict() {
@@ -169,7 +181,7 @@ export default class TournamentBracketMatch extends Vue {
         );
         this.$q.notify({
           message: this.$t(
-            'tournament.scoreInputDialog.disputeBetweenTeamsHasBeenResolved'
+            'tournament.match.scoreInputDialog.disputeBetweenTeamsHasBeenResolved'
           ).toString(),
           color: 'primary',
         });
@@ -197,7 +209,7 @@ export default class TournamentBracketMatch extends Vue {
         );
         this.$q.notify({
           message: this.$t(
-            'tournament.scoreInputDialog.addedScoreToMatch'
+            'tournament.match.scoreInputDialog.addedScoreToMatch'
           ).toString(),
           color: 'primary',
         });
@@ -206,3 +218,21 @@ export default class TournamentBracketMatch extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.matchAsButton {
+  transition: all 0.2s ease-in-out;
+}
+
+.matchAsButton:hover {
+  transform: scale(1.1);
+}
+
+.bracketMatchConflicts {
+  border: 1px solid $negative;
+}
+
+.bracketMatchNewScore {
+  border: 1px solid $primary;
+}
+</style>
