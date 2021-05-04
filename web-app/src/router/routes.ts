@@ -31,6 +31,7 @@ const routes: RouteConfig[] = [
     children: [
       {
         path: 'login',
+        alias: '',
         name: 'login',
         component: () => import('pages/Login.vue'),
         meta: { public: true },
