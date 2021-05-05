@@ -64,7 +64,7 @@ export default class ScoreTable extends Vue {
     {
       name: 'name',
       align: 'left',
-      label: 'TEAM',
+      label: this.$t('tournament.scoreTable.columns.team'),
       field: 'name',
       style:
         'min-width: 170px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;font-size: 15px;',
@@ -72,28 +72,28 @@ export default class ScoreTable extends Vue {
     {
       name: 'wins',
       align: 'right',
-      label: 'WIN',
+      label: this.$t('tournament.scoreTable.columns.win'),
       field: 'wins',
       style: 'width: 75px; font-size: 15px;',
     },
     {
       name: 'draws',
       align: 'right',
-      label: 'DRAW',
+      label: this.$t('tournament.scoreTable.columns.draw'),
       field: 'draws',
       style: 'width: 75px; font-size: 15px;',
     },
     {
       name: 'loses',
       align: 'right',
-      label: 'LOSE',
+      label: this.$t('tournament.scoreTable.columns.lose'),
       field: 'loses',
       style: 'width: 75px; font-size: 15px;',
     },
     {
       name: 'points',
       align: 'right',
-      label: 'POINTS',
+      label: this.$t('tournament.scoreTable.columns.points'),
       field: 'points',
       style: 'width: 75px; font-size: 15px;',
       sort: (a: number, b: number) => b - a,

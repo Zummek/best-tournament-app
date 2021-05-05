@@ -11,8 +11,11 @@
         v-model="tab"
         class="text-teal"
       >
-        <q-tab label="Matches" name="matches" />
-        <q-tab label="Scoreboard" name="scoreboard" />
+        <q-tab :label="$t('tournament.details.tabs.matches')" name="matches" />
+        <q-tab
+          :label="$t('tournament.details.tabs.scoreboard')"
+          name="scoreboard"
+        />
       </q-tabs>
       <q-card-section>
         <div class="row">
