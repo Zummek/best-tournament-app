@@ -70,7 +70,7 @@
           style="display: flex; overflow-x: auto; flex-wrap: nowrap; max-width: 1500px"
         >
           <tournament-bracket
-            style="flex: 0 0 auto; padding: 5px "
+            style="flex: 0 0 auto; padding: 15px"
             :matches="tournament.matches"
             :nextMatchId="tournament.matches[0].id"
             :isOwner="isOwner"
@@ -102,13 +102,14 @@ import store from 'src/store';
 export default class TournamentDetails extends Vue {
   private tournament: Tournament | null = null;
 
-  private isOwner = false;
   private isLoading = true;
 
   private async created() {
     await this.getTournamentDetails();
+  }
 
-    this.isOwner = store.state.currentUser.id === this.tournament?.owner.id;
+  get isOwner() {
+    return store.state.currentUser.id === this.tournament?.owner.id;
   }
 
   get completedMatchesFormated() {
@@ -159,7 +160,8 @@ export default class TournamentDetails extends Vue {
       if (error.response.status === 404) void this.$router.push('/*');
       return;
     }
-    this.sortMatches();
+
+    if (this.tournament.type === 'round-robin') this.sortMatches();
     this.isLoading = false;
   }
 
