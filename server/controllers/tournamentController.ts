@@ -37,6 +37,18 @@ const getTournament = catchAsync(async (req, res) => {
     data: { tournament },
   });
 });
+const getPointsPerTeam = catchAsync(async (req, res) => {
+  const tournament = await Tournament.getById(req.params.id, `Bearer ${req.cookies.jwt}`);
+
+  if (!tournament) {
+    res.status(404).end();
+    return;
+  }
+  const pointsPerTeam = Tournament.countPointsPerTeam(tournament);
+  res.status(200).json({
+    data: { pointsPerTeam },
+  });
+});
 
 const updateMatchScores = catchAsync(
   async (req, res) => {
@@ -61,4 +73,5 @@ export default {
   get: getTournament,
   deleteTournament,
   updateMatchScores,
+  getPointsPerTeam,
 };
