@@ -1,5 +1,4 @@
 <template>
-  <!-- <q-page class="container row full-width items-center justify-center"> -->
   <q-table
     :data="teamsScores"
     virtual-scroll
@@ -9,9 +8,42 @@
     :filter="filter"
     :rows-per-page-options="[0]"
     hide-bottom
+    :loading="loading"
   >
+    <template v-slot:loading>
+      <q-inner-loading showing color="primary" />
+    </template>
+    <template v-slot:body="props">
+      <q-tr
+        :props="props"
+        :class="
+          props.pageIndex === 0
+            ? 'bg-green-4'
+            : props.pageIndex === 1
+            ? 'bg-green-3'
+            : props.pageIndex === 2
+            ? 'bg-green-2'
+            : 'bg-white text-black'
+        "
+      >
+        <q-td key="name" :props="props">
+          {{ props.row.name }}
+        </q-td>
+        <q-td key="wins" :props="props">
+          {{ props.row.wins }}
+        </q-td>
+        <q-td key="draws" :props="props">
+          {{ props.row.draws }}
+        </q-td>
+        <q-td key="loses" :props="props">
+          {{ props.row.loses }}
+        </q-td>
+        <q-td key="points" :props="props">
+          {{ props.row.points }}
+        </q-td>
+      </q-tr>
+    </template>
   </q-table>
-  <!-- </q-page> -->
 </template>
 <script lang="ts">
 import { PointsPerTeam } from 'app/../shared/types/Tournament';
@@ -22,21 +54,13 @@ import api from './../../../services/API';
 export default class ScoreTable extends Vue {
   private teamsScores: PointsPerTeam[] = [];
   private filter = '';
+  private loading = true;
   private expanded = '';
   private pagination = {
     rowsPerPage: 0,
     sortBy: 'points',
   };
   private columns = [
-    // {
-    //   name: 'position',
-    //   required: true,
-    //   label: 'POS',
-    //   align: 'left',
-    //   field: 'position',
-    //   sortable: true,
-    //   style: 'width: 50px; font-size: 15px;',
-    // },
     {
       name: 'name',
       align: 'left',
@@ -76,62 +100,11 @@ export default class ScoreTable extends Vue {
       sortable: false,
     },
   ];
-  private data = [
-    {
-      position: '1',
-      team: 'Fnatic',
-      win: '3',
-      draw: '1',
-      lose: '0',
-      points: '10',
-    },
-    {
-      position: '2',
-      team: 'Virtus Proooooooooooooooooooo',
-      win: '2',
-      draw: '2',
-      lose: '0',
-      points: '8',
-    },
-    {
-      position: '3',
-      team: 'Leeds',
-      win: '1',
-      draw: '1',
-      lose: '2',
-      points: '4',
-    },
-    {
-      position: '4',
-      team: 'Arsenal',
-      win: '1',
-      draw: '1',
-      lose: '2',
-      points: '4',
-    },
-    {
-      position: '5',
-      team: 'South',
-      win: '0',
-      draw: '4',
-      lose: '0',
-      points: '4',
-    },
-    {
-      position: '6',
-      team: 'Everton',
-      win: '0',
-      draw: '2',
-      lose: '2',
-      points: '2',
-    },
-  ];
-
   private async created() {
     this.teamsScores = await api.tournament.getPointsPerTeam(
       this.$route.params.id
     );
-    console.log(this.teamsScores);
+    this.loading = false;
   }
 }
 </script>
@@ -140,12 +113,4 @@ export default class ScoreTable extends Vue {
   font-size: 30px !important;
   font-weight: 600;
 }
-// .container {
-//   background: linear-gradient(30deg, #572403, #2d1114, #090317);
-//   font-size: 40px;
-// }
-// .q-table__container {
-//   background-color: rgba(0, 0, 0, 0);
-//   font-weight: 700;
-// }
 </style>
