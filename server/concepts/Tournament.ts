@@ -2,7 +2,7 @@
 import tournamentGenerator from 'tournament-generator';
 import _ from 'lodash';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Score as IScore, Team as ITeam, Match as IMatch, TournamentType,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, PointsPerTeam as IPointsPerTeam, Team as ITeam, Match as IMatch, TournamentType,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -128,6 +128,8 @@ export default class Tournament implements TournamentWithoutMS {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) return null;
     const enrichedTournament = await Tournament.enrichWithMSUsers(tournament, token);
+    // const teams = this.countPointsPerTeam(enrichedTournament);
+    // console.log(teams);
     return enrichedTournament;
   }
 
@@ -145,7 +147,7 @@ export default class Tournament implements TournamentWithoutMS {
     //     ...
     //   }
     // ]
-    const teams = [];
+    const teams: IPointsPerTeam[] = [];
     enrichedTournament.teams.forEach((team: ITeam) => {
       let points = 0;
       let draws = 0;
@@ -156,7 +158,7 @@ export default class Tournament implements TournamentWithoutMS {
       for (const match of enrichedTournament.matches) {
         if (match.score.final.a === -1 || match.score.final.b === -1) continue;
         // eslint-disable-next-line no-nested-ternary
-        const teamIdentifierLetter = team.id === match.teamA!.id ? 'a' : (team.id === match.teamA?.id ? 'b' : undefined);
+        const teamIdentifierLetter = team.id === match.teamA?.id ? 'a' : (team.id === match.teamB?.id ? 'b' : undefined);
         if (!teamIdentifierLetter) continue;
         if (match.score.final[teamIdentifierLetter] > match.score.final[teamIdentifierLetter === 'a' ? 'b' : 'a']) {
           points += 3;
@@ -177,6 +179,7 @@ export default class Tournament implements TournamentWithoutMS {
         name: team.name, wins, draws, loses, points,
       });
     });
+    return teams;
   }
 
   public static async getAll(page: number, pageSize: number, token: string) {
