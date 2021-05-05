@@ -145,12 +145,12 @@ export default class TournamentBracketMatch extends Vue {
 
   get isAllowedToEditMatchScore() {
     return (
-      (!this.match.isFinished &&
-        this.getAssignedTeam &&
+      !this.match.isFinished &&
+      ((this.getAssignedTeam &&
         !this.isMyTeamAlreadyReportedScore &&
         this.match.teamA !== null &&
         this.match.teamB !== null) ||
-      (this.isOwner && this.hasConflict)
+        (this.isOwner && this.hasConflict))
     );
   }
 
