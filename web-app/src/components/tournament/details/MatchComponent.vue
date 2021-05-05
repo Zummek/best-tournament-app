@@ -1,7 +1,9 @@
 <template>
   <q-card
     class="q-pa-sm-xs q-mb-md"
+    :class="[borderClass, { matchAsButton: isAllowedToEditMatchScore }]"
     :style="small ? 'min-width: 300px' : 'min-width: 500px'"
+    @click="scoreActionOnClick"
   >
     <q-card-section
       class="row no-wrap q-py-sm"
@@ -33,17 +35,7 @@
         class="q-ma-auto column self-center justify-center"
       >
         <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
-        <q-btn
-          no-caps
-          v-if="isAllowedToEditMatchScore"
-          class="q-my-auto q-mx-auto"
-          :color="scoreActionBtnColor"
-          :label="scoreActionBtnLabel"
-          @click="scoreActionBtnOnClick"
-          :size="small ? '12px' : '13px'"
-          padding="xs sm"
-        />
-        <div v-else style="text-align: center">
+        <div style="text-align: center">
           <div class="score q-mx-auto">{{ formatedScore }}</div>
           <div class="status q-mx-auto">{{ getMatchStatus }}</div>
         </div>
@@ -87,23 +79,21 @@ export default class MatchComponent extends Vue {
   //   );
   // }
 
+  get borderClass() {
+    if (!this.isAllowedToEditMatchScore) return '';
+
+    if (this.isOwner && this.hasConflict) return 'matchConflicts';
+    return 'matchNewScore';
+  }
+
   get formatedScore() {
     if (this.match.score.final.a === -1) return '- : -';
     return `${this.match.score.final.a} : ${this.match.score.final.b}`;
   }
 
-  get scoreActionBtnLabel() {
-    if (this.isOwner && this.hasConflict)
-      return this.$t('tournament.match.resolveConflict');
-    return this.$t('tournament.match.addScore');
-  }
+  get scoreActionOnClick() {
+    if (!this.isAllowedToEditMatchScore) return null;
 
-  get scoreActionBtnColor() {
-    if (this.isOwner && this.hasConflict) return 'negative';
-    return 'primary';
-  }
-
-  get scoreActionBtnOnClick() {
     if (this.isOwner && this.hasConflict) return () => this.resolveConflict();
     return () => this.addScore();
   }
@@ -144,17 +134,17 @@ export default class MatchComponent extends Vue {
 
   get isAllowedToEditMatchScore() {
     return (
-      (!this.match.isFinished &&
-        this.getAssignedTeam &&
-        !this.isMyTeamAlreadyReportedScore) ||
-      (this.isOwner && this.hasConflict)
+      !this.match.isFinished &&
+      ((this.getAssignedTeam && !this.isMyTeamAlreadyReportedScore) ||
+        (this.isOwner && this.hasConflict))
     );
   }
 
   get getMatchStatus() {
     if (this.isMyTeamAlreadyReportedScore)
       return this.$t('tournament.match.scorePendingApproval');
-    if (this.hasConflict) return this.$t('tournament.match.ownerMustResolveConflict');
+    if (this.hasConflict)
+      return this.$t('tournament.match.ownerMustResolveConflict');
   }
 
   private resolveConflict() {
@@ -235,5 +225,21 @@ export default class MatchComponent extends Vue {
   font-weight: 400;
   max-width: 100px;
   text-align: center;
+}
+
+.matchAsButton {
+  transition: all 0.2s ease-in-out;
+}
+
+.matchAsButton:hover {
+  transform: scale(1.07);
+}
+
+.matchConflicts {
+  border: 1px solid $negative;
+}
+
+.matchNewScore {
+  border: 1px solid $primary;
 }
 </style>
