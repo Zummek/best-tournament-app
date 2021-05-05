@@ -1,7 +1,7 @@
 <template>
   <q-card
     class="q-pa-sm-xs q-mb-md"
-    :class="[borderClass, { matchAsButton: isAllowedToEditMatchScore }]"
+    :class="[frameClass, { matchAsButton: isAllowedToEditMatchScore }]"
     :style="small ? 'min-width: 300px' : 'min-width: 500px'"
     @click="scoreActionOnClick"
   >
@@ -77,11 +77,11 @@ export default class MatchComponent extends Vue {
   //   );
   // }
 
-  get borderClass() {
+  get frameClass() {
     if (!this.isAllowedToEditMatchScore) return '';
 
-    if (this.isOwner && this.hasConflict) return 'matchConflicts';
-    return 'matchNewScore';
+    if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
+    return 'matchNewScoreFrame';
   }
 
   get formatedScore() {
@@ -204,6 +204,8 @@ export default class MatchComponent extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/match.scss';
+
 .matchDate {
   color: gray;
   font-size: smaller;
@@ -223,21 +225,5 @@ export default class MatchComponent extends Vue {
   font-weight: 400;
   max-width: 100px;
   text-align: center;
-}
-
-.matchAsButton {
-  transition: all 0.2s ease-in-out;
-}
-
-.matchAsButton:hover {
-  transform: scale(1.07);
-}
-
-.matchConflicts {
-  border: 1px solid $negative;
-}
-
-.matchNewScore {
-  border: 1px solid $primary;
 }
 </style>

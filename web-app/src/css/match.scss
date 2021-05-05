@@ -1,0 +1,21 @@
+@import './quasar.variables.scss';
+
+.matchConflictsFrame {
+  border: 1px solid $negative;
+  box-shadow: 0 1px 5px rgba($negative, 0.4), 0 2px 2px rgba($negative, 0.4),
+    0 3px 1px -2px rgba($negative, 0.4);
+}
+
+.matchNewScoreFrame {
+  border: 1px solid $primary;
+  box-shadow: 0 1px 5px rgba($primary, 0.4), 0 2px 2px rgba($primary, 0.4),
+    0 3px 1px -2px rgba($primary, 0.4);
+}
+
+.matchAsButton {
+  transition: all 0.2s ease-in-out;
+}
+
+.matchAsButton:hover {
+  transform: scale(1.07);
+}
