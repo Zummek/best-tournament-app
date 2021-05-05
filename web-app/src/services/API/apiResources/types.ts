@@ -1,4 +1,4 @@
-import Tournament from 'app/../shared/types/Tournament';
+import Tournament, { PointsPerTeam } from 'app/../shared/types/Tournament';
 import { UpdateMatchOutcomes } from 'app/../shared/types/Tournament/apiInterface';
 import User from 'app/../shared/types/User';
 import { Create as tournamentCreate } from 'app/../shared/types/Tournament/apiInterface';
@@ -34,6 +34,11 @@ export interface getTournamentsResponse {
   data: {
     totalRows: number;
     tournaments: Tournament[];
+  };
+}
+export interface GetPointsPerTeamResponse {
+  data: {
+    pointsPerTeam: PointsPerTeam[];
   };
 }
 

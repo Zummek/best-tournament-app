@@ -6,6 +6,14 @@
       class="q-px-xs-none q-px-sm-md"
       :class="{ fit: $q.screen.xs }"
     >
+      <q-tabs
+        v-if="tournament.type === 'round-robin'"
+        v-model="tab"
+        class="text-teal"
+      >
+        <q-tab label="Matches" name="matches" />
+        <q-tab label="Scoreboard" name="scoreboard" />
+      </q-tabs>
       <q-card-section>
         <div class="row">
           <q-input
@@ -51,20 +59,31 @@
           />
         </div>
       </q-card-section>
-      <q-card-section
-        class="q-px-xs-md"
+      <q-tab-panels
         v-if="tournament.type === 'round-robin'"
+        v-model="tab"
+        animated
       >
-        <match-component
-          :match="match"
-          v-for="match in tournament.matches"
-          :key="match.id"
-          :isOwner="isOwner"
-          :tournamentId="tournament.id"
-          :small="$q.screen.xs"
-          @refreshData="getTournamentDetails"
-        />
-      </q-card-section>
+        <q-tab-panel name="matches">
+          <q-card-section class="q-px-xs-md">
+            <match-component
+              :match="match"
+              v-for="match in tournament.matches"
+              :key="match.id"
+              :isOwner="isOwner"
+              :tournamentId="tournament.id"
+              :small="$q.screen.xs"
+              @refreshData="getTournamentDetails"
+            />
+          </q-card-section>
+        </q-tab-panel>
+        <q-tab-panel name="scoreboard">
+          <q-card-section class="q-px-xs-md">
+            <ScoreTable />
+          </q-card-section>
+        </q-tab-panel>
+      </q-tab-panels>
+
       <q-card-section class="q-px-none" v-else>
         <div
           style="display: flex; overflow-x: auto; flex-wrap: nowrap; max-width: 1500px"
@@ -92,11 +111,13 @@ import TournamentBracket from '../../components/tournament/details/TournamentBra
 // import moment from 'moment';
 import API from 'src/services/API';
 import store from 'src/store';
+import ScoreTable from './../../components/tournament/details/ScoreTable.vue';
 
 @Component({
   components: {
     MatchComponent,
     TournamentBracket,
+    ScoreTable,
   },
 })
 export default class TournamentDetails extends Vue {
@@ -104,6 +125,7 @@ export default class TournamentDetails extends Vue {
 
   private isOwner = false;
   private isLoading = true;
+  private tab = 'matches';
 
   private async created() {
     await this.getTournamentDetails();
