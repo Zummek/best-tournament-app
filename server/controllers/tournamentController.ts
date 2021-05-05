@@ -38,8 +38,6 @@ const getTournament = catchAsync(async (req, res) => {
   });
 });
 const getPointsPerTeam = catchAsync(async (req, res) => {
-  // const tournament = await Tournament.getById(req.params.id, `Bearer ${req.cookies.jwt}`);
-
   const pointsPerTeam = await Tournament.countPointsPerTeam(req.params.id);
   if (!pointsPerTeam) {
     res.status(404).end();

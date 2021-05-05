@@ -2,7 +2,7 @@
 import tournamentGenerator from 'tournament-generator';
 import _ from 'lodash';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, PointsPerTeam as IPointsPerTeam, Team as ITeam, Match as IMatch, TournamentType,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, PointsPerTeam, Team as ITeam, Match as IMatch, TournamentType,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -135,7 +135,7 @@ export default class Tournament implements TournamentWithoutMS {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) return;
 
-    const teams: IPointsPerTeam[] = [];
+    const teams: PointsPerTeam[] = [];
     tournament.teams.forEach((team: TeamWithoutMS) => {
       let points = 0;
       let draws = 0;
