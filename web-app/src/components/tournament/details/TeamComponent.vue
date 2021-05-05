@@ -1,6 +1,9 @@
 <template>
   <q-card :flat="flat">
-    <q-card-section class="row no-wrap" :class="{ 'q-pa-none': flat }">
+    <q-card-section
+      class="row no-wrap"
+      :class="{ 'q-pa-none': flat, 'justify-end': inverted }"
+    >
       <div
         v-if="inverted"
         class="q-mx-md self-end text-right"

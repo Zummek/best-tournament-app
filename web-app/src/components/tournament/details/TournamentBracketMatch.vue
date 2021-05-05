@@ -1,7 +1,7 @@
 <template>
   <q-card
     class="q-my-sm"
-    :class="[borderClass, { matchAsButton: isAllowedToEditMatchScore }]"
+    :class="[frameClass, { matchAsButton: isAllowedToEditMatchScore }]"
     style="width: 250px; height: 81px"
     @click="scoreActionOnClick"
   >
@@ -84,11 +84,11 @@ export default class TournamentBracketMatch extends Vue {
   //   );
   // }
 
-  get borderClass() {
+  get frameClass() {
     if (!this.isAllowedToEditMatchScore) return '';
 
-    if (this.isOwner && this.hasConflict) return 'bracketMatchConflicts';
-    return 'bracketMatchNewScore';
+    if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
+    return 'matchNewScoreFrame';
   }
 
   get tooltipContent() {
@@ -103,7 +103,7 @@ export default class TournamentBracketMatch extends Vue {
   }
 
   get scoreActionOnClick() {
-    if (!this.isAllowedToEditMatchScore) return null;
+    if (!this.isAllowedToEditMatchScore) return () => null;
 
     if (this.isOwner && this.hasConflict) return () => this.resolveConflict();
     return () => this.addScore();
@@ -145,12 +145,12 @@ export default class TournamentBracketMatch extends Vue {
 
   get isAllowedToEditMatchScore() {
     return (
-      (!this.match.isFinished &&
-        this.getAssignedTeam &&
+      !this.match.isFinished &&
+      ((this.getAssignedTeam &&
         !this.isMyTeamAlreadyReportedScore &&
         this.match.teamA !== null &&
         this.match.teamB !== null) ||
-      (this.isOwner && this.hasConflict)
+        (this.isOwner && this.hasConflict))
     );
   }
 
@@ -220,19 +220,5 @@ export default class TournamentBracketMatch extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.matchAsButton {
-  transition: all 0.2s ease-in-out;
-}
-
-.matchAsButton:hover {
-  transform: scale(1.1);
-}
-
-.bracketMatchConflicts {
-  border: 1px solid $negative;
-}
-
-.bracketMatchNewScore {
-  border: 1px solid $primary;
-}
+@import 'src/css/match.scss';
 </style>
