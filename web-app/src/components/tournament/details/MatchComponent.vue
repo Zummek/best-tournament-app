@@ -6,10 +6,10 @@
     @click="scoreActionOnClick"
   >
     <q-card-section
-      class="row no-wrap q-py-sm"
+      class="row no-wrap q-py-sm justify-between "
       :class="[small ? 'q-px-sm' : 'q-px-md']"
     >
-      <div style="flex: 1; min-width: 180px">
+      <div style="flex: 1; min-width: 190px">
         <team-component
           :team="match.teamA"
           flat
@@ -29,19 +29,19 @@
       <q-separator v-if="small" vertical inset />
 
       <div
-        @mouseover="showActionButton = true"
-        @mouseleave="showActionButton = false"
-        style="height: 50px; min-width: 120px"
+        style="width: 100px"
         class="q-ma-auto column self-center justify-center"
       >
         <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
         <div style="text-align: center">
-          <div class="score q-mx-auto">{{ formatedScore }}</div>
-          <div class="status q-mx-auto">{{ getMatchStatus }}</div>
+          <div v-if="!getMatchStatus" class="score q-mx-auto">
+            {{ formatedScore }}
+          </div>
+          <div v-if-else class="status q-mx-auto">{{ getMatchStatus }}</div>
         </div>
       </div>
 
-      <div v-if="!small" style="flex: 1">
+      <div v-if="!small" style="min-width: 190px">
         <team-component :team="match.teamB" flat inverted />
       </div>
     </q-card-section>
@@ -68,8 +68,6 @@ export default class MatchComponent extends Vue {
   @Prop({ type: Boolean, required: true }) readonly isOwner!: boolean;
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
   @Prop({ type: Boolean, default: false }) readonly small!: boolean;
-
-  private showActionButton = false;
 
   // get matchFormatedDate() {
   //   return (
