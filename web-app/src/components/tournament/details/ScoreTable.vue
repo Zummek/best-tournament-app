@@ -67,37 +67,36 @@ export default class ScoreTable extends Vue {
       label: 'TEAM',
       field: 'name',
       style:
-        'max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;font-size: 15px;',
+        'min-width: 170px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;font-size: 15px;',
     },
     {
       name: 'wins',
       align: 'right',
       label: 'WIN',
       field: 'wins',
-      style: 'min-width: 70px; font-size: 15px;',
+      style: 'width: 50px; font-size: 15px;',
     },
     {
       name: 'draws',
       align: 'right',
       label: 'DRAW',
       field: 'draws',
-      style: 'min-width: 70px; font-size: 15px;',
+      style: 'width: 50px; font-size: 15px;',
     },
     {
       name: 'loses',
       align: 'right',
       label: 'LOSE',
       field: 'loses',
-      style: 'min-width: 70px; font-size: 15px;',
+      style: 'width: 50px; font-size: 15px;',
     },
     {
       name: 'points',
       align: 'right',
       label: 'POINTS',
       field: 'points',
-      style: 'min-width: 70px; font-size: 15px;',
+      style: 'width: 50px; font-size: 15px;',
       sort: (a: number, b: number) => b - a,
-      sortable: false,
     },
   ];
   private async created() {
