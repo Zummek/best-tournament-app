@@ -49,7 +49,7 @@
     <q-tooltip
       v-model="isAllowedToEditMatchScore"
       :content-class="tooltipColor"
-      content-style="font-size: 13px"
+      content-style="font-size: 13px; z-index: 5000"
     >
       {{ tooltipContent }}
     </q-tooltip>
