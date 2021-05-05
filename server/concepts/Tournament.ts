@@ -128,49 +128,38 @@ export default class Tournament implements TournamentWithoutMS {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) return null;
     const enrichedTournament = await Tournament.enrichWithMSUsers(tournament, token);
-    // const teams = this.countPointsPerTeam(enrichedTournament);
-    // console.log(teams);
     return enrichedTournament;
   }
 
-  public static countPointsPerTeam(enrichedTournament: ITournament) {
-    // teams: [
-    //   {
-    //     name: "Team 1",
-    //     wins: "1",
-    //     draws: '0',
-    //     loses: '1',
-    //     points: '3',
-    //     matchesPlayed?
-    //   },
-    //   {
-    //     ...
-    //   }
-    // ]
+  public static async countPointsPerTeam(tournamentId: string) {
+    const tournament = await TournamentRepository.getById(tournamentId);
+    if (!tournament) return;
+
     const teams: IPointsPerTeam[] = [];
-    enrichedTournament.teams.forEach((team: ITeam) => {
+    tournament.teams.forEach((team: TeamWithoutMS) => {
       let points = 0;
       let draws = 0;
       let loses = 0;
       let wins = 0;
 
       // eslint-disable-next-line no-restricted-syntax
-      for (const match of enrichedTournament.matches) {
-        if (match.score.final.a === -1 || match.score.final.b === -1) continue;
+      for (const match of tournament.matches) {
+        if (!match.isFinished) continue;
         // eslint-disable-next-line no-nested-ternary
         const teamIdentifierLetter = team.id === match.teamA?.id ? 'a' : (team.id === match.teamB?.id ? 'b' : undefined);
         if (!teamIdentifierLetter) continue;
-        if (match.score.final[teamIdentifierLetter] > match.score.final[teamIdentifierLetter === 'a' ? 'b' : 'a']) {
+        const oppositeTeamIdentifierLetter = teamIdentifierLetter === 'a' ? 'b' : 'a';
+        if (match.score.final[teamIdentifierLetter] > match.score.final[oppositeTeamIdentifierLetter]) {
           points += 3;
           wins++;
           continue;
         }
-        if (match.score.final[teamIdentifierLetter] === match.score.final[teamIdentifierLetter === 'a' ? 'b' : 'a']) {
+        if (match.score.final[teamIdentifierLetter] === match.score.final[oppositeTeamIdentifierLetter]) {
           points++;
           draws++;
           continue;
         }
-        if (match.score.final[teamIdentifierLetter] < match.score.final[teamIdentifierLetter === 'a' ? 'b' : 'a']) {
+        if (match.score.final[teamIdentifierLetter] < match.score.final[oppositeTeamIdentifierLetter]) {
           loses++;
           continue;
         }
