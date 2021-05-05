@@ -103,7 +103,7 @@ export default class TournamentBracketMatch extends Vue {
   }
 
   get scoreActionOnClick() {
-    if (!this.isAllowedToEditMatchScore) return null;
+    if (!this.isAllowedToEditMatchScore) return () => null;
 
     if (this.isOwner && this.hasConflict) return () => this.resolveConflict();
     return () => this.addScore();
