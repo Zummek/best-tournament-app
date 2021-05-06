@@ -133,7 +133,7 @@ export default class Tournament implements TournamentWithoutMS {
 
   public static async countPointsPerTeam(tournamentId: string) {
     const tournament = await TournamentRepository.getById(tournamentId);
-    if (!tournament) return;
+    if (!tournament) return null;
 
     const teams: PointsPerTeam[] = [];
     tournament.teams.forEach((team: TeamWithoutMS) => {
