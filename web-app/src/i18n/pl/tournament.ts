@@ -32,6 +32,21 @@ export default {
       noTournaments: 'Brak turniejów do wyświetlenia',
     },
   },
+  details: {
+    tabs: {
+      matches: 'Mecze',
+      scoreboard: 'Wyniki',
+    },
+  },
+  scoreTable: {
+    columns: {
+      points: 'PUNKTY',
+      team: 'DRUŻYNA',
+      win: 'WYGRANA',
+      draw: 'REMIS',
+      lose: 'PORAŻKA',
+    },
+  },
   team: {
     label: 'Drużyna',
     name: 'Nazwa Drużyny',

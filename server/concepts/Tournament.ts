@@ -1,7 +1,8 @@
+/* eslint-disable no-continue */
 import tournamentGenerator from 'tournament-generator';
 import _ from 'lodash';
 import ITournament, {
-  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, Team as ITeam, Match as IMatch, TournamentType,
+  MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, PointsPerTeam, Team as ITeam, Match as IMatch, TournamentType,
 } from '../../shared/types/Tournament';
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
@@ -123,11 +124,51 @@ export default class Tournament implements TournamentWithoutMS {
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
   }
 
-  public static async getById(tournamenId: string, token: string) {
-    const tournament = await TournamentRepository.getById(tournamenId);
+  public static async getById(tournamentId: string, token: string) {
+    const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament) return null;
     const enrichedTournament = await Tournament.enrichWithMSUsers(tournament, token);
     return enrichedTournament;
+  }
+
+  public static async countPointsPerTeam(tournamentId: string) {
+    const tournament = await TournamentRepository.getById(tournamentId);
+    if (!tournament) return null;
+
+    const teams: PointsPerTeam[] = [];
+    tournament.teams.forEach((team: TeamWithoutMS) => {
+      let points = 0;
+      let draws = 0;
+      let loses = 0;
+      let wins = 0;
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const match of tournament.matches) {
+        if (!match.isFinished) continue;
+        // eslint-disable-next-line no-nested-ternary
+        const teamIdentifierLetter = team.id === match.teamA?.id ? 'a' : (team.id === match.teamB?.id ? 'b' : undefined);
+        if (!teamIdentifierLetter) continue;
+        const oppositeTeamIdentifierLetter = teamIdentifierLetter === 'a' ? 'b' : 'a';
+        if (match.score.final[teamIdentifierLetter] > match.score.final[oppositeTeamIdentifierLetter]) {
+          points += 3;
+          wins++;
+          continue;
+        }
+        if (match.score.final[teamIdentifierLetter] === match.score.final[oppositeTeamIdentifierLetter]) {
+          points++;
+          draws++;
+          continue;
+        }
+        if (match.score.final[teamIdentifierLetter] < match.score.final[oppositeTeamIdentifierLetter]) {
+          loses++;
+          continue;
+        }
+      }
+      teams.push({
+        name: team.name, wins, draws, loses, points,
+      });
+    });
+    return teams;
   }
 
   public static async getAll(page: number, pageSize: number, token: string) {

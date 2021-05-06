@@ -31,6 +31,21 @@ export default {
       noTournaments: 'No tournaments to show',
     },
   },
+  details: {
+    tabs: {
+      matches: 'Matches',
+      scoreboard: 'Scoreboard',
+    },
+  },
+  scoreTable: {
+    columns: {
+      points: 'POINTS',
+      team: 'TEAM',
+      win: 'WIN',
+      draw: 'DRAW',
+      lose: 'LOSE',
+    },
+  },
   team: {
     label: 'Team',
     name: 'Team name',
