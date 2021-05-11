@@ -52,7 +52,7 @@
       </q-card-section>
       <q-card-section class="row  content-center">
         <q-select
-          class="col-xs-12 col-sm-11 q-pb-none"
+          class="col-12 q-pb-none"
           clearable
           filled
           use-input
@@ -61,24 +61,17 @@
           :options="filterOptions"
           :label="$t('tournament.team.choosePlayer')"
           @filter="selectFilter"
-          @input="addPlayerControl"
+          @input="addPlayer"
+          @clear="
+            () => {
+              isErrorSelectPlayer = false;
+            }
+          "
           emit-value
           behavior="menu"
           :error-message="playerSelectErrorMessage"
           :error="isErrorSelectPlayer"
         >
-          <template v-slot:selected-item>
-            <q-item v-if="tempPlayer" class="q-pa-none">
-              <q-item-section avatar>
-                <q-avatar>
-                  <img :src="tempPlayer.avatarSrc" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>
-                {{ tempPlayer.firstName }} {{ tempPlayer.lastName }}
-              </q-item-section>
-            </q-item>
-          </template>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey">
@@ -99,15 +92,6 @@
             </q-item>
           </template>
         </q-select>
-        <q-btn
-          v-if="$q.screen.gt.xs"
-          class="col-1"
-          text-color="white"
-          color="green"
-          icon="add"
-          dense
-          @click="addPlayer"
-        />
       </q-card-section>
       <q-card-section
         class="q-pt-none"
@@ -148,10 +132,6 @@ export default class TeamBuilder extends Vue {
   private filterOptions: User[] = [];
   private players: User[] = [];
 
-  private addPlayerControl() {
-    if (this.$q.screen.lt.sm) this.addPlayer();
-  }
-
   private addPlayer() {
     if (!this.validateTeamMember()) return;
     if (this.tempPlayer) this.players.push(this.tempPlayer);
@@ -164,6 +144,7 @@ export default class TeamBuilder extends Vue {
   }
 
   private submitAddTeam() {
+    this.isErrorSelectPlayer = false;
     if (!this.validationName()) return;
 
     const teamToAdd: Team = {
@@ -187,10 +168,8 @@ export default class TeamBuilder extends Vue {
         this.playerSelectErrorMessage = this.$t(
           'tournament.team.error.alreadyIncludedPlayer'
         );
+        this.tempPlayer = null;
       } else this.isErrorSelectPlayer = false;
-    } else {
-      this.isErrorSelectPlayer = true;
-      this.playerSelectErrorMessage = this.$t('common.error.cannotBeBlank');
     }
 
     if (this.isErrorSelectPlayer) {

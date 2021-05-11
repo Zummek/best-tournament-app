@@ -6,6 +6,7 @@
       color="primary"
       animated
       flat
+      header-nav
       class="col-12"
       style="max-width:1500px"
     >
@@ -14,6 +15,7 @@
         :title="$t('tournament.stepper.tournamentType')"
         icon="settings"
         :done="step > 1"
+        :error="activeTournamentType"
       >
         <tournament-type-selector />
       </q-step>
@@ -21,19 +23,20 @@
         :name="2"
         :title="$t('tournament.stepper.buildTeams')"
         icon="settings"
+        :error="(activeTournamentType = null)"
         :done="step > 2"
       >
         <div class="col-12 " :class="$q.screen.gt.xs ? 'q-px-lg' : 'q-px-none'">
           <div class="row justify-between">
             <div
               :class="$q.screen.gt.xs ? 'col-6' : 'col-12'"
-              :style="$q.screen.gt.xs ? 'max-width: 300px' : ''"
+              :style="$q.screen.gt.xs ? 'max-width: 600px' : ''"
             >
               <div
                 class="cursor-pointer"
                 :style="$q.screen.gt.xs ? '' : 'text-align:center'"
               >
-                <h5 class="q-my-md">
+                <h5 class="q-my-md tournamentNameEditor">
                   {{ tournamentName }}
                   <q-badge
                     v-if="tournamentName === $t('tournament.initName')"
@@ -141,7 +144,7 @@
           >
             <q-btn
               @click="submitAddTournament"
-              :disabled="teams.length < 2"
+              :disabled="teams.length < 2 || activeTournamentType === null"
               padding="sm"
               color="primary"
             >
@@ -222,6 +225,7 @@ export default class TournamentCreator extends Vue {
   }
 
   private async submitAddTournament() {
+    console.log(this.activeTournamentType);
     if (this.validation()) {
       try {
         const responseData = await API.tournament.createTournament({
@@ -277,5 +281,11 @@ export default class TournamentCreator extends Vue {
 <style>
 .q-stepper--vertical .q-stepper__step-inner {
   padding: 0 24px 8px 24px;
+}
+
+.tournamentNameEditor {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
