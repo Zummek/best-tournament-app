@@ -1,5 +1,5 @@
 <template>
-  <q-btn-dropdown flat icon="language" :label="currentLangLabel">
+  <q-btn-dropdown dense flat icon="language" :label="currentLangLabel">
     <q-list>
       <q-item
         clickable
