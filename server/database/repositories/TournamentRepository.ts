@@ -2,7 +2,7 @@ import { isValidObjectId } from 'mongoose';
 import TournamentModel, { MatchDocument, TournamentDocument } from '../models/TournamentModel';
 import TeamModel from '../models/TeamModel';
 import { toTeamDb, toTeam, TeamDb } from './TeamRepository';
-import { TournamentWithoutMS, MatchWithoutMS } from '../../../shared/types/Tournament';
+import { TournamentWithoutMS, MatchWithoutMS, TeamWithoutMS } from '../../../shared/types/Tournament';
 import AppError from '../../utils/appError';
 
 interface MatchDb extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'> {
@@ -66,23 +66,30 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
     type: tDoc.type,
   };
 }
+interface MatchRoundRobinCreate extends Omit<MatchWithoutMS, 'id' | 'childMatchAId' | 'childMatchBId'>{
+  teamA: Required<TeamWithoutMS>; // teams id required and teams not null since they are known from the begining
+  teamB: Required<TeamWithoutMS>;
+}
 
+type MatchSingleEliminationCreate = Omit<MatchWithoutMS, 'id'>; // matches can have null teams and childMatchesIds
+
+interface TournamentRoundRobinCreate extends Omit<TournamentWithoutMS, 'id'>{ // no tournament id
+  teams: Required<TeamWithoutMS>[]; // teams id required and teams not null
+  matches: MatchRoundRobinCreate[];
+}
+interface TournamentSingleEliminationCreate extends Omit<TournamentWithoutMS, 'id'>{ // no tournament id
+  teams: Required<TeamWithoutMS>[]; // teams id required and teams not null
+  matches: MatchSingleEliminationCreate[];
+}
 export default class TournamentRepository {
-  public static async create(tournament: TournamentWithoutMS) {
-    if (tournament.id) { throw new AppError('New tournament should not have id', 400); }
-    tournament.teams.forEach((team) => {
-      if (!team.id) { throw new AppError('All teams should have ids.', 400); }
-    });
+  public static async create(tournament: TournamentRoundRobinCreate) {
+    const tDoc = await TournamentModel.create(toTournamentDb(tournament));
+    const tour = await TournamentRepository.getById(tDoc._id);
+    if (!tour) { throw new AppError('Error while creating tournament', 400); }
+    return tour;
+  }
 
-    tournament.matches.forEach((match) => {
-      if (tournament.type === 'round-robin') {
-        if (!match.teamA || !match.teamB) { throw new AppError('All matches should contain teams', 400); }
-        if (!match.teamA.id || !match.teamB.id) { throw new AppError('All teams in matches entries should have ids', 400); }
-      }
-
-      if (match.id) { throw new AppError('All matches should not contain id', 400); }
-    });
-
+  public static async createSingleElimination(tournament: TournamentSingleEliminationCreate) {
     const tDoc = await TournamentModel.create(toTournamentDb(tournament));
     const tour = await TournamentRepository.getById(tDoc._id);
     if (!tour) { throw new AppError('Error while creating tournament', 400); }

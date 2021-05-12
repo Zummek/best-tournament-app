@@ -44,11 +44,21 @@ export default class Tournament implements TournamentWithoutMS {
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
-    let newMatches = [];
-    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
-    else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
 
-    const tournament = await TournamentRepository.create({
+    if (data.type === 'round-robin') {
+      const newMatches = Tournament.generateRoundRobinMatches(teams);
+      const tournament = await TournamentRepository.createRoundRobin({
+        name: data.name,
+        ownerId,
+        teams,
+        matches: Tournament.generateRoundRobinMatches(teams),
+        isFinished: false,
+        type: data.type,
+      });
+    } else {
+      newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
+    }
+    const tournament = await TournamentRepository.createRoundRobin({
       name: data.name,
       ownerId,
       teams,
@@ -153,7 +163,7 @@ export default class Tournament implements TournamentWithoutMS {
     await TournamentRepository.delete(tournamentId);
   }
 
-  private static generateRoundRobinMatches(teams: TeamWithoutMS[]): Match[] {
+  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): Match[] {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
     return data.map((match) => Match.getNewInstance({
