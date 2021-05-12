@@ -44,3 +44,9 @@ export const getAllTournaments = async (page: number, pageSize: number) => {
   );
   return response.data.data;
 };
+export const getPointsPerTeam = async (tournamentId: string) => {
+  const response = await axiosInstance.get<types.GetPointsPerTeamResponse>(
+    `v1/tournaments/${encodeURIComponent(tournamentId)}/scores`
+  );
+  return response.data.data.pointsPerTeam;
+};

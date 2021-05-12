@@ -34,36 +34,40 @@
         </q-toolbar-title>
 
         <div class="row col-4 gt-xs justify-end">
-          <q-btn round class="q-ma-sm ">
+          <q-btn round class="q-ma-sm">
             <q-avatar size="50px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
 
             <q-menu anchor="bottom right" self="top right">
               <div class="row no-wrap q-pa-md">
-                <div class="column" style="flex: 2">
-                  <div class="text-h6 q-mb-md">{{ $t('mainLayout.settings.label') }}</div>
-                  It's me mario here.<br />
-                  I will provide some setting here later.
+                <div class="column">
+                  <div class="text-center text-h6 q-mb-md">
+                    {{ $t('mainLayout.settings.label') }}
+                  </div>
+                  <change-lang />
                 </div>
 
                 <q-separator vertical inset class="q-mx-lg" />
 
-                <div class="column items-center" style="flex: 1">
+                <div class="column items-center">
                   <q-avatar size="72px">
                     <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
                   </q-avatar>
 
-                  <div class="text-subtitle1 q-mt-md">Adam Kowalski</div>
+                  <div class="text-subtitle1 q-mt-md">
+                    {{ currentUser.firstName }} {{ currentUser.lastName }}
+                  </div>
                   <div class="text-weight-light q-mb-md">
-                    mailkowalskiego@la.pl
+                    {{ currentUser.email }}
                   </div>
 
                   <q-btn
                     color="primary"
                     :label="$t('mainLayout.logout')"
                     push
-                    size="sm"
+                    outline
+                    size="12px"
                     v-close-popup
                   />
                 </div>
@@ -86,25 +90,32 @@
                       <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
                     </q-avatar>
 
-                    <div class="text-subtitle1 q-mt-md">Adam Kowalski</div>
+                    <div class="text-subtitle1 q-mt-md">
+                      {{ currentUser.firstName }} {{ currentUser.lastName }}
+                    </div>
                     <div class="text-weight-light q-mb-md">
-                      mailkowalskiego@la.pl
+                      {{ currentUser.email }}
                     </div>
 
                     <q-btn
                       color="primary"
                       :label="$t('mainLayout.logout')"
                       push
-                      size="sm"
+                      outline
+                      size="12px"
                       v-close-popup
                     />
                   </div>
                 </div>
+
                 <q-separator horizontal class="q-mx-xs" />
-                <div class="row  q-pa-md">
-                  <div class="column items-center">
-                    <div class="text-h6 q-mb-md">{{ $t('mainLayout.settings.label') }}</div>
-                    It's me Mario here. I will provide some setting later.
+
+                <div class="row q-pa-md">
+                  <div class="row justify-center">
+                    <div class="col-12 text-center text-h6 q-mb-md">
+                      {{ $t('mainLayout.settings.label') }}
+                    </div>
+                    <change-lang />
                   </div>
                 </div>
               </q-menu>
@@ -144,8 +155,13 @@
 </template>
 
 <script lang="ts">
+import User from 'app/../shared/types/User';
+import store from 'src/store';
 import { Vue, Component } from 'vue-property-decorator';
+import ChangeLang from 'components/ChangeLang.vue';
 
-@Component
-export default class MainLayout extends Vue {}
+@Component({ components: { ChangeLang } })
+export default class MainLayout extends Vue {
+  private currentUser: User = store.state.currentUser;
+}
 </script>

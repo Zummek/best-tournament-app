@@ -12,8 +12,13 @@ import AsyncComputedPlugin from 'vue-async-computed';
 
 Vue.use(AsyncComputedPlugin);
 
-moment.locale(process.env.LOCALE);
+moment.locale(process.env.DEFAULT_LOCALE);
 
 @Component
-export default class App extends Vue {}
+export default class App extends Vue {
+  private created() {
+    const lang = localStorage.getItem('lang');
+    if (lang !== null) this.$i18n.locale = lang;
+  }
+}
 </script>

@@ -6,6 +6,13 @@ export interface Team {
   name: string;
   members: User[];
 }
+export interface PointsPerTeam {
+  name: string;
+  wins: number;
+  loses: number;
+  draws: number;
+  points: number;
+}
 
 export interface TeamWithoutMS extends Omit<Team, "members"> {
   members: UserWithoutMS[];
