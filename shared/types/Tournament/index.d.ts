@@ -37,6 +37,7 @@ export interface Match {
   childMatchBId?: string;
   score: MatchScore;
   isFinished: boolean;
+  date: string;
 }
 
 export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
@@ -54,6 +55,7 @@ export default interface Tournament {
   matches: Match[];
   isFinished: boolean;
   type: TournamentType;
+  startDate: string;
 }
 
 export interface TournamentWithoutMS
