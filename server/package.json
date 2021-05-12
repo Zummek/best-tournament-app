@@ -17,6 +17,7 @@
   "author": "",
   "dependencies": {
     "@azure/msal-node": "^1.0.1",
+    "@slack/web-api": "^6.2.3",
     "@types/cors": "^2.8.10",
     "axios": "^0.21.1",
     "azure-ad-jwt-lite": "^1.1.1",
