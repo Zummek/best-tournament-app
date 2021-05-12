@@ -31,7 +31,7 @@ export default class Tournament implements TournamentWithoutMS {
 
   type: TournamentType;
 
-  startDate: string;
+  startDate: Date;
 
   constructor(data: Tournament) {
     this.id = data.id;
@@ -59,7 +59,7 @@ export default class Tournament implements TournamentWithoutMS {
       matches: newMatches,
       isFinished: false,
       type: data.type,
-      startDate: '2021-05-12', // Tutaj chyba powinnismy ustawic date pierwszego meczu
+      startDate: new Date(), // Powinno byc ustawione na dzien
     });
 
     if (data.type === 'single-elimination') {

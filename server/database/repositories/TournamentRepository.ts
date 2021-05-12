@@ -34,7 +34,7 @@ function toMatch(matchDoc: MatchDocument) : MatchWithoutMS {
     childMatchBId: matchDoc.childMatchBId,
     score: matchDoc.score,
     isFinished: matchDoc.isFinished,
-    date: matchDoc.date.toISOString().slice(0, 10),
+    date: matchDoc.date,
   };
   return match;
 }
@@ -67,7 +67,7 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
     matches: tDoc.matches.map((matchDoc) => toMatch(matchDoc)),
     isFinished: tDoc.isFinished,
     type: tDoc.type,
-    startDate: tDoc.startDate.toISOString().slice(0, 10),
+    startDate: tDoc.startDate,
   };
 }
 // interface MatchRoundRobinCreate extends Omit<MatchWithoutMS, 'id' | 'childMatchAId' | 'childMatchBId'>{

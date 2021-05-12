@@ -28,7 +28,7 @@ export default class Match implements MatchWithoutMS {
 
   isFinished: boolean;
 
-  date: string;
+  date: Date;
 
   constructor(data: MatchWithoutMS) {
     this.id = data.id;
@@ -61,7 +61,7 @@ export default class Match implements MatchWithoutMS {
         },
       },
       isFinished: false,
-      date: '1999-05-05', // Powinno byc nadpisane przy generowaniu dat
+      date: new Date(),
     });
   }
 
