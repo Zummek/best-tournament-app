@@ -62,7 +62,6 @@ TournamentSchema.pre(/^find/, function (next) {
 export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB' >, Document {
   teamA: TeamDocument,
   teamB: TeamDocument,
-  date: Date,
 }
 export interface TournamentDocument extends Omit<TournamentWithoutMS, 'id' | 'teams' | 'matches' >, Document {
   teams: TeamDocument[],
