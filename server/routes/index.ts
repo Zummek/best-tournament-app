@@ -10,7 +10,7 @@ const indexRouter = express.Router();
 indexRouter.use(unless(authenticationMiddleware,
   '/v1/users/login',
   '/v1/users/logged',
-  '/v1/organization/logo', '/v1/organization/code'));
+  '/v1/organization/logo'));
 
 indexRouter.use('/v1/users/', userRouter);
 indexRouter.use('/v1/organization/', organizationRouter);
