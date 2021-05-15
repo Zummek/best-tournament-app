@@ -5,7 +5,7 @@ import catchAsync from '../utils/catchAsync';
 
 export default catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const client = jwksClient({
-    jwksUri: 'https://login.microsoftonline.com/5c17e85e-e180-4b9c-a8ff-5564a210ca4a/discovery/v2.0/keys',
+    jwksUri: `https://login.microsoftonline.com/${process.env.TENANT_ID}/discovery/v2.0/keys`,
   });
   const token = req.cookies.validation_token;
   const decoded: any = jwt.decode(token, { complete: true });
