@@ -19,10 +19,10 @@ const cookieOptions: CookieOptions = {
   sameSite: 'strict',
 };
 
-const placeTokenInCookie = (token: msal.AuthenticationResult, req: Request, res: Response) => {
+const placeTokenInCookie = (token: string, req: Request, res: Response, tokenName: string) => {
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') { cookieOptions.secure = true; }
 
-  res.cookie('jwt', token.accessToken, cookieOptions);
+  res.cookie(tokenName, token, cookieOptions);
 };
 
 const config = {
@@ -30,6 +30,7 @@ const config = {
     clientId: `${process.env.CLIENT_ID}`,
     authority: `${process.env.AUTHORITY_URL}`,
     clientSecret: `${process.env.CLIENT_SECRET}`,
+    nonce: 123,
   },
   system: {
     loggerOptions: {
@@ -47,8 +48,7 @@ const loggingSession = new msal.ConfidentialClientApplication(config);
 export const login = catchAsync(
   async (req: Request, res: Response) => {
     const authCodeUrlParameters = {
-      scopes: ['user.read', 'user.readbasic.all', 'user.readwrite', 'user.read.all',
-        'user.readwrite.all', 'directory.read.all', 'directory.accessasuser.all'],
+      scopes: ['openid'],
       redirectUri: `${process.env.SSL === 'true' ? 'https' : 'http'}://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/login`,
     };
 
@@ -66,13 +66,18 @@ export const getToken = catchAsync(
   async (req: Request, res: Response) => {
     const tokenRequest = {
       code: req.body.code as string,
-      scopes: ['user.read'],
+      scopes: ['openid'],
+      nonce: 123,
       redirectUri: 'http://localhost:8080/login',
     };
-
     const token = await loggingSession.acquireTokenByCode(tokenRequest);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    placeTokenInCookie(token!, req, res);
-    res.status(200).end();
+    if (!token) {
+      return res.status(401).json({
+        message: 'Authentication failed',
+      });
+    }
+    placeTokenInCookie(token.accessToken, req, res, 'jwt');
+    placeTokenInCookie(token.idToken, req, res, 'validation_token');
+    return res.status(200).end();
   },
 );
