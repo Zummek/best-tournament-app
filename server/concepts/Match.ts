@@ -44,6 +44,7 @@ export default class Match implements MatchWithoutMS {
   public static getNewInstance(data?: INewMatch) {
     return new Match({
       teamA: null,
+      date: new Date(),
       teamB: null,
       ...data,
       score: {
@@ -61,7 +62,6 @@ export default class Match implements MatchWithoutMS {
         },
       },
       isFinished: false,
-      date: new Date(),
     });
   }
 
