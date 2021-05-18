@@ -1,12 +1,10 @@
 import { WebClient } from '@slack/web-api';
 
-const token = process.env.SLACK_APP_TOKEN;
-
-const slackConnection = new WebClient(token);
-
 export default class Slack {
+  static connection = new WebClient(process.env.SLACK_APP_TOKEN);
+
   public static async getUserList() {
-    const response = await slackConnection.users.list();
+    const response = await Slack.connection.users.list();
     return response.members;
   }
 }
