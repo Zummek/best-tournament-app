@@ -28,7 +28,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import User from 'app/../shared/types/User';
 import store from 'src/store';
 
-@Component({})
+@Component
 export default class UserPanel extends Vue {
   private currentUser: User = store.state.currentUser;
 }

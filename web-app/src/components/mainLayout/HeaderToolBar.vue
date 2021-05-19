@@ -11,20 +11,20 @@
       Best tournament app
     </q-toolbar-title>
 
-    <avatar-menu />
+    <header-avatar-menu />
   </q-toolbar>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import AvatarMenu from './AvatarMenu.vue';
+import HeaderAvatarMenu from './HeaderAvatarMenu.vue';
 import NavigationTabs from './Navigation.vue';
 
 @Component({
   components: {
-    AvatarMenu,
+    HeaderAvatarMenu,
     NavigationTabs,
   },
 })
-export default class ToolBar extends Vue {}
+export default class HeaderToolBar extends Vue {}
 </script>

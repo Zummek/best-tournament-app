@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import ToolBar from 'components/mainLayout/ToolBar.vue';
+import ToolBar from 'src/components/mainLayout/HeaderToolBar.vue';
 import NavigationTabs from 'components/mainLayout/Navigation.vue';
 
 @Component({ components: { ToolBar, NavigationTabs } })

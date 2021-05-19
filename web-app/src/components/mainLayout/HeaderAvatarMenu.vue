@@ -55,5 +55,5 @@ import UserPanel from './UserPanel.vue';
     UserPanel,
   },
 })
-export default class AvatarMenu extends Vue {}
+export default class HeaderAvatarMenu extends Vue {}
 </script>
