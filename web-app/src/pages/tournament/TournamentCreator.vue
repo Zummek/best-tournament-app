@@ -36,7 +36,7 @@
                 class="cursor-pointer"
                 :style="$q.screen.gt.xs ? '' : 'text-align:center'"
               >
-                <h5 class="q-my-md tournamentNameEditor">
+                <h5 class="q-my-md textWrapDotted">
                   {{ tournamentName }}
                   <q-badge
                     v-if="tournamentName === $t('tournament.initName')"
@@ -283,7 +283,7 @@ export default class TournamentCreator extends Vue {
   padding: 0 24px 8px 24px;
 }
 
-.tournamentNameEditor {
+.textWrapDotted {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

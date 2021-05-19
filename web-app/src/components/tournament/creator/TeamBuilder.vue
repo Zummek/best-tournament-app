@@ -25,7 +25,7 @@
             <q-item dense>
               <q-item-section>
                 <div class="row">
-                  <q-item class="q-pa-none col-11">
+                  <q-item class="q-pa-none col-11 textWrapDotted">
                     <q-item-section avatar>
                       <q-avatar>
                         <img :src="item.avatarSrc" />
@@ -80,9 +80,13 @@
             </q-item>
           </template>
           <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+            <q-item
+              v-bind="scope.itemProps"
+              v-on="scope.itemEvents"
+              class="playerSelectScope"
+            >
               <q-item-section avatar>
-                <q-avatar>
+                <q-avatar size="2em">
                   <img :src="scope.opt.avatarSrc" />
                 </q-avatar>
               </q-item-section>
@@ -212,3 +216,9 @@ export default class TeamBuilder extends Vue {
   }
 }
 </script>
+<style scoped>
+.playerSelectScope {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+</style>

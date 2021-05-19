@@ -54,7 +54,7 @@
         <q-card class="row col-12 items-center">
           <q-card-section class="row col" style="text-align:left">
             <div class="text-grey-14 q-px-xs">{{ $t('common.name') }}:</div>
-            <strong>{{ props.row.name }}</strong>
+            <strong class="textWrapDotted">{{ props.row.name }}</strong>
           </q-card-section>
           <q-card-section
             class="col-4 overflow-hidden "
