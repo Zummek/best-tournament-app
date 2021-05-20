@@ -1,6 +1,5 @@
 import { TeamWithoutMS } from '../../../shared/types/Tournament';
 import { UserWithoutMS } from '../../../shared/types/User';
-import AppError from '../../utils/appError';
 import TeamModel, { TeamDocument, UserDocument } from '../models/TeamModel';
 
 interface UserDb extends Omit<UserWithoutMS, 'id'> {
@@ -29,34 +28,29 @@ export function toTeamDb(team: TeamWithoutMS): TeamDb {
   };
   return teamDb;
 }
-export function toTeam(teamDb: TeamDocument): TeamWithoutMS {
-  const team: TeamWithoutMS = {
+export function toTeam(teamDb: TeamDocument): Required<TeamWithoutMS> {
+  return {
     id: teamDb._id.toString(),
     name: teamDb.name,
     members: teamDb.members.map((userDoc) => toUser(userDoc)),
   };
-  return team;
 }
+type CreateTeam = Omit<TeamWithoutMS, 'id'>;
 
 export default class TeamRepository {
-  public static create = async (team: TeamWithoutMS) => {
+  public static create = async (team: CreateTeam) => {
     const teamDb = toTeamDb(team);
-    if (teamDb._id !== undefined) { throw new AppError('New team should not contain id', 400); }
-    const teamWithoutMS = toTeam(await TeamModel.create(teamDb));
-    return teamWithoutMS;
+    return toTeam(await TeamModel.create(teamDb));
   };
 
   // Mongoose always validates each document before sending insertMany to MongoDB.
   // So if one document has a validation error, no documents will be saved,
   // Returns: documents(teams) that passed validation
-  public static createMany = async (teams: TeamWithoutMS[]) => {
-    const teamsDb = teams.map((team) => toTeamDb(team));
 
-    teamsDb.forEach(async (team) => {
-      if (team._id !== undefined) throw new AppError('New team should not contain id', 400);
-    });
+  public static createMany = async (teams: CreateTeam[]) => {
+    const teamsDb = teams.map((team) => toTeamDb(team));
     const teamDocs = await TeamModel.insertMany(teamsDb);
-    teams = teamDocs.map((team) => toTeam(team));
-    return teams;
+    const createdTeams = teamDocs.map((team) => toTeam(team));
+    return createdTeams;
   };
 }

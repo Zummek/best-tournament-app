@@ -21,8 +21,7 @@ const MatchSchema = new Schema({
   childMatchBId: { type: Schema.Types.String },
   score: MatchScoreSchema,
   isFinished: { type: Schema.Types.Boolean },
-
-  // date: Schema.Types.Date,
+  date: Schema.Types.Date,
 });
 
 const TournamentSchema = new Schema({
@@ -44,6 +43,7 @@ const TournamentSchema = new Schema({
     enum: ['round-robin', 'single-elimination'],
     required: [true, 'Missing tournament type'],
   },
+  startDate: Schema.Types.Date,
 });
 
 // query middlewares
@@ -59,7 +59,7 @@ TournamentSchema.pre(/^find/, function (next) {
 //   teamA: TeamDocument,
 //   teamB: TeamDocument,
 // }
-export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB'>, Document {
+export interface MatchDocument extends Omit<MatchWithoutMS, 'id' | 'teamA' | 'teamB' >, Document {
   teamA: TeamDocument,
   teamB: TeamDocument,
 }

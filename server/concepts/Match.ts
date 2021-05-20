@@ -28,6 +28,8 @@ export default class Match implements MatchWithoutMS {
 
   isFinished: boolean;
 
+  date: Date;
+
   constructor(data: MatchWithoutMS) {
     this.id = data.id;
     this.teamA = data.teamA;
@@ -36,11 +38,13 @@ export default class Match implements MatchWithoutMS {
     this.childMatchBId = data.childMatchBId;
     this.score = data.score;
     this.isFinished = data.isFinished;
+    this.date = data.date;
   }
 
   public static getNewInstance(data?: INewMatch) {
     return new Match({
       teamA: null,
+      date: new Date(),
       teamB: null,
       ...data,
       score: {

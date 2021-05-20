@@ -31,6 +31,8 @@ export default class Tournament implements TournamentWithoutMS {
 
   type: TournamentType;
 
+  startDate: Date;
+
   constructor(data: Tournament) {
     this.id = data.id;
     this.name = data.name;
@@ -40,6 +42,7 @@ export default class Tournament implements TournamentWithoutMS {
       ? data.matches : data.matches.map((match) => new Match(match));
     this.isFinished = data.isFinished;
     this.type = data.type;
+    this.startDate = data.startDate;
   }
 
   public static async create(data: TournamentApi.Create, ownerId: string) {
@@ -56,11 +59,12 @@ export default class Tournament implements TournamentWithoutMS {
       matches: newMatches,
       isFinished: false,
       type: data.type,
+      startDate: new Date(), // Powinno byc ustawione na dzien
     });
 
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
-      TournamentRepository.updateMatches(tournament);
+      TournamentRepository.updateMatches(tournament); // Update is setting
     }
 
     return tournament;
@@ -194,9 +198,10 @@ export default class Tournament implements TournamentWithoutMS {
     await TournamentRepository.delete(tournamentId);
   }
 
-  private static generateRoundRobinMatches(teams: TeamWithoutMS[]): Match[] {
+  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): Match[] {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
+    // generowanie dat
     return data.map((match) => Match.getNewInstance({
       teamA: match.homeTeam,
       teamB: match.awayTeam,
@@ -209,7 +214,7 @@ export default class Tournament implements TournamentWithoutMS {
     for (let i = 0; i < matchAmount; i++) {
       newMatches.push(Match.getNewInstance());
     }
-
+    // generowanie dat
     return newMatches;
   }
 
