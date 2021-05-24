@@ -21,7 +21,7 @@ import moment from 'moment';
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class UserAvatar extends Vue {
+export default class ChangeLang extends Vue {
   private langs = [
     {
       label: 'Polski',

@@ -1,10 +1,10 @@
 <template>
   <div class="row col-4 justify-end">
     <q-btn round class="q-ma-sm">
-      <q-avatar :size="$q.screen.lt.sm ? '40px' : '50px'">
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-        <!-- TODO user avatar -->
-      </q-avatar>
+      <user-avatar
+        :avatar-props="$q.screen.lt.sm ? { size: '40px' } : { size: '50px' }"
+        :user="$store.state.currentUser.avatarSrc"
+      />
 
       <q-menu anchor="bottom right" self="top right">
         <div
@@ -48,11 +48,13 @@
 import { Vue, Component } from 'vue-property-decorator';
 import ChangeLang from './ChangeLang.vue';
 import UserPanel from './UserPanel.vue';
+import UserAvatar from '../UserAvatar.vue';
 
 @Component({
   components: {
     ChangeLang,
     UserPanel,
+    UserAvatar,
   },
 })
 export default class HeaderAvatarMenu extends Vue {}
