@@ -3,7 +3,7 @@
     <q-btn round class="q-ma-sm">
       <user-avatar
         :avatar-props="$q.screen.lt.sm ? { size: '40px' } : { size: '50px' }"
-        :user="$store.state.currentUser.avatarSrc"
+        :user="$store.state.currentUser"
       />
 
       <q-menu anchor="bottom right" self="top right">

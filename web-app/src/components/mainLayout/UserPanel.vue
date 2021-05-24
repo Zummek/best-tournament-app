@@ -1,9 +1,6 @@
 <template>
   <div class="column items-center q-pb-md">
-    <user-avatar
-      :avatar-props="{ size: '72px' }"
-      :user="currentUser.avatarSrc"
-    />
+    <user-avatar :avatar-props="{ size: '72px' }" :user="currentUser" />
 
     <div class="text-subtitle1 q-mt-md">
       {{ currentUser.firstName }} {{ currentUser.lastName }}
