@@ -14,16 +14,16 @@
         :name="1"
         :title="$t('tournament.stepper.tournamentType')"
         icon="settings"
-        :done="step > 1"
-        :error="activeTournamentType"
+        :done="activeTournamentType != null"
+        :error="step > 1 && activeTournamentType === null"
       >
-        <tournament-type-selector />
+        <tournament-type-selector :activeType="activeTournamentType" />
       </q-step>
       <q-step
         :name="2"
         :title="$t('tournament.stepper.buildTeams')"
         icon="settings"
-        :error="(activeTournamentType = null)"
+        :error="step > 2 && teams.length < 2"
         :done="step > 2"
       >
         <div class="col-12 " :class="$q.screen.gt.xs ? 'q-px-lg' : 'q-px-none'">
@@ -103,7 +103,7 @@
             <div class="col-6 gt-xs" style="text-align:right">
               <q-btn
                 @click="submitAddTournament"
-                :disabled="teams.length < 2"
+                :disabled="teams.length < 2 || activeTournamentType === null"
                 padding="sm"
                 color="primary"
               >
@@ -191,18 +191,22 @@ export default class TournamentCreator extends Vue {
       align: 'left',
       field: 'name',
       sortable: true,
+      classes: 'textWrapDotted',
+      style: 'max-width: 8em',
     },
     {
       name: 'participants',
       align: 'right',
       label: 'Participants',
       field: 'participants',
+      classes: 'textWrapDotted',
     },
     {
       name: 'action',
       align: 'right',
       label: '',
       field: 'action',
+      style: 'width: 1em',
     },
   ];
 
@@ -225,7 +229,6 @@ export default class TournamentCreator extends Vue {
   }
 
   private async submitAddTournament() {
-    console.log(this.activeTournamentType);
     if (this.validation()) {
       try {
         const responseData = await API.tournament.createTournament({

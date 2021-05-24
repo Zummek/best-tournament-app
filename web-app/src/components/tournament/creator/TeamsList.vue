@@ -41,8 +41,11 @@
               @click="deleteTeam(props.row)"
             />
           </template>
-          <template v-else>
+          <template v-if="col.name === 'name'">
             {{ col.value }}
+            <q-tooltip>
+              {{ col.value }}
+            </q-tooltip>
           </template>
         </q-td>
       </q-tr>
