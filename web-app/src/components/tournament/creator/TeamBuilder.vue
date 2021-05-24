@@ -50,7 +50,7 @@
           </template>
         </q-virtual-scroll>
       </q-card-section>
-      <q-card-section class="row  content-center">
+      <q-card-section class="row content-center">
         <q-select
           class="col-12 q-pb-none"
           clearable
@@ -83,7 +83,7 @@
             <q-item
               v-bind="scope.itemProps"
               v-on="scope.itemEvents"
-              class="playerSelectScope"
+              class="q-py-none"
             >
               <q-item-section avatar>
                 <q-avatar size="2em">
@@ -216,9 +216,4 @@ export default class TeamBuilder extends Vue {
   }
 }
 </script>
-<style scoped>
-.playerSelectScope {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-</style>
+<style scoped></style>

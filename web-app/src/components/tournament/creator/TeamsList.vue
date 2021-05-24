@@ -19,36 +19,36 @@
     </template>
 
     <!-- For List Table View -->
-    <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-td v-for="col in props.cols" :key="col.name" :props="props">
-          <template v-if="col.name === 'participants'">
-            <div
-              class="row col text-grey-14 justify-end"
-              style="font-size:0.7em"
-              v-for="player in props.row.members"
-              :key="player.id"
-            >
-              {{ player.firstName }} {{ player.lastName }}
-            </div>
-          </template>
-          <template v-if="col.name === 'action'">
-            <q-btn
-              dense
-              flat
-              text-color="red"
-              icon="close"
-              @click="deleteTeam(props.row)"
-            />
-          </template>
-          <template v-if="col.name === 'name'">
-            {{ col.value }}
-            <q-tooltip>
-              {{ col.value }}
-            </q-tooltip>
-          </template>
-        </q-td>
-      </q-tr>
+    <template v-slot:body-cell-name="props">
+      <q-td :props="props" style="max-width: 8em" class="textWrapDotted">
+        {{ props.value }}
+        <q-tooltip>
+          {{ props.value }}
+        </q-tooltip>
+      </q-td>
+    </template>
+    <template v-slot:body-cell-participants="props">
+      <q-td style="max-width: 4em" class="textWrapDotted">
+        <div
+          class="row col text-grey-14 justify-end"
+          style="font-size:0.7em"
+          v-for="player in props.row.members"
+          :key="player.id"
+        >
+          {{ player.firstName }} {{ player.lastName }}
+        </div>
+      </q-td>
+    </template>
+    <template v-slot:body-cell-action="props">
+      <q-td style="width:1em">
+        <q-btn
+          dense
+          flat
+          text-color="red"
+          icon="close"
+          @click="deleteTeam(props.row)"
+        />
+      </q-td>
     </template>
 
     <!-- For Grid Table View -->

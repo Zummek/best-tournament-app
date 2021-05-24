@@ -191,22 +191,21 @@ export default class TournamentCreator extends Vue {
       align: 'left',
       field: 'name',
       sortable: true,
-      classes: 'textWrapDotted',
-      style: 'max-width: 8em',
     },
     {
       name: 'participants',
+      required: true,
       align: 'right',
       label: 'Participants',
       field: 'participants',
-      classes: 'textWrapDotted',
     },
     {
       name: 'action',
-      align: 'right',
+      required: true,
       label: '',
+      align: 'right',
       field: 'action',
-      style: 'width: 1em',
+      sortable: false,
     },
   ];
 
