@@ -186,7 +186,6 @@ export default class TournamentCreator extends Vue {
   private columns = [
     {
       name: 'name',
-      required: true,
       label: 'Team name',
       align: 'left',
       field: 'name',
@@ -194,14 +193,12 @@ export default class TournamentCreator extends Vue {
     },
     {
       name: 'participants',
-      required: true,
       align: 'right',
       label: 'Participants',
       field: 'participants',
     },
     {
       name: 'action',
-      required: true,
       label: '',
       align: 'right',
       field: 'action',

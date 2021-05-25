@@ -216,4 +216,3 @@ export default class TeamBuilder extends Vue {
   }
 }
 </script>
-<style scoped></style>
