@@ -1,6 +1,7 @@
 /* eslint-disable no-continue */
 import tournamentGenerator from 'tournament-generator';
 import _ from 'lodash';
+import schedule from 'node-schedule';
 import ITournament, {
   MatchWithoutMS, TeamWithoutMS, TournamentApi, TournamentWithoutMS, PointsPerTeam, Team as ITeam, Match as IMatch, TournamentType,
 } from '../../shared/types/Tournament';
@@ -10,7 +11,10 @@ import TeamRepository from '../database/repositories/TeamRepository';
 import TournamentRepository from '../database/repositories/TournamentRepository';
 import AppError from '../utils/appError';
 import Match from './Match';
+import Slack from './Slack';
 import MSOrganization from './MSOrganization';
+import isToday from '../utils/isToday';
+import todaysMatchMessage from '../utils/slackMessages/todaysMatchMessage';
 
 interface SingleEliminationMatchCreator extends MatchWithoutMS {
   childTeamsAmount?: number;
@@ -382,5 +386,30 @@ export default class Tournament implements TournamentWithoutMS {
     }
 
     return enrichedTournaments;
+  }
+
+  public static async setSchedulerForTodaysMatchesNotify() {
+    const rule = new schedule.RecurrenceRule();
+    rule.minute = process.env.SLACK_NOTIFY_TIME_MINUTES || 30;
+    rule.hour = process.env.SLACK_NOTIFY_TIME_HOURS || 7;
+
+    schedule.scheduleJob('todaysMatchesNotifi', rule, async () => {
+      const activeRawTournaments = await TournamentRepository.getAllActive();
+      const activeTournaments = await Tournament.enrichTournamentsWithMSUsers(activeRawTournaments, 'token'); // TODO: change to real token
+
+      activeTournaments.forEach(async (tournament) => {
+        const usersEmails: string[] = [];
+        const todaysMatches = tournament.matches.filter((match) => match.isFinished === false && isToday(match.date));
+
+        todaysMatches.forEach(async (todaysMatch) => {
+          usersEmails.push(...(todaysMatch.teamA?.members.map((member) => member.email) || []));
+          usersEmails.push(...(todaysMatch.teamB?.members.map((member) => member.email) || []));
+        });
+
+        const userChannels = await Slack.getUsersIds(usersEmails);
+        const channelId = await Slack.openConversation(userChannels);
+        await Slack.sendMessage(channelId, todaysMatchMessage(tournament, todaysMatches));
+      });
+    });
   }
 }
