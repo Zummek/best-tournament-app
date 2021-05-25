@@ -4,8 +4,9 @@ export default {
   organizer: 'Organizer',
   participantsAmount: 'Number of participants',
   stepper: {
-    tournamentType: 'Choose tournament type',
+    tournamentType: 'Choose type',
     buildTeams: 'Create teams',
+    settings: 'Setup details',
   },
   status: {
     label: 'Status',

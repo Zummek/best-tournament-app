@@ -50,6 +50,12 @@
         />
       </q-td>
     </template>
+    <template v-if="tournType" v-slot:top-right>
+      <q-icon
+        :name="tournType == 'single-elimination' ? 'emoji_events' : 'groups'"
+        size="200%"
+      />
+    </template>
 
     <!-- For Grid Table View -->
     <template v-slot:item="props">
@@ -99,6 +105,7 @@ export default class TeamsList extends Vue {
   @Prop({ type: Array, required: true }) readonly columns!: QTable['columns'];
   @Prop({ type: String, default: () => '' }) readonly expanded!: string;
   @Prop({ type: Array, default: () => [] }) readonly data!: Team[];
+  @Prop({ type: String }) readonly tournType!: string;
 
   private deleteTeam(team: Team) {
     this.data.splice(this.data.indexOf(team), 1);
@@ -107,7 +114,7 @@ export default class TeamsList extends Vue {
 </script>
 <style lang="sass">
 .sticky-virtscroll-table
-  height: 65vh
+  height: 75vh
 
   .q-table__top,
   .q-table__bottom,

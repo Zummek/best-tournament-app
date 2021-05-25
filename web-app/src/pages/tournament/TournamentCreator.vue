@@ -2,7 +2,7 @@
   <q-page class="row justify-center">
     <q-stepper
       v-model="step"
-      vertical
+      :vertical="$q.screen.lt.sm"
       color="primary"
       animated
       flat
@@ -13,7 +13,6 @@
       <q-step
         :name="1"
         :title="$t('tournament.stepper.tournamentType')"
-        icon="settings"
         :done="activeTournamentType != null"
         :error="step > 1 && activeTournamentType === null"
       >
@@ -22,99 +21,11 @@
       <q-step
         :name="2"
         :title="$t('tournament.stepper.buildTeams')"
-        icon="settings"
+        icon="people"
         :error="step > 2 && teams.length < 2"
-        :done="step > 2"
+        :done="step > 2 && teams.length >= 2"
       >
         <div class="col-12 " :class="$q.screen.gt.xs ? 'q-px-lg' : 'q-px-none'">
-          <div class="row justify-between">
-            <div
-              :class="$q.screen.gt.xs ? 'col-6' : 'col-12'"
-              :style="$q.screen.gt.xs ? 'max-width: 600px' : ''"
-            >
-              <div
-                class="cursor-pointer"
-                :style="$q.screen.gt.xs ? '' : 'text-align:center'"
-              >
-                <h5 class="q-my-md textWrapDotted">
-                  {{ tournamentName }}
-                  <q-badge
-                    v-if="tournamentName === $t('tournament.initName')"
-                    rounded
-                    outline
-                    color="grey"
-                    align="bottom"
-                    transparent
-                  >
-                    <q-icon name="edit" />
-                  </q-badge>
-                </h5>
-
-                <q-popup-edit
-                  v-model="tournamentName"
-                  :validate="val => val.length > 3 && val.length < 40"
-                >
-                  <template
-                    v-slot="{
-                      initialValue,
-                      value,
-                      emitValue,
-                      validate,
-                      set,
-                      cancel,
-                    }"
-                  >
-                    <q-input
-                      autofocus
-                      dense
-                      :value="tournamentName"
-                      :hint="$t('tournament.name')"
-                      :rules="[
-                        val =>
-                          validate(value) ||
-                          $t('common.error.wrongInputLength'),
-                      ]"
-                      @input="emitValue"
-                    >
-                      <template v-slot:after>
-                        <q-btn
-                          flat
-                          dense
-                          color="negative"
-                          icon="cancel"
-                          @click.stop="cancel"
-                        />
-                        <q-btn
-                          flat
-                          dense
-                          color="positive"
-                          icon="check_circle"
-                          @click.stop="set"
-                          :disable="
-                            validate(value) === false || initialValue === value
-                          "
-                        />
-                      </template>
-                    </q-input>
-                  </template>
-                </q-popup-edit>
-              </div>
-            </div>
-            <div class="col-6 gt-xs" style="text-align:right">
-              <q-btn
-                @click="submitAddTournament"
-                :disabled="teams.length < 2 || activeTournamentType === null"
-                padding="sm"
-                color="primary"
-              >
-                <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
-                  {{ $t('tournament.error.atLeastTwoTeams') }}
-                </q-tooltip>
-                <q-icon class="q-mx-none" name="add" />
-                {{ $t('common.create') }}
-              </q-btn>
-            </div>
-          </div>
           <div class="gt-xs row justify-between">
             <div class="col-6" style="max-width: 600px">
               <teams-list
@@ -137,25 +48,91 @@
               :pagination="pagination"
             />
           </div>
-          <q-page-sticky
-            v-if="$q.screen.lt.sm"
-            position="bottom-right"
-            :offset="[36, 18]"
-          >
-            <q-btn
-              @click="submitAddTournament"
-              :disabled="teams.length < 2 || activeTournamentType === null"
-              padding="sm"
-              color="primary"
-            >
-              <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
-                {{ $t('tournament.error.atLeastTwoTeams') }}
-              </q-tooltip>
-              <q-icon class="q-mx-none" name="add" />
-              {{ $t('common.create') }}
+          <q-page-sticky position="bottom-right" :offset="[36, 18]">
+            <q-btn @click="step = 3" padding="sm" color="primary">
+              {{ $t('common.next') }}
+              <q-icon
+                class="q-ma-none"
+                :name="$q.screen.gt.xs ? 'navigate_next' : 'expand_more'"
+              />
             </q-btn>
           </q-page-sticky>
         </div>
+      </q-step>
+      <q-step
+        :name="3"
+        :title="$t('tournament.stepper.settings')"
+        icon="settings"
+      >
+        <div class="row justify-between">
+          <div class="gt-xs col-6" style="max-width: 600px; max-width: 75vh">
+            <teams-list
+              :data="teams"
+              :columns="columns"
+              :pagination="pagination"
+              :tournType="activeTournamentType"
+            />
+          </div>
+          <div class="row col-sm-6 col-12 q-px-md">
+            <div
+              class="col-sm-8 col-12"
+              :class="$q.screen.gt.xs ? 'justify-start' : ''"
+            >
+              <tournament-name-changer
+                @name-changed="updateTournamentName"
+                :tournamentName="tournamentName"
+              />
+            </div>
+            <div class="col-4 gt-xs" style="text-align:right">
+              <q-btn
+                @click="submitAddTournament"
+                :disabled="teams.length < 2 || activeTournamentType === null"
+                padding="sm"
+                color="primary"
+              >
+                <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
+                  {{ $t('tournament.error.atLeastTwoTeams') }}
+                </q-tooltip>
+                <q-icon class="q-mx-none" name="add" />
+                {{ $t('common.create') }}
+              </q-btn>
+            </div>
+            <div class="row col-12">
+              <start-date-selector
+                @update-date="updateStartDate"
+                :date="startDate"
+              />
+            </div>
+            <div class="row col-12 justify-center">
+              <days-of-play @update-days="updateDays" :days="days" />
+            </div>
+            <div class="row col-12 justify-center">
+              <frequency-selector
+                @update-freq="updateFrequency"
+                :frequency="frequency"
+              />
+            </div>
+          </div>
+        </div>
+
+        <q-page-sticky
+          v-if="$q.screen.lt.sm"
+          position="bottom-right"
+          :offset="[36, 18]"
+        >
+          <q-btn
+            @click="submitAddTournament"
+            :disabled="teams.length < 2 || activeTournamentType === null"
+            padding="sm"
+            color="primary"
+          >
+            <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
+              {{ $t('tournament.error.atLeastTwoTeams') }}
+            </q-tooltip>
+            <q-icon class="q-mx-none" name="add" />
+            {{ $t('common.create') }}
+          </q-btn>
+        </q-page-sticky>
       </q-step>
     </q-stepper>
   </q-page>
@@ -167,21 +144,36 @@ import { Vue, Component } from 'vue-property-decorator';
 import TeamsList from '../../components/tournament/creator/TeamsList.vue';
 import TeamBuilder from '../../components/tournament/creator/TeamBuilder.vue';
 import TournamentTypeSelector from '../../components/tournament/creator/TournamentTypeSelector.vue';
+import TournamentNameChanger from '../../components/tournament/creator/TournamentNameChanger.vue';
+import DaysOfPlay from '../../components/tournament/creator/DaysOfPlaySelector.vue';
+import StartDateSelector from '../../components/tournament/creator/StartDateSelector.vue';
+import FrequencySelector from '../../components/tournament/creator/FrequencySelector.vue';
 import { Team, TournamentType } from '../../../../shared/types/Tournament';
 import EventBus from '../../services/EventBus';
 import API from 'src/services/API';
 
 @Component({
-  components: { TeamsList, TeamBuilder, TournamentTypeSelector },
+  components: {
+    TeamsList,
+    TeamBuilder,
+    TournamentTypeSelector,
+    TournamentNameChanger,
+    DaysOfPlay,
+    FrequencySelector,
+    StartDateSelector,
+  },
 })
 export default class TournamentCreator extends Vue {
   private step = 1;
   private activeTournamentType: TournamentType | null = null;
   private tournamentName = this.$t('tournament.initName') as string;
+  private startDate = '2019/02/01';
+  private frequency = 1;
   private isErrorTournamentName = false;
   private pagination = {
     rowsPerPage: 0,
   };
+  private days: Array<string> = [];
 
   private columns = [
     {
@@ -250,6 +242,22 @@ export default class TournamentCreator extends Vue {
 
   private addTeam(team: Team) {
     this.teams.push(team);
+  }
+
+  private updateTournamentName(name: string) {
+    this.tournamentName = name;
+  }
+
+  private updateFrequency(newFreq: number) {
+    this.frequency = newFreq;
+  }
+
+  private updateDays(newDays: Array<string>) {
+    this.days = newDays;
+  }
+
+  private updateStartDate(newDate: string) {
+    this.startDate = newDate;
   }
 
   private validation() {
