@@ -1,6 +1,6 @@
 <template>
   <div class="row col-12" style="text-align:center">
-    <h6 class="col-12 q-my-sm">Frequency</h6>
+    <h6 class="col-12 q-my-sm">{{ $t('tournament.settings.matchFrequency') }}</h6>
     <q-slider
       v-model="newFreq"
       :min="1"

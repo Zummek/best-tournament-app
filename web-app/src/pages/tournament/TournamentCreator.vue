@@ -13,6 +13,11 @@
       <q-step
         :name="1"
         :title="$t('tournament.stepper.tournamentType')"
+        :caption="
+          step > 1 && activeTournamentType === null
+            ? $t('tournament.error.noTypeChosen')
+            : ''
+        "
         :done="activeTournamentType != null"
         :error="step > 1 && activeTournamentType === null"
       >
@@ -22,6 +27,11 @@
         :name="2"
         :title="$t('tournament.stepper.buildTeams')"
         icon="people"
+        :caption="
+          step > 2 && teams.length < 2
+            ? $t('tournament.error.atLeastTwoTeams')
+            : ''
+        "
         :error="step > 2 && teams.length < 2"
         :done="step > 2 && teams.length >= 2"
       >
@@ -49,7 +59,7 @@
             />
           </div>
           <q-page-sticky position="bottom-right" :offset="[36, 18]">
-            <q-btn @click="step = 3" padding="sm" color="primary">
+            <q-btn @click="step = 3" color="primary">
               {{ $t('common.next') }}
               <q-icon
                 class="q-ma-none"
@@ -86,12 +96,16 @@
             <div class="col-4 gt-xs" style="text-align:right">
               <q-btn
                 @click="submitAddTournament"
-                :disabled="teams.length < 2 || activeTournamentType === null"
+                :disabled="
+                  teams.length < 2 ||
+                    activeTournamentType === null ||
+                    days.length < 1
+                "
                 padding="sm"
                 color="primary"
               >
-                <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
-                  {{ $t('tournament.error.atLeastTwoTeams') }}
+                <q-tooltip v-if="days.length < 1" content-class="bg-accent">
+                  {{ $t('tournament.error.noMatchDaysChosen') }}
                 </q-tooltip>
                 <q-icon class="q-mx-none" name="add" />
                 {{ $t('common.create') }}
@@ -100,7 +114,7 @@
             <div class="row col-12">
               <start-date-selector
                 @update-date="updateStartDate"
-                :date="startDate"
+                :date="startDateString"
               />
             </div>
             <div class="row col-12 justify-center">
@@ -122,12 +136,16 @@
         >
           <q-btn
             @click="submitAddTournament"
-            :disabled="teams.length < 2 || activeTournamentType === null"
+            :disabled="
+              teams.length < 2 ||
+                activeTournamentType === null ||
+                days.length < 1
+            "
             padding="sm"
             color="primary"
           >
-            <q-tooltip v-if="teams.length < 2" content-class="bg-accent">
-              {{ $t('tournament.error.atLeastTwoTeams') }}
+            <q-tooltip v-if="days.length < 1" content-class="bg-accent">
+              {{ $t('tournament.error.noMatchDaysChosen') }}
             </q-tooltip>
             <q-icon class="q-mx-none" name="add" />
             {{ $t('common.create') }}
@@ -167,7 +185,9 @@ export default class TournamentCreator extends Vue {
   private step = 1;
   private activeTournamentType: TournamentType | null = null;
   private tournamentName = this.$t('tournament.initName') as string;
-  private startDate = '2019/02/01';
+  private todayDate = new Date(Date.now());
+  private todayDateString = this.todayDate.toLocaleDateString('en-US');
+  private startDateString = this.todayDateString;
   private frequency = 1;
   private isErrorTournamentName = false;
   private pagination = {
@@ -217,6 +237,8 @@ export default class TournamentCreator extends Vue {
   }
 
   private async submitAddTournament() {
+    const dateToSubmit = new Date(Date.parse(this.startDateString));
+    // console.log(dateToSubmit);
     if (this.validation()) {
       try {
         const responseData = await API.tournament.createTournament({
@@ -257,7 +279,7 @@ export default class TournamentCreator extends Vue {
   }
 
   private updateStartDate(newDate: string) {
-    this.startDate = newDate;
+    this.startDateString = newDate;
   }
 
   private validation() {

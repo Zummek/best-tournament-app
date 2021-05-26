@@ -26,7 +26,7 @@ export default class SelectableTournamentType extends Vue {
   @Prop({ type: String, required: true })
   readonly tournamentType!: TournamentType;
   @Prop({ type: String, required: true }) readonly iconName!: string;
-  @Prop({ type: String, required: true })
+  @Prop({ required: true })
   readonly activeType!: TournamentType | null;
 
   private updateTournamentType() {

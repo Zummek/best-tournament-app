@@ -1,7 +1,7 @@
 <template>
   <div class="row col-12" style="text-align:center">
     <h6 class="col-12 q-my-sm gt-xs">
-      DAYS OF PLAY
+      {{ $t('tournament.settings.matchDays') }}
     </h6>
     <div class="col-12 gt-xs">
       <q-checkbox
@@ -18,7 +18,7 @@
         filled
         v-model="pickedDays"
         :options="daysOfWeek"
-        label="DAYSSSSSSSS"
+        :label="$t('tournament.settings.matchDays')"
         multiple
       />
     </div>

@@ -19,7 +19,7 @@ import { TournamentType } from 'app/../shared/types/Tournament';
   components: { SelectableTournamentType },
 })
 export default class TournamentTypeSelector extends Vue {
-  @Prop({ type: String || null, required: true })
+  @Prop({ required: true })
   activeType!: TournamentType | null;
 
   private tournamentTypesOptions = [

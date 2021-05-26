@@ -1,39 +1,32 @@
 <template>
   <div class="row col-12 justify-center" style="text-align:center">
     <h6 class="col-12 q-my-sm gt-xs">
-      START DATE
+      {{ $t('tournament.settings.dateLabel') }}
     </h6>
     <q-date
       class="col-12 col-md-6 gt-xs"
       v-model="newDate"
-      today-btn
       minimal
       first-day-of-week="1"
       @input="updateDate"
+      mask="M/DD/YYYY"
     />
 
-    <q-input
-      class="lt-sm col-12 q-mt-md"
-      filled
-      v-model="newDate"
-      mask="date"
-      :rules="['date']"
-      label="startDate"
-    >
-      <template>
-        <q-popup-proxy
-          ref="qDateProxy"
-          transition-show="scale"
-          transition-hide="scale"
+    <q-btn class="lt-sm col-12 q-mt-md" icon="event" color="primary">
+      {{ $t('tournament.settings.dateLabel') }}
+      <q-popup-proxy transition-show="scale" transition-hide="scale">
+        <q-date
+          v-model="newDate"
+          first-day-of-week="1"
+          @input="updateDate"
+          mask="M/DD/YYYY"
         >
-          <q-date v-model="newDate">
-            <div class="row items-center justify-end">
-              <q-btn v-close-popup label="Close" color="primary" flat />
-            </div>
-          </q-date>
-        </q-popup-proxy>
-      </template>
-    </q-input>
+          <div class="row items-center justify-end">
+            <q-btn v-close-popup label="Close" color="primary" flat />
+          </div>
+        </q-date>
+      </q-popup-proxy>
+    </q-btn>
   </div>
 </template>
 
