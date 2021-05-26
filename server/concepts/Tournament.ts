@@ -395,7 +395,8 @@ export default class Tournament implements TournamentWithoutMS {
 
     schedule.scheduleJob('todaysMatchesNotifi', rule, async () => {
       const activeRawTournaments = await TournamentRepository.getAllActive();
-      const activeTournaments = await Tournament.enrichTournamentsWithMSUsers(activeRawTournaments, 'token'); // TODO: change to real token
+      const token = await MSOrganization.getApplicationToken();
+      const activeTournaments = await Tournament.enrichTournamentsWithMSUsers(activeRawTournaments, token);
 
       activeTournaments.forEach(async (tournament) => {
         const usersEmails: string[] = [];
