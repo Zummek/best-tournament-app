@@ -27,7 +27,7 @@
 
       <div
         style="width: 100px"
-        class="q-ma-auto column self-center justify-center"
+        class="q-ma-auto q-mx-sm column self-center justify-center"
       >
         <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
         <div style="text-align: center">
