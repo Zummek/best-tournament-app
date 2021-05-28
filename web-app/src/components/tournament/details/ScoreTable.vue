@@ -55,7 +55,6 @@ export default class ScoreTable extends Vue {
   private teamsScores: PointsPerTeam[] = [];
   private filter = '';
   private loading = true;
-  private expanded = '';
   private pagination = {
     rowsPerPage: 0,
     sortBy: 'points',
