@@ -1,5 +1,5 @@
 <template>
-  <div class="row" :class="reverse ? 'reverse' : ''">
+  <div class="row no-wrap" :class="reverse ? 'reverse' : ''">
     <user-avatar
       style="z-index: 100"
       :avatar-props="{ size: firstAvatarSize + 'px' }"
