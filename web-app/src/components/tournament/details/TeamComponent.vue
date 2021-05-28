@@ -6,7 +6,7 @@
     >
       <div
         v-if="inverted"
-        class="q-mr-sm self-end text-right cut-name"
+        class="q-mr-xs text-right cut-name"
         :class="[textCenter ? 'self-center' : 'self-end']"
         style="font-size: 15px; flex: 1"
       >
@@ -18,13 +18,13 @@
         :maxAvatars="2"
         :firstAvatarSize="iconSize"
         :restAvatarsSize="iconSize - 6"
-        :users="[...team.members, ...team.members]"
+        :users="team.members"
         :center="textCenter"
       />
 
       <div
         v-if="!inverted"
-        class="q-ml-sm cut-name"
+        class="q-ml-xs cut-name"
         :class="[textCenter ? 'self-center' : 'self-end']"
         style="font-size: 15px;"
       >
