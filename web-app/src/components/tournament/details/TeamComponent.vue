@@ -13,32 +13,14 @@
         {{ team.name }}
       </div>
 
-      <q-avatar
-        v-if="inverted"
-        class="self-end"
-        style="z-index: 10"
-        :size="iconSize + 'px'"
-      >
-        <!-- <img :src="team.members[0].avatarSrc" /> -->
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-      </q-avatar>
-      <q-avatar
-        class="self-end"
-        :size="iconSize - 7 + 'px'"
-        :style="inverted ? 'margin-left: -8px' : 'margin-right: -8px'"
-      >
-        <!-- <img :src="team.members[1].avatarSrc" /> -->
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-      </q-avatar>
-      <q-avatar
-        v-if="!inverted"
-        class="self-end"
-        style="z-index: 10"
-        :size="iconSize + 'px'"
-      >
-        <!-- <img :src="team.members[0].avatarSrc" /> -->
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-      </q-avatar>
+      <multiple-users-avatar
+        :reverse="!inverted"
+        :maxAvatars="2"
+        :firstAvatarSize="iconSize"
+        :restAvatarsSize="iconSize - 6"
+        :users="[...team.members, ...team.members]"
+        :center="textCenter"
+      />
 
       <div
         v-if="!inverted"
@@ -55,8 +37,13 @@
 <script lang="ts">
 import { Team } from 'app/../shared/types/Tournament';
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import MultipleUsersAvatar from '../../MultipleUsersAvatar.vue';
 
-@Component
+@Component({
+  components: {
+    MultipleUsersAvatar,
+  },
+})
 export default class TeamComponent extends Vue {
   @Prop({ type: Object, required: true }) readonly team!: Team;
   @Prop({ type: Boolean, default: false }) readonly flat!: boolean;
