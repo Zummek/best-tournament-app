@@ -42,6 +42,13 @@
         <team-component :team="match.teamB" flat inverted />
       </div>
     </q-card-section>
+    <q-tooltip
+      v-if="isAllowedToEditMatchScore"
+      :content-class="tooltipColor"
+      content-style="font-size: 13px; z-index: 5000"
+    >
+      {{ tooltipContent }}
+    </q-tooltip>
   </q-card>
 </template>
 
@@ -79,6 +86,17 @@ export default class MatchComponent extends Vue {
 
     if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
     return 'matchNewScoreFrame';
+  }
+
+  get tooltipContent() {
+    if (this.isOwner && this.hasConflict)
+      return this.$t('tournament.match.resolveConflict');
+    return this.$t('tournament.match.addScore');
+  }
+
+  get tooltipColor() {
+    if (this.isOwner && this.hasConflict) return 'bg-negative';
+    return 'bg-primary';
   }
 
   get formatedScore() {

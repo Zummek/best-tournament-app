@@ -47,7 +47,7 @@
       </div>
     </q-card-section>
     <q-tooltip
-      v-model="isAllowedToEditMatchScore"
+      v-if="isAllowedToEditMatchScore"
       :content-class="tooltipColor"
       content-style="font-size: 13px; z-index: 5000"
     >
