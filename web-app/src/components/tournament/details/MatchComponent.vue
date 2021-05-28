@@ -5,10 +5,7 @@
     :style="small ? 'min-width: 300px' : 'min-width: 500px'"
     @click="scoreActionOnClick"
   >
-    <q-card-section
-      class="row no-wrap q-py-sm justify-between "
-      :class="[small ? 'q-px-sm' : 'q-px-md']"
-    >
+    <q-card-section class="row no-wrap q-py-sm q-px-md justify-between">
       <div style="flex: 1; min-width: 190px">
         <team-component
           :team="match.teamA"
@@ -41,7 +38,7 @@
         </div>
       </div>
 
-      <div v-if="!small" style="min-width: 190px">
+      <div v-if="!small" style="flex: 1; min-width: 190px">
         <team-component :team="match.teamB" flat inverted />
       </div>
     </q-card-section>

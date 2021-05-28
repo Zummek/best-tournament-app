@@ -6,7 +6,7 @@
     @click="scoreActionOnClick"
   >
     <q-card-section class="row no-wrap q-pa-xs" style="padding: 6px">
-      <div style="flex: 1">
+      <div style="width: 192px">
         <team-component
           v-if="match.teamA"
           style="padding-bottom: 6px"
