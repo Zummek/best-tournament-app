@@ -24,6 +24,10 @@ oauth_config:
       - commands
       - users:read
       - users:read.email
+      - channels:manage
+      - mpim:write
+      - im:write
+      - groups:write
 settings:
   org_deploy_enabled: false
   socket_mode_enabled: false

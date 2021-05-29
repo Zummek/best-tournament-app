@@ -131,6 +131,11 @@ export default class TournamentRepository {
     return { totalRows, tournaments };
   };
 
+  public static getAllActive = async (): Promise<TournamentWithoutMS[]> => {
+    const tDocs: TournamentDocument[] = await TournamentModel.find().where('isFinished').equals(false).exec();
+    return tDocs.map((tDoc) => toTournament(tDoc));
+  };
+
   public static getById = async (id: string) => {
     if (!isValidObjectId(id)) return null;
     const tDoc: TournamentDocument | null = await TournamentModel.findById(id).exec();
