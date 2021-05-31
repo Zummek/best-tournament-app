@@ -41,8 +41,8 @@ export interface Match {
 }
 
 export interface MatchWithoutMS extends Omit<Match, "teamA" | "teamB"> {
-  teamA?: TeamWithoutMS | null;
-  teamB?: TeamWithoutMS | null;
+  teamA: TeamWithoutMS | null;
+  teamB: TeamWithoutMS | null;
 }
 
 export type TournamentType = "round-robin" | "single-elimination";
