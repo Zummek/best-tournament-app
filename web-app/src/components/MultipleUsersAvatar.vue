@@ -55,14 +55,6 @@ export default class MultipleUsersAvatar extends Vue {
   @Prop({ type: Boolean, default: false }) readonly center!: boolean;
   @Prop({ type: Boolean, default: false }) readonly reverse!: boolean;
 
-  mounted() {
-    if (this.maxAvatars < 2) {
-      console.warn(
-        'Prop maxAvatars in MultipleUsersAvatar has a limitation: min 2'
-      );
-    }
-  }
-
   get restUsers() {
     if (this.users.length > this.maxAvatars)
       return this.users.slice(1, this.maxAvatars - 1);
