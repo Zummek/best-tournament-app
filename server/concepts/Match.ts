@@ -14,9 +14,9 @@ interface INewMatch {
 export default class Match implements MatchWithoutMS {
   id?: string | undefined;
 
-  teamA: TeamWithoutMS | null;
+  teamA?: TeamWithoutMS | null;
 
-  teamB: TeamWithoutMS | null;
+  teamB?: TeamWithoutMS | null;
 
   childMatchAId?: string;
 
@@ -43,9 +43,7 @@ export default class Match implements MatchWithoutMS {
 
   public static getNewInstance(data?: INewMatch) {
     return new Match({
-      teamA: null,
       date: new Date(),
-      teamB: null,
       ...data,
       score: {
         reportedByA: {

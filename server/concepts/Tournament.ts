@@ -8,7 +8,7 @@ import ITournament, {
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
 // eslint-disable-next-line import/no-cycle
-import TournamentRepository from '../database/repositories/TournamentRepository';
+import TournamentRepository, { MatchRoundRobinCreate } from '../database/repositories/TournamentRepository';
 import AppError from '../utils/appError';
 import Match from './Match';
 import Slack from './Slack';
@@ -52,33 +52,39 @@ export default class Tournament implements TournamentWithoutMS {
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
+    let tournament : TournamentWithoutMS;
+
+    // To jest do naprawienia nie powinnismy tego sprawdzac
+    const newMatches = Tournament.generateRoundRobinMatches(teams);
+    newMatches.forEach((match) => {
+      if (!match.teamA || !match.teamB) throw new AppError('The match was generated without team! (round-robin)', 400);
+    });
 
     if (data.type === 'round-robin') {
-      const newMatches = Tournament.generateRoundRobinMatches(teams);
-      const tournament = await TournamentRepository.createRoundRobin({
+      tournament = await TournamentRepository.createRoundRobin({
         name: data.name,
         ownerId,
         teams,
-        matches: Tournament.generateRoundRobinMatches(teams),
+        matches: newMatches,
         isFinished: false,
         type: data.type,
+        startDate: new Date(),
       });
-    } else {
-      newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
+    } else /* ( data.type === 'single-elimination') */{
+      tournament = await TournamentRepository.createSingleElimination({
+        name: data.name,
+        ownerId,
+        teams,
+        matches: Tournament.generateEmptySingleEliminationMatches(teams.length - 1),
+        isFinished: false,
+        type: data.type,
+        startDate: new Date(), // Powinno byc ustawione na dzien
+      });
     }
-    const tournament = await TournamentRepository.createRoundRobin({
-      name: data.name,
-      ownerId,
-      teams,
-      matches: newMatches,
-      isFinished: false,
-      type: data.type,
-      startDate: new Date(), // Powinno byc ustawione na dzien
-    });
 
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
-      TournamentRepository.updateMatches(tournament); // Update is setting
+      TournamentRepository.updateMatches(tournament);
     }
 
     return tournament;
@@ -212,14 +218,50 @@ export default class Tournament implements TournamentWithoutMS {
     await TournamentRepository.delete(tournamentId);
   }
 
-  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): Match[] {
+  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): MatchRoundRobinCreate[] {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
     // generowanie dat
-    return data.map((match) => Match.getNewInstance({
+    const matches = data.map((match) => Match.getNewInstance({
       teamA: match.homeTeam,
       teamB: match.awayTeam,
     }));
+    const matchesRoundRobin : MatchRoundRobinCreate[] = matches.map((match) => {
+      if (!match.teamA || !match.teamB || !match.teamA.id || !match.teamB.id) throw new AppError('err', 400);
+      const teamAReq: Required<TeamWithoutMS> = {
+        id: match.teamA.id,
+        name: match.teamA.name,
+        members: match.teamA.members,
+      };
+      const teamBReq: Required<TeamWithoutMS> = {
+        id: match.teamB.id,
+        name: match.teamB.name,
+        members: match.teamB.members,
+      };
+      const matchhh: MatchRoundRobinCreate = {
+        teamA: teamAReq,
+        teamB: teamBReq,
+        score: {
+          reportedByA: {
+            a: -1,
+            b: -1,
+          },
+          reportedByB: {
+            a: -1,
+            b: -1,
+          },
+          final: {
+            a: -1,
+            b: -1,
+          },
+        },
+        isFinished: false,
+        date: new Date(), // Possibility to add date here
+
+      };
+      return matchhh;
+    });
+    return matchesRoundRobin;
   }
 
   private static generateEmptySingleEliminationMatches(matchAmount: number): Match[] {

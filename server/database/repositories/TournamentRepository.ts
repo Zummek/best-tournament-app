@@ -70,7 +70,7 @@ function toTournament(tDoc: TournamentDocument) : TournamentWithoutMS {
     startDate: tDoc.startDate,
   };
 }
-interface MatchRoundRobinCreate extends Omit<MatchWithoutMS, 'id' | 'childMatchAId' | 'childMatchBId'>{
+export interface MatchRoundRobinCreate extends Omit<MatchWithoutMS, 'id' | 'childMatchAId' | 'childMatchBId'>{
   teamA: Required<TeamWithoutMS>; // teams id required and teams not null since they are known from the begining
   teamB: Required<TeamWithoutMS>;
 }
@@ -86,26 +86,12 @@ interface TournamentSingleEliminationCreate extends Omit<TournamentWithoutMS, 'i
   matches: MatchSingleEliminationCreate[];
 }
 export default class TournamentRepository {
-  public static async create(tournament: TournamentRoundRobinCreate) {
+  public static async create(tournament: TournamentRoundRobinCreate | TournamentSingleEliminationCreate) {
     const tDoc = await TournamentModel.create(toTournamentDb(tournament));
     const tour = await TournamentRepository.getById(tDoc._id);
     if (!tour) { throw new AppError('Error while creating tournament', 400); }
     return tour;
   }
-
-  public static async createSingleElimination(tournament: TournamentSingleEliminationCreate) {
-    const tDoc = await TournamentModel.create(toTournamentDb(tournament));
-    const tour = await TournamentRepository.getById(tDoc._id);
-    if (!tour) { throw new AppError('Error while creating tournament', 400); }
-    return tour;
-  }
-
-  // public static async createSingleElimination(tournament: TournamentSingleEliminationCreate) {
-  //   const tDoc = await TournamentModel.create(toTournamentDb(tournament));
-  //   const tour = await TournamentRepository.getById(tDoc._id);
-  //   if (!tour) { throw new AppError('Error while creating tournament', 400); }
-  //   return tour;
-  // }
 
   public static async updateMatch(match: MatchWithoutMS) {
     if (!match.id || !isValidObjectId(match.id)) throw new AppError('Provided match does not contain id', 404);
