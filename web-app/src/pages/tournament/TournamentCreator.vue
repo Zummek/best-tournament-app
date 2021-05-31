@@ -21,7 +21,15 @@
         :done="activeTournamentType != null"
         :error="step > 1 && activeTournamentType === null"
       >
-        <tournament-type-selector :activeType="activeTournamentType" />
+        <div class="row justify-center">
+          <div :class="$q.screen.gt.sm ? 'col-6 q-pb-md' : 'col-12'">
+            <tournament-name-changer
+              @name-changed="updateTournamentName"
+              :tournamentName="tournamentName"
+            />
+          </div>
+          <tournament-type-selector :activeType="activeTournamentType" />
+        </div>
       </q-step>
       <q-step
         :name="2"
@@ -78,22 +86,14 @@
           <div class="gt-xs col-6" style="max-width: 600px; max-width: 75vh">
             <teams-list
               :data="teams"
-              :columns="columns"
+              :columns="columnsSummary"
               :pagination="pagination"
               :tournType="activeTournamentType"
+              :tournamentName="tournamentName"
             />
           </div>
           <div class="row col-sm-6 col-12 q-px-md">
-            <div
-              class="col-sm-8 col-12"
-              :class="$q.screen.gt.xs ? 'justify-start' : ''"
-            >
-              <tournament-name-changer
-                @name-changed="updateTournamentName"
-                :tournamentName="tournamentName"
-              />
-            </div>
-            <div class="col-4 gt-xs" style="text-align:right">
+            <div class="col-12 gt-xs" style="text-align:right">
               <q-btn
                 @click="submitAddTournament"
                 :disabled="
@@ -193,7 +193,7 @@ export default class TournamentCreator extends Vue {
   private pagination = {
     rowsPerPage: 0,
   };
-  private days: Array<string> = [];
+  private days: Array<number> = [];
 
   private columns = [
     {
@@ -218,6 +218,22 @@ export default class TournamentCreator extends Vue {
     },
   ];
 
+  private columnsSummary = [
+    {
+      name: 'name',
+      label: 'Team name',
+      align: 'left',
+      field: 'name',
+      sortable: true,
+    },
+    {
+      name: 'participants',
+      align: 'right',
+      label: 'Participants',
+      field: 'participants',
+    },
+  ];
+
   private teams: Team[] = [];
   private users: User[] = [];
 
@@ -239,6 +255,8 @@ export default class TournamentCreator extends Vue {
   private async submitAddTournament() {
     const dateToSubmit = new Date(Date.parse(this.startDateString));
     // console.log(dateToSubmit);
+    // console.log(this.days);
+    // console.log(this.frequency)
     if (this.validation()) {
       try {
         const responseData = await API.tournament.createTournament({
@@ -274,7 +292,7 @@ export default class TournamentCreator extends Vue {
     this.frequency = newFreq;
   }
 
-  private updateDays(newDays: Array<string>) {
+  private updateDays(newDays: Array<number>) {
     this.days = newDays;
   }
 

@@ -9,7 +9,7 @@
         :key="item.value"
         v-model="pickedDays"
         :val="item.value"
-        :label="$t('common.daysOfWeek.' + item.value)"
+        :label="item.label"
         @input="updateDays"
       />
     </div>
@@ -38,31 +38,31 @@ export default class DaysOfPlaySelector extends Vue {
   private daysOfWeek = [
     {
       label: this.$t('common.daysOfWeek.monday') as string,
-      value: 'monday',
+      value: 1,
     },
     {
       label: this.$t('common.daysOfWeek.tuesday') as string,
-      value: 'tuesday',
+      value: 2,
     },
     {
       label: this.$t('common.daysOfWeek.wednesday') as string,
-      value: 'wednesday',
+      value: 3,
     },
     {
       label: this.$t('common.daysOfWeek.thursday') as string,
-      value: 'thursday',
+      value: 4,
     },
     {
       label: this.$t('common.daysOfWeek.friday') as string,
-      value: 'friday',
+      value: 5,
     },
     {
       label: this.$t('common.daysOfWeek.saturday') as string,
-      value: 'saturday',
+      value: 6,
     },
     {
       label: this.$t('common.daysOfWeek.sunday') as string,
-      value: 'sunday',
+      value: 7,
     },
   ];
 

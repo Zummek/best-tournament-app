@@ -11,7 +11,7 @@ export default {
   settings: {
     dateLabel: 'Pick a start date',
     matchDays: 'Select match days',
-    matchFrequency: 'Frequency of games (matches per day)',
+    matchFrequency: 'Matches per day',
   },
   status: {
     label: 'Status',

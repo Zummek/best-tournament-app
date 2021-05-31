@@ -3,10 +3,7 @@
     class="cursor-pointer"
     :style="$q.screen.gt.xs ? '' : 'text-align:center'"
   >
-    <h5
-      class="q-my-sm textWrapDotted"
-      :style="$q.screen.gt.xs ? 'text-align:left' : 'text-align:center'"
-    >
+    <h5 class="q-my-sm textWrapDotted" style="text-align:center">
       {{ newTournName }}
       <q-badge
         v-if="newTournName === $t('tournament.initName')"

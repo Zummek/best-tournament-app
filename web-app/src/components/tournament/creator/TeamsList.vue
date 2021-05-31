@@ -1,7 +1,7 @@
 <template>
   <q-table
     :grid="$q.screen.lt.sm"
-    :title="$t('tournament.team.list')"
+    :title="tournamentName ? tournamentName : $t('tournament.team.list')"
     :data="data"
     :columns="columns"
     row-key="name"
@@ -106,6 +106,7 @@ export default class TeamsList extends Vue {
   @Prop({ type: String, default: () => '' }) readonly expanded!: string;
   @Prop({ type: Array, default: () => [] }) readonly data!: Team[];
   @Prop({ type: String }) readonly tournType!: string;
+  @Prop({ type: String }) readonly tournamentName!: string;
 
   private deleteTeam(team: Team) {
     this.data.splice(this.data.indexOf(team), 1);
