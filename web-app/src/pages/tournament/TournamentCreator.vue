@@ -23,10 +23,7 @@
       >
         <div class="row justify-center">
           <div :class="$q.screen.gt.sm ? 'col-6 q-pb-md' : 'col-12'">
-            <tournament-name-changer
-              @name-changed="updateTournamentName"
-              :tournamentName="tournamentName"
-            />
+            <tournament-name-changer :tournamentName.sync="tournamentName" />
           </div>
           <tournament-type-selector :activeType="activeTournamentType" />
         </div>
@@ -112,19 +109,13 @@
               </q-btn>
             </div>
             <div class="row col-12">
-              <start-date-selector
-                @update-date="updateStartDate"
-                :date="startDateString"
-              />
+              <start-date-selector :date.sync="startDateString" />
             </div>
             <div class="row col-12 justify-center">
-              <days-of-play @update-days="updateDays" :days="days" />
+              <days-of-play :days.sync="days" />
             </div>
             <div class="row col-12 justify-center">
-              <frequency-selector
-                @update-freq="updateFrequency"
-                :frequency="frequency"
-              />
+              <frequency-selector :frequency.sync="frequency" />
             </div>
           </div>
         </div>
@@ -254,9 +245,6 @@ export default class TournamentCreator extends Vue {
 
   private async submitAddTournament() {
     const dateToSubmit = new Date(Date.parse(this.startDateString));
-    // console.log(dateToSubmit);
-    // console.log(this.days);
-    // console.log(this.frequency)
     if (this.validation()) {
       try {
         const responseData = await API.tournament.createTournament({
@@ -264,6 +252,10 @@ export default class TournamentCreator extends Vue {
           teams: this.teams,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: this.activeTournamentType!,
+          // TODO:
+          // dateToSubmit
+          // this.days
+          // this.frequency
         });
 
         void this.$router.push({
@@ -282,22 +274,6 @@ export default class TournamentCreator extends Vue {
 
   private addTeam(team: Team) {
     this.teams.push(team);
-  }
-
-  private updateTournamentName(name: string) {
-    this.tournamentName = name;
-  }
-
-  private updateFrequency(newFreq: number) {
-    this.frequency = newFreq;
-  }
-
-  private updateDays(newDays: Array<number>) {
-    this.days = newDays;
-  }
-
-  private updateStartDate(newDate: string) {
-    this.startDateString = newDate;
   }
 
   private validation() {

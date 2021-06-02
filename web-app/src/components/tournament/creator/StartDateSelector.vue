@@ -41,7 +41,7 @@ export default class StartDateSelector extends Vue {
   private newDate = this.date;
 
   updateDate() {
-    this.$emit('update-date', this.newDate);
+    this.$emit('update:date', this.newDate);
   }
 }
 </script>

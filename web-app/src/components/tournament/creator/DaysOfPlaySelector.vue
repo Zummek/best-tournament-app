@@ -67,7 +67,7 @@ export default class DaysOfPlaySelector extends Vue {
   ];
 
   updateDays() {
-    this.$emit('update-days', this.pickedDays);
+    this.$emit('update:days', this.pickedDays);
   }
 }
 </script>

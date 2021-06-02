@@ -76,7 +76,7 @@ export default class TournamentNameChanger extends Vue {
   private newTournName = this.tournamentName;
 
   updateTournamentName() {
-    this.$emit('name-changed', this.newTournName);
+    this.$emit('update:tournamentName', this.newTournName);
   }
 }
 </script>
