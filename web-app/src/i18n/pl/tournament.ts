@@ -7,6 +7,11 @@ export default {
     tournamentType: 'Wybierz typ turnieju',
     buildTeams: 'Stwórz drużyny',
   },
+  settings: {
+    dateLabel: 'Wybierz datę rozpoczęcia',
+    matchDays: 'Wybierz dni rozgrywek',
+    matchFrequency: 'Częstotliwość meczy (ilość/dzień)',
+  },
   status: {
     label: 'Status',
     finished: 'Zakończony',
@@ -18,6 +23,8 @@ export default {
     'single-elimination': 'System pucharowy',
   },
   error: {
+    noTypeChosen: 'Musisz wybrać typ turnieju!',
+    noMatchDaysChosen: 'Wybierz przynajmniej jeden dzień rozgrywek!',
     atLeastTwoTeams: 'Dodaj przynajmniej dwie drużyny!',
     addingTournament:
       'Ups... coś poszło nietak. Turniej nie został poprawnie utworzony',

@@ -1,7 +1,7 @@
 <template>
   <q-table
     :grid="$q.screen.lt.sm"
-    :title="$t('tournament.team.list')"
+    :title="tournamentName ? tournamentName : $t('tournament.team.list')"
     :data="data"
     :columns="columns"
     row-key="name"
@@ -49,6 +49,12 @@
           @click="deleteTeam(props.row)"
         />
       </q-td>
+    </template>
+    <template v-if="tournType" v-slot:top-right>
+      <q-icon
+        :name="tournType == 'single-elimination' ? 'emoji_events' : 'groups'"
+        size="200%"
+      />
     </template>
 
     <!-- For Grid Table View -->
@@ -99,6 +105,8 @@ export default class TeamsList extends Vue {
   @Prop({ type: Array, required: true }) readonly columns!: QTable['columns'];
   @Prop({ type: String, default: () => '' }) readonly expanded!: string;
   @Prop({ type: Array, default: () => [] }) readonly data!: Team[];
+  @Prop({ type: String }) readonly tournType!: string;
+  @Prop({ type: String }) readonly tournamentName!: string;
 
   private deleteTeam(team: Team) {
     this.data.splice(this.data.indexOf(team), 1);
@@ -107,7 +115,7 @@ export default class TeamsList extends Vue {
 </script>
 <style lang="sass">
 .sticky-virtscroll-table
-  height: 65vh
+  height: 75vh
 
   .q-table__top,
   .q-table__bottom,

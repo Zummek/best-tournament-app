@@ -4,8 +4,14 @@ export default {
   organizer: 'Organizer',
   participantsAmount: 'Number of participants',
   stepper: {
-    tournamentType: 'Choose tournament type',
+    tournamentType: 'Choose type',
     buildTeams: 'Create teams',
+    settings: 'Setup details',
+  },
+  settings: {
+    dateLabel: 'Pick a start date',
+    matchDays: 'Select match days',
+    matchFrequency: 'Matches per day',
   },
   status: {
     label: 'Status',
@@ -18,6 +24,8 @@ export default {
     'single-elimination': 'Single elimination',
   },
   error: {
+    noTypeChosen: 'Pick a type!',
+    noMatchDaysChosen: 'Choose at least one match day!',
     atLeastTwoTeams: 'Add at least two teams!',
     addingTournament: 'Ups... something went wrong. Tournament was not created',
     noTeamsAddedCreator: 'Add new teams using Team creator!',
