@@ -61,11 +61,17 @@ export default class Login extends Vue {
   }
   private async mounted() {
     if (this.$route.query.code) {
+      this.$q.loading.show({
+        message: '<span class="text-orange text-weight-bold">Loading...</span>',
+      });
       await api.auth.getCookieToken(this.$route.query.code as string);
-      await store.dispatch('currentUser/decodeTokenAndStore', this.$cookies.get('jwt'));
+      await store.dispatch(
+        'currentUser/decodeTokenAndStore',
+        this.$cookies.get('jwt')
+      );
       // const response = await api.organization.getUsers();
       // await api.organization.getUserPhoto(response[0].id);
-
+      this.$q.loading.hide();
       await this.$router.replace({ name: 'TournamentsList' });
     }
   }
