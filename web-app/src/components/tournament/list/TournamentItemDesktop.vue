@@ -1,13 +1,13 @@
 <template>
-  <div class="q-pa-sm col-sm-12 col-md-6 col-lg-4">
+  <div class="q-pa-xl col-sm-12 col-md-6 col-lg-4">
     <q-btn
       :to="{ name: 'TournamentDetails', params: { id: tournament.id } }"
       no-caps
       flat
       padding="none"
-      class="col-12"
+      :style="{ width: '100%' }"
     >
-      <q-card class="flex row">
+      <q-card class="card__container">
         <q-card-section class="col-4 overflow-hidden card__logo">
           <q-icon
             size="5em"
@@ -19,8 +19,8 @@
           />
         </q-card-section>
 
-        <q-card-section class="col-8">
-          <div class="row justify-between items-center">
+        <q-card-section class="overflow-hidden card__content">
+          <div class="card__container--header">
             <h3 class="card__header">{{ tournament.name }}</h3>
             <q-badge
               align="middle"
@@ -85,15 +85,30 @@ export default class TournamentItemDesktop extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.card__container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 170px;
+}
+.card__container--header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 95%;
+}
 .card__logo {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+.card__content {
+  width: 100%;
+}
 .card__header {
   font-size: 25px;
   font-weight: 400;
-  width: 65%;
   padding: 0;
   margin: 0;
   text-align: left;
@@ -103,10 +118,10 @@ export default class TournamentItemDesktop extends Vue {
 }
 .card__participants {
   display: flex;
-  align-items: center;
   text-align: left;
+  width: 95%;
   height: 88px;
-  overflow-x: auto;
+  overflow: hidden;
 }
 .title {
   font-size: 20px;
