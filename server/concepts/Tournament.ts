@@ -84,7 +84,8 @@ export default class Tournament implements TournamentWithoutMS {
       newMatches = Tournament.generateRoundRobinMatches(teams, matchesDateInfo);
     else
       newMatches = Tournament.generateEmptySingleEliminationMatches(
-        teams.length - 1
+        teams.length - 1,
+        matchesDateInfo
       );
 
     const tournament = await TournamentRepository.create({
@@ -327,14 +328,36 @@ export default class Tournament implements TournamentWithoutMS {
   }
 
   private static generateEmptySingleEliminationMatches(
-    matchAmount: number
+    matchAmount: number,
+    matchesDateInfo: MatchesDateInfo
   ): Match[] {
+    const days = matchesDateInfo.matchDays.sort(
+      (a: number, b: number) => a - b
+    );
+    let currentDate = matchesDateInfo.startingDate;
+    let frequencyCounter = 0;
+
     const newMatches = [];
 
     for (let i = 0; i < matchAmount; i++) {
       newMatches.push(Match.getNewInstance());
     }
-    // generowanie dat
+    for (let i = matchAmount - 1; i >= 0; i--) {
+      frequencyCounter++;
+
+      const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(
+        days,
+        currentDate
+      );
+      const nextMatchDate = new Date(nextMatchDateMoment.toISOString());
+
+      if (frequencyCounter >= matchesDateInfo.frequency) {
+        frequencyCounter = 0;
+        currentDate = nextMatchDate;
+      }
+
+      newMatches[i].date = nextMatchDate;
+    }
     return newMatches;
   }
 
