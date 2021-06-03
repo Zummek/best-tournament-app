@@ -73,7 +73,7 @@ export default class Tournament implements TournamentWithoutMS {
     const matchesDateInfo = { frequency: data.frequency, matchDays: data.matchDays, startingDate: data.startDate };
 
     if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams, matchesDateInfo);
-    else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
+    else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1, matchesDateInfo);
 
     const tournament = await TournamentRepository.create({
       name: data.name,
@@ -298,13 +298,8 @@ export default class Tournament implements TournamentWithoutMS {
     });
   }
 
-  private static generateEmptySingleEliminationMatches(
-    matchAmount: number,
-    matchesDateInfo: MatchesDateInfo,
-  ): Match[] {
-    const days = matchesDateInfo.matchDays.sort(
-      (a: number, b: number) => a - b,
-    );
+  private static generateEmptySingleEliminationMatches(matchAmount: number, matchesDateInfo: MatchesDateInfo): Match[] {
+    const days = matchesDateInfo.matchDays.sort((a: number, b: number) => a - b);
     let currentDate = matchesDateInfo.startingDate;
     let frequencyCounter = 0;
 
@@ -316,10 +311,7 @@ export default class Tournament implements TournamentWithoutMS {
     for (let i = matchAmount - 1; i >= 0; i--) {
       frequencyCounter++;
 
-      const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(
-        days,
-        currentDate,
-      );
+      const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(days, currentDate);
       const nextMatchDate = new Date(nextMatchDateMoment.toISOString());
 
       if (frequencyCounter >= matchesDateInfo.frequency) {
