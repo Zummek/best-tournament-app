@@ -66,24 +66,14 @@ export default class Tournament implements TournamentWithoutMS {
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
 
-    if (teams.length !== data.teams.length)
-      throw new AppError('Failed to register all teams', 400);
+    if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
 
     let newMatches = [];
 
-    const matchesDateInfo = {
-      frequency: data.frequency,
-      matchDays: data.matchDays,
-      startingDate: data.startDate,
-    };
+    const matchesDateInfo = { frequency: data.frequency, matchDays: data.matchDays, startingDate: data.startDate };
 
-    if (data.type === 'round-robin')
-      newMatches = Tournament.generateRoundRobinMatches(teams, matchesDateInfo);
-    else
-      newMatches = Tournament.generateEmptySingleEliminationMatches(
-        teams.length - 1,
-        matchesDateInfo,
-      );
+    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams, matchesDateInfo);
+    else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
 
     const tournament = await TournamentRepository.create({
       name: data.name,
@@ -270,10 +260,7 @@ export default class Tournament implements TournamentWithoutMS {
     return false;
   }
 
-  public static findNextInstanceInDaysArray(
-    daysArray: Array<number>,
-    currentDate: Date,
-  ) {
+  public static findNextInstanceInDaysArray(daysArray: Array<number>, currentDate: Date) {
     // iterate the array of days and find all possible matches
     const tests = daysArray.map((day) => Tournament.isThisDateInFuture(day, currentDate));
 
@@ -281,20 +268,14 @@ export default class Tournament implements TournamentWithoutMS {
     const thisWeek = tests.find((sample) => sample instanceof moment);
 
     // but if there are none, we'll return the first valid day of next week (again, assuming the days are sorted)
-    return (
-      thisWeek || moment(currentDate).add(1, 'weeks').isoWeekday(daysArray[0])
-    );
+    return thisWeek || moment(currentDate).add(1, 'weeks').isoWeekday(daysArray[0]);
   }
 
-  private static generateRoundRobinMatches(
-    teams: Required<TeamWithoutMS>[],
-    matchesDateInfo: MatchesDateInfo,
-  ): Match[] {
+  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[],
+    matchesDateInfo: MatchesDateInfo): Match[] {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
-    const days = matchesDateInfo.matchDays.sort(
-      (a: number, b: number) => a - b,
-    );
+    const days = matchesDateInfo.matchDays.sort((a: number, b: number) => a - b);
     let currentDate = matchesDateInfo.startingDate;
     let frequencyCounter = 0;
 
@@ -302,10 +283,7 @@ export default class Tournament implements TournamentWithoutMS {
     return data.map((match) => {
       frequencyCounter++;
 
-      const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(
-        days,
-        currentDate,
-      );
+      const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(days, currentDate);
       const nextMatchDate = new Date(nextMatchDateMoment.toISOString());
 
       if (frequencyCounter >= matchesDateInfo.frequency) {
