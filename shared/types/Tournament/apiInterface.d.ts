@@ -1,9 +1,12 @@
-import {TournamentType} from './index'
+import { TournamentType } from "./index";
 
 export interface Create {
   name: string;
   teams: CreateTeam[];
-  type: TournamentType
+  type: TournamentType;
+  startDate: Date;
+  frequency: number;
+  matchDays: Array<number>;
   //  w jakie dni tygodnia moga odbywac sie mecze
   //  ile meczy w ciagu dnia
 }
