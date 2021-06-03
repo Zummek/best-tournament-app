@@ -1,5 +1,6 @@
 /* eslint-disable no-continue */
 import tournamentGenerator from 'tournament-generator';
+import moment from 'moment';
 import _ from 'lodash';
 import schedule from 'node-schedule';
 import ITournament, {
@@ -18,6 +19,11 @@ import todaysMatchMessage from '../utils/slackMessages/todaysMatchMessage';
 
 interface SingleEliminationMatchCreator extends MatchWithoutMS {
   childTeamsAmount?: number;
+}
+interface MatchesDateInfo {
+  startingDate: Date;
+  frequency: number;
+  matchDays: Array<number>;
 }
 
 export default class Tournament implements TournamentWithoutMS {
@@ -51,9 +57,14 @@ export default class Tournament implements TournamentWithoutMS {
 
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
+
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
+
     let newMatches = [];
-    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
+
+    const matchesDateInfo = { frequency: data.frequency, matchDays: data.matchDays, startingDate: data.startDate };
+
+    if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams, matchesDateInfo);
     else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
 
     const tournament = await TournamentRepository.create({
@@ -63,7 +74,7 @@ export default class Tournament implements TournamentWithoutMS {
       matches: newMatches,
       isFinished: false,
       type: data.type,
-      startDate: new Date(), // Powinno byc ustawione na dzien
+      startDate: data.startDate,
     });
 
     if (data.type === 'single-elimination') {
@@ -202,14 +213,53 @@ export default class Tournament implements TournamentWithoutMS {
     await TournamentRepository.delete(tournamentId);
   }
 
-  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): Match[] {
+  public static isThisDateInFuture(targetDayNum: number, currentDate: Date) {
+    // param: positive integer for weekday
+    // returns: matching moment or false
+    const currentDayNum = moment(currentDate).isoWeekday();
+
+    if (currentDayNum < targetDayNum) {
+      return moment(currentDate).isoWeekday(targetDayNum);
+    }
+    return false;
+  }
+
+  public static findNextInstanceInDaysArray(daysArray: Array<number>, currentDate: Date) {
+    // iterate the array of days and find all possible matches
+    const tests = daysArray.map((day) => Tournament.isThisDateInFuture(day, currentDate));
+
+    // select the first matching day of this week, ignoring subsequent ones, by finding the first moment object
+    const thisWeek = tests.find((sample) => sample instanceof moment);
+
+    // but if there are none, we'll return the first valid day of next week (again, assuming the days are sorted)
+    return thisWeek || moment(currentDate).add(1, 'weeks').isoWeekday(daysArray[0]);
+  }
+
+  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[],
+    matchesDateInfo: MatchesDateInfo): Match[] {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
+    const days = matchesDateInfo.matchDays.sort((a: number, b: number) => a - b);
+    let currentDate = matchesDateInfo.startingDate;
+    let frequencyCounter = 0;
+
     // generowanie dat
-    return data.map((match) => Match.getNewInstance({
-      teamA: match.homeTeam,
-      teamB: match.awayTeam,
-    }));
+    return data.map((match) => {
+      frequencyCounter++;
+
+      const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(days, currentDate);
+      const nextMatchDate = new Date(nextMatchDateMoment.toISOString());
+
+      if (frequencyCounter >= matchesDateInfo.frequency) {
+        frequencyCounter = 0;
+        currentDate = nextMatchDate;
+      }
+      return Match.getNewInstance({
+        teamA: match.homeTeam,
+        teamB: match.awayTeam,
+        date: nextMatchDate,
+      });
+    });
   }
 
   private static generateEmptySingleEliminationMatches(matchAmount: number): Match[] {

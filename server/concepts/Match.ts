@@ -7,6 +7,7 @@ import {
 interface INewMatch {
   teamA?: TeamWithoutMS | null;
   teamB?: TeamWithoutMS | null;
+  date?: Date;
   childMatchAId?: string;
   childMatchBId?: string;
 }
