@@ -20,7 +20,7 @@ export interface GetUsersResponse {
 }
 
 export interface GetUserPhotoResponse {
-  data: {
+  data?: {
     photo: unknown;
   };
 }

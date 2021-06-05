@@ -47,15 +47,34 @@ export default class MSOrganization {
     return response.data.value.map((rawUser: MSUser) => new User(rawUser));
   }
 
-  public static async getUserPhoto(token: string, userId: string) {
-    const photo = await axios({
-      method: 'GET',
-      url: `https://graph.microsoft.com/beta/users/${userId}/photo/$value`,
-      headers: {
-        Authorization: token,
-      },
-    });
+  public static async getMyPhoto(token: string) {
+    try {
+      const photo = await axios({
+        method: 'GET',
+        url: 'https://graph.microsoft.com/beta/me/photo/$value',
+        headers: {
+          Authorization: token,
+        },
+      });
+      return photo.data;
+    } catch (err) {
+      return 'https://cdn.quasar.dev/img/boy-avatar.png';
+    }
+  }
 
-    return photo.data;
+  public static async getUserPhoto(token: string, userId: string) {
+    try {
+      const photo = await axios({
+        method: 'GET',
+        responseType: 'arraybuffer',
+        url: `https://graph.microsoft.com/beta/users/${userId}/photo/$value`,
+        headers: {
+          Authorization: token,
+        },
+      });
+      return photo.data.toString('base64');
+    } catch (err) {
+      return 'https://cdn.quasar.dev/img/boy-avatar.png';
+    }
   }
 }
