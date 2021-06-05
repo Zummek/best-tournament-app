@@ -9,7 +9,6 @@ import User from 'app/../shared/types/User';
 import { QAvatar } from 'quasar/dist/types';
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import api from 'src/services/API';
-import { BinaryData } from 'fs';
 
 interface AvatarProps extends Pick<QAvatar, 'size'> {
   class: string;
@@ -20,8 +19,7 @@ export default class UserAvatar extends Vue {
   @Prop({ type: Object, required: true }) readonly user!: User;
   @Prop({ type: Object, required: false }) readonly avatarProps!: AvatarProps;
 
-  private userPhoto: BinaryData | string =
-    'https://cdn.quasar.dev/img/boy-avatar.png';
+  private userPhoto = 'https://cdn.quasar.dev/img/boy-avatar.png';
 
   private async mounted() {
     const response = (await api.organization.getUserPhoto(
