@@ -1,6 +1,7 @@
 <template>
   <q-avatar v-bind="avatarProps">
-    <img :src="userPhoto" />
+    <img v-if="userPhoto.startsWith('https')" :src="userPhoto" />
+    <img v-else :src="'data:image/png;base64, ' + userPhoto" />
   </q-avatar>
 </template>
 
@@ -21,37 +22,12 @@ export default class UserAvatar extends Vue {
 
   private userPhoto = 'https://cdn.quasar.dev/img/boy-avatar.png';
 
-  private b64toBlob = (
-    b64Data: string,
-    contentType = 'image/Png',
-    sliceSize = 512
-  ) => {
-    const byteCharacters = atob(b64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    const blob = new Blob(byteArrays, { type: contentType });
-    return blob;
-  };
-
   private async mounted() {
     const response = (await api.organization.getUserPhoto(
       this.user.id
     )) as string;
     if (response !== 'https://cdn.quasar.dev/img/boy-avatar.png') {
-      const blob = this.b64toBlob(response);
-      this.userPhoto = URL.createObjectURL(blob);
+      this.userPhoto = response;
     }
   }
 }
