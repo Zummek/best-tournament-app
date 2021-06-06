@@ -23,9 +23,7 @@ export default class UserAvatar extends Vue {
   private userPhoto = 'https://cdn.quasar.dev/img/boy-avatar.png';
 
   private async mounted() {
-    const response = (await api.organization.getUserPhoto(
-      this.user.id
-    )) as string;
+    const response = await api.organization.getUserPhoto(this.user.id);
     if (response !== 'https://cdn.quasar.dev/img/boy-avatar.png') {
       this.userPhoto = response;
     }
