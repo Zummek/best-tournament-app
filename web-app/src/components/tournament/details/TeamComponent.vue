@@ -6,9 +6,8 @@
     >
       <div
         v-if="inverted"
-        class="q-mr-xs text-right cut-name"
+        class="q-mr-xs text-right cut-team-name"
         :class="[textCenter ? 'self-center' : 'self-end']"
-        style="font-size: 15px; flex: 1"
       >
         {{ team.name }}
       </div>
@@ -24,9 +23,8 @@
 
       <div
         v-if="!inverted"
-        class="q-ml-xs cut-name"
+        class="q-ml-xs cut-team-name"
         :class="[textCenter ? 'self-center' : 'self-end']"
-        style="font-size: 15px;"
       >
         {{ team.name }}
       </div>
@@ -54,9 +52,10 @@ export default class TeamComponent extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.cut-name {
+.cut-team-name {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  font-size: 15px;
 }
 </style>

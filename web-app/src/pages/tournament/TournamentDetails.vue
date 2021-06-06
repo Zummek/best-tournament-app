@@ -62,8 +62,7 @@
       >
         <q-tab-panel name="matches">
           <q-card-section
-            class="q-px-xs"
-            :style="$q.screen.xs ? '' : 'min-width: 535px'"
+            :class="['q-px-xs', { 'tab-container': !$q.screen.xs }]"
           >
             <match-component
               :match="match"
@@ -77,16 +76,16 @@
           </q-card-section>
         </q-tab-panel>
         <q-tab-panel name="scoreboard">
-          <q-card-section class="q-px-xs-md" style="min-width: 535px">
+          <q-card-section
+            :class="['q-px-xs-md', { 'tab-container': !$q.screen.xs }]"
+          >
             <ScoreTable />
           </q-card-section>
         </q-tab-panel>
       </q-tab-panels>
 
       <q-card-section class="q-px-none" v-else>
-        <div
-          style="display: flex; overflow-x: auto; flex-wrap: nowrap; max-width: 1500px"
-        >
+        <div class="bracket-container">
           <tournament-bracket
             style="flex: 0 0 auto; padding: 15px"
             :matches="tournament.matches"
@@ -224,3 +223,15 @@ export default class TournamentDetails extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.tab-container {
+  min-width: 535px;
+}
+.bracket-container {
+  display: flex;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  max-width: 1500px;
+}
+</style>
