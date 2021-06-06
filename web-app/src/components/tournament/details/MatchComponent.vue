@@ -34,7 +34,7 @@
           <div v-if="!getMatchStatus" class="score q-mx-auto">
             {{ formatedScore }}
           </div>
-          <div v-if-else class="status q-mx-auto">{{ getMatchStatus }}</div>
+          <div v-else class="status q-mx-auto">{{ getMatchStatus }}</div>
         </div>
       </div>
 
@@ -74,7 +74,7 @@ export default class MatchComponent extends Vue {
   @Prop({ type: Boolean, default: false }) readonly small!: boolean;
 
   get matchFormatedDate() {
-    return moment(this.match.date).format('L');
+    return moment(this.match.date).format('DD/MM/YY');
   }
 
   get frameClass() {

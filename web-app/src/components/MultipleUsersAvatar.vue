@@ -48,7 +48,7 @@ import UserAvatar from './UserAvatar.vue';
   },
 })
 export default class MultipleUsersAvatar extends Vue {
-  @Prop({ type: Object, required: true }) readonly users!: User[];
+  @Prop({ type: Array, required: true }) readonly users!: User[];
   @Prop({ type: Number, default: 36 }) readonly firstAvatarSize!: number;
   @Prop({ type: Number, default: 28 }) readonly restAvatarsSize!: number;
   @Prop({ type: Number, default: 2 }) readonly maxAvatars!: number;
