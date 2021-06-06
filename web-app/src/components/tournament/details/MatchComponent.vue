@@ -5,10 +5,7 @@
     :style="small ? 'min-width: 300px' : 'min-width: 500px'"
     @click="scoreActionOnClick"
   >
-    <q-card-section
-      class="row no-wrap q-py-sm justify-between "
-      :class="[small ? 'q-px-sm' : 'q-px-md']"
-    >
+    <q-card-section class="row no-wrap q-py-sm q-px-md justify-between">
       <div style="flex: 1; min-width: 190px">
         <team-component
           :team="match.teamA"
@@ -30,7 +27,7 @@
 
       <div
         style="width: 100px"
-        class="q-ma-auto column self-center justify-center"
+        class="q-ma-auto q-mx-sm column self-center justify-center"
       >
         <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
         <div style="text-align: center">
@@ -41,10 +38,17 @@
         </div>
       </div>
 
-      <div v-if="!small" style="min-width: 190px">
+      <div v-if="!small" style="flex: 1; min-width: 190px">
         <team-component :team="match.teamB" flat inverted />
       </div>
     </q-card-section>
+    <q-tooltip
+      v-if="isAllowedToEditMatchScore"
+      :content-class="tooltipColor"
+      content-style="font-size: 13px; z-index: 5000"
+    >
+      {{ tooltipContent }}
+    </q-tooltip>
   </q-card>
 </template>
 
@@ -82,6 +86,17 @@ export default class MatchComponent extends Vue {
 
     if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
     return 'matchNewScoreFrame';
+  }
+
+  get tooltipContent() {
+    if (this.isOwner && this.hasConflict)
+      return this.$t('tournament.match.resolveConflict');
+    return this.$t('tournament.match.addScore');
+  }
+
+  get tooltipColor() {
+    if (this.isOwner && this.hasConflict) return 'bg-negative';
+    return 'bg-primary';
   }
 
   get formatedScore() {

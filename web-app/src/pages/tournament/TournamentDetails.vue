@@ -1,38 +1,34 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-spinner v-if="isLoading || !tournament" color="primary" size="3em" />
+  <q-page class="flex justify-center">
+    <q-spinner
+      v-if="isLoading || !tournament"
+      class="q-mt-xl"
+      color="primary"
+      size="3em"
+    />
     <q-card
       v-else
-      class="q-px-xs-none q-px-sm-md"
+      class="full-height q-px-xs-none q-px-sm-md"
       :class="{ fit: $q.screen.xs }"
     >
-      <q-tabs
-        v-if="tournament.type === 'round-robin'"
-        v-model="tab"
-        class="text-teal"
-      >
-        <q-tab :label="$t('tournament.details.tabs.matches')" name="matches" />
-        <q-tab
-          :label="$t('tournament.details.tabs.scoreboard')"
-          name="scoreboard"
-        />
-      </q-tabs>
       <q-card-section>
-        <div class="row">
+        <div class="row justify-center text-h5 q-mb-md q-mt-sm">
+          {{ tournament.name }}
+        </div>
+        <div class="row justify-center">
           <q-input
-            style="width:50%"
             borderless
             readonly
-            v-model="tournament.name"
-            autogrow
-            :label="$t('tournament.name')"
+            v-model="participantsAmount"
+            :label="$t('tournament.participantsAmount')"
           />
-          <q-field
+          <q-input
             borderless
-            :label="$t('tournament.organizer')"
-            stack-label
-            style="width:50%"
-          >
+            readonly
+            v-model="completedMatchesFormated"
+            :label="$t('tournament.match.played')"
+          />
+          <q-field borderless :label="$t('tournament.organizer')" stack-label>
             <template v-slot:control>
               <q-chip>
                 <q-avatar>
@@ -45,30 +41,29 @@
             </template>
           </q-field>
         </div>
-        <div class="row">
-          <q-input
-            borderless
-            style="width:50%"
-            readonly
-            v-model="participantsAmount"
-            :label="$t('tournament.participantsAmount')"
-          />
-          <q-input
-            style="width:50%"
-            borderless
-            readonly
-            v-model="completedMatchesFormated"
-            :label="$t('tournament.match.played')"
-          />
-        </div>
       </q-card-section>
+
+      <q-tabs
+        v-if="tournament.type === 'round-robin'"
+        v-model="tab"
+        class="text-teal"
+      >
+        <q-tab :label="$t('tournament.details.tabs.matches')" name="matches" />
+        <q-tab
+          :label="$t('tournament.details.tabs.scoreboard')"
+          name="scoreboard"
+        />
+      </q-tabs>
+
       <q-tab-panels
         v-if="tournament.type === 'round-robin'"
         v-model="tab"
         animated
       >
         <q-tab-panel name="matches">
-          <q-card-section class="q-px-xs-md">
+          <q-card-section
+            :class="['q-px-xs', { 'tab-container': !$q.screen.xs }]"
+          >
             <match-component
               :match="match"
               v-for="match in tournament.matches"
@@ -81,16 +76,16 @@
           </q-card-section>
         </q-tab-panel>
         <q-tab-panel name="scoreboard">
-          <q-card-section class="q-px-xs-md">
+          <q-card-section
+            :class="['q-px-xs-md', { 'tab-container': !$q.screen.xs }]"
+          >
             <ScoreTable />
           </q-card-section>
         </q-tab-panel>
       </q-tab-panels>
 
       <q-card-section class="q-px-none" v-else>
-        <div
-          style="display: flex; overflow-x: auto; flex-wrap: nowrap; max-width: 1500px"
-        >
+        <div class="bracket-container">
           <tournament-bracket
             style="flex: 0 0 auto; padding: 15px"
             :matches="tournament.matches"
@@ -228,3 +223,15 @@ export default class TournamentDetails extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.tab-container {
+  min-width: 535px;
+}
+.bracket-container {
+  display: flex;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  max-width: 1500px;
+}
+</style>

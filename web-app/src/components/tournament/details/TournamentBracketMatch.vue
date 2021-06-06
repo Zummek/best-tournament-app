@@ -6,7 +6,7 @@
     @click="scoreActionOnClick"
   >
     <q-card-section class="row no-wrap q-pa-xs" style="padding: 6px">
-      <div style="flex: 1">
+      <div style="width: 192px">
         <team-component
           v-if="match.teamA"
           style="padding-bottom: 6px"
@@ -47,7 +47,7 @@
       </div>
     </q-card-section>
     <q-tooltip
-      v-model="isAllowedToEditMatchScore"
+      v-if="isAllowedToEditMatchScore"
       :content-class="tooltipColor"
       content-style="font-size: 13px; z-index: 5000"
     >
