@@ -29,7 +29,7 @@
         style="width: 100px"
         class="q-ma-auto q-mx-sm column self-center justify-center"
       >
-        <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
+        <div class="matchDate">{{ matchFormatedDate }}</div>
         <div style="text-align: center">
           <div v-if="!getMatchStatus" class="score q-mx-auto">
             {{ formatedScore }}
@@ -56,7 +56,7 @@
 import { Match } from 'app/../shared/types/Tournament';
 import store from '../../../store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-// import moment from 'moment';
+import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
 import TeamComponent from '../details/TeamComponent.vue';
 import API from 'src/services/API';
@@ -73,13 +73,9 @@ export default class MatchComponent extends Vue {
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
   @Prop({ type: Boolean, default: false }) readonly small!: boolean;
 
-  // get matchFormatedDate() {
-  //   return (
-  //     moment(this.match.date).format('L') +
-  //     ' ' +
-  //     moment(this.match.date).format('LT')
-  //   );
-  // }
+  get matchFormatedDate() {
+    return moment(this.match.date).format('L');
+  }
 
   get frameClass() {
     if (!this.isAllowedToEditMatchScore) return '';
