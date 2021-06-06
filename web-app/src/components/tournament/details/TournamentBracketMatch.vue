@@ -53,6 +53,13 @@
     >
       {{ tooltipContent }}
     </q-tooltip>
+    <!-- <q-tooltip
+      anchor="top middle"
+      content-style="font-size: 10px; z-index: 5000"
+    >
+      {{ matchFormatedDate }}
+    </q-tooltip> -->
+    <q-badge color="grey" floating style="margin-top: -5px">{{ matchFormatedDate }}</q-badge>
   </q-card>
 </template>
 
@@ -60,7 +67,7 @@
 import { Match } from 'app/../shared/types/Tournament';
 import store from '../../../store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-// import moment from 'moment';
+import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
 import TeamComponent from './TeamComponent.vue';
 import API from 'src/services/API';
@@ -76,13 +83,9 @@ export default class TournamentBracketMatch extends Vue {
   @Prop({ type: Boolean, required: true }) readonly isOwner!: boolean;
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
 
-  // get matchFormatedDate() {
-  //   return (
-  //     moment(this.match.date).format('L') +
-  //     ' ' +
-  //     moment(this.match.date).format('LT')
-  //   );
-  // }
+  get matchFormatedDate() {
+    return moment(this.match.date).format('DD/MM/YY');
+  }
 
   get frameClass() {
     if (!this.isAllowedToEditMatchScore) return '';
