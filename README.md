@@ -4,6 +4,22 @@ It's the best tournament application for make fun in companies
 
 ## Getting started
 
+### Add Slack's bot
+
+First, create and install a slack bot based on prepared manifest file in Your workspace.
+
+1. Visit this page: https://api.slack.com/apps and click "Create New App"
+2. Select "From an app manifest" option, then pick your slack's workspace
+3. Copy [this manifest](slack-bot-manifest.yaml) file into input, next and create
+4. On app page click "Install to Workspace", You need to allow permissions for Your Slack's workspace.
+
+Then connect slack's bot with app server.
+
+1. On Slack's bot webpage visit "OAuth & Permissions" tab
+2. Copy "Bot User OAuth Token" to server [environment variables](server/.env) as SLACK_APP_TOKEN value
+
+## Development
+
 > **_NOTE:_** it's recommended to use yarn in `./web-app` by quasar and required by CI/CL. In the end `yarn.lock` or `package-lock.json` must by up to date for CI/CL function properly.
 
 1\. In server and web application folders copy `.env.example` to `.env` file and change the settings for yourself:
