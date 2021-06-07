@@ -89,17 +89,15 @@ export default class MatchComponent extends Vue {
   }
 
   get avaibility() {
-    console.log(moment().isAfter(moment(this.match.date)));
-    if (this.match.date) return true;
-    else return false;
+    return moment().isAfter(moment(this.match.date));
   }
 
   get avaibilityClass() {
-    if (this.avaibility) return 'matchNotAvaibleYet';
+    if (!this.avaibility) return 'matchNotAvaibleYet';
   }
 
   get frameClass() {
-    if (!this.avaibility) {
+    if (this.avaibility) {
       if (!this.isAllowedToEditMatchScore) return '';
 
       if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
@@ -167,6 +165,7 @@ export default class MatchComponent extends Vue {
   get isAllowedToEditMatchScore() {
     return (
       !this.match.isFinished &&
+      this.avaibility &&
       ((this.getAssignedTeam && !this.isMyTeamAlreadyReportedScore) ||
         (this.isOwner && this.hasConflict))
     );

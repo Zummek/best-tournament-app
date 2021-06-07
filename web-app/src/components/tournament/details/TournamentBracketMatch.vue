@@ -96,9 +96,7 @@ export default class TournamentBracketMatch extends Vue {
   }
 
   get avaibility() {
-    console.log(moment().isAfter(moment(this.match.date)));
-    if (this.match.date) return true;
-    else return false;
+    return !moment().isAfter(moment(this.match.date));
   }
 
   get avaibilityClass() {
@@ -168,6 +166,7 @@ export default class TournamentBracketMatch extends Vue {
 
   get isAllowedToEditMatchScore() {
     return (
+      !this.avaibility &&
       !this.match.isFinished &&
       ((this.getAssignedTeam &&
         !this.isMyTeamAlreadyReportedScore &&
