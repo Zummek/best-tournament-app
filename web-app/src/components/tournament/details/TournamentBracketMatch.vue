@@ -51,6 +51,9 @@
           {{ match.score.final.b !== -1 ? match.score.final.b : '-' }}
         </div>
       </div>
+      <q-badge color="blue-grey-3" floating style="margin-top: -5px;"
+        >{{ matchFormatedDate }}
+      </q-badge>
     </q-card-section>
     <q-tooltip
       v-if="isAllowedToEditMatchScore"
@@ -59,15 +62,6 @@
     >
       {{ tooltipContent }}
     </q-tooltip>
-    <!-- <q-tooltip
-      anchor="top middle"
-      content-style="font-size: 10px; z-index: 5000"
-    >
-      {{ matchFormatedDate }}
-    </q-tooltip> -->
-    <q-badge color="grey" floating style="margin-top: -5px">{{
-      matchFormatedDate
-    }}</q-badge>
   </q-card>
 </template>
 
