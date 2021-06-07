@@ -43,9 +43,9 @@ export default class Match implements MatchWithoutMS {
 
   public static getNewInstance(data?: INewMatch) {
     return new Match({
-      teamA: null,
+      teamA: data?.teamA || null,
+      teamB: data?.teamB || null,
       date: new Date(),
-      teamB: null,
       ...data,
       score: {
         reportedByA: {

@@ -8,7 +8,7 @@ import ITournament, {
 import User from '../../shared/types/User';
 import TeamRepository from '../database/repositories/TeamRepository';
 // eslint-disable-next-line import/no-cycle
-import TournamentRepository from '../database/repositories/TournamentRepository';
+import TournamentRepository, { MatchRoundRobinCreate } from '../database/repositories/TournamentRepository';
 import AppError from '../utils/appError';
 import Match from './Match';
 import Slack from './Slack';
@@ -52,6 +52,7 @@ export default class Tournament implements TournamentWithoutMS {
   public static async create(data: TournamentApi.Create, ownerId: string) {
     const teams = await TeamRepository.createMany(data.teams);
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
+
     let newMatches = [];
     if (data.type === 'round-robin') newMatches = Tournament.generateRoundRobinMatches(teams);
     else newMatches = Tournament.generateEmptySingleEliminationMatches(teams.length - 1);
@@ -68,7 +69,7 @@ export default class Tournament implements TournamentWithoutMS {
 
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
-      TournamentRepository.updateMatches(tournament); // Update is setting
+      TournamentRepository.updateMatches(tournament);
     }
 
     return tournament;
@@ -202,14 +203,14 @@ export default class Tournament implements TournamentWithoutMS {
     await TournamentRepository.delete(tournamentId);
   }
 
-  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): Match[] {
+  private static generateRoundRobinMatches(teams: Required<TeamWithoutMS>[]): MatchRoundRobinCreate[] {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
     // generowanie dat
     return data.map((match) => Match.getNewInstance({
       teamA: match.homeTeam,
       teamB: match.awayTeam,
-    }));
+    })) as MatchRoundRobinCreate[];
   }
 
   private static generateEmptySingleEliminationMatches(matchAmount: number): Match[] {
