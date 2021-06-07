@@ -207,11 +207,10 @@ export default class Tournament implements TournamentWithoutMS {
     const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
     // generowanie dat
-    const matches = data.map((match) => Match.getNewInstance({
+    return data.map((match) => Match.getNewInstance({
       teamA: match.homeTeam,
       teamB: match.awayTeam,
     })) as MatchRoundRobinCreate[];
-    return matches;
   }
 
   private static generateEmptySingleEliminationMatches(matchAmount: number): Match[] {
