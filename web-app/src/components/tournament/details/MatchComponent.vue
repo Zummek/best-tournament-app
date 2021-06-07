@@ -1,7 +1,11 @@
 <template>
   <q-card
     class="q-pa-sm-xs q-mb-md"
-    :class="[frameClass, { matchAsButton: isAllowedToEditMatchScore }]"
+    :class="[
+      avaibilityClass,
+      frameClass,
+      { matchAsButton: isAllowedToEditMatchScore },
+    ]"
     :style="small ? 'min-width: 300px' : 'min-width: 500px'"
     @click="scoreActionOnClick"
   >
@@ -12,8 +16,10 @@
           flat
           :smallIcon="small"
           :textCenter="small"
+          :class="avaibilityClass"
         />
         <team-component
+          :class="avaibilityClass"
           v-if="small"
           textCenter
           smallIcon
@@ -39,7 +45,12 @@
       </div>
 
       <div v-if="!small" style="flex: 1; min-width: 190px">
-        <team-component :team="match.teamB" flat inverted />
+        <team-component
+          :team="match.teamB"
+          flat
+          inverted
+          :class="avaibilityClass"
+        />
       </div>
     </q-card-section>
     <q-tooltip
@@ -77,11 +88,23 @@ export default class MatchComponent extends Vue {
     return moment(this.match.date).format('DD/MM/YY');
   }
 
-  get frameClass() {
-    if (!this.isAllowedToEditMatchScore) return '';
+  get avaibility() {
+    console.log(moment().isAfter(moment(this.match.date)));
+    if (this.match.date) return true;
+    else return false;
+  }
 
-    if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
-    return 'matchNewScoreFrame';
+  get avaibilityClass() {
+    if (this.avaibility) return 'matchNotAvaibleYet';
+  }
+
+  get frameClass() {
+    if (!this.avaibility) {
+      if (!this.isAllowedToEditMatchScore) return '';
+
+      if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
+      return 'matchNewScoreFrame';
+    }
   }
 
   get tooltipContent() {

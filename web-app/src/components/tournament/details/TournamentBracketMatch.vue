@@ -1,7 +1,11 @@
 <template>
   <q-card
     class="q-my-sm"
-    :class="[frameClass, { matchAsButton: isAllowedToEditMatchScore }]"
+    :class="[
+      avaibilityClass,
+      frameClass,
+      { matchAsButton: isAllowedToEditMatchScore },
+    ]"
     style="width: 250px; height: 81px"
     @click="scoreActionOnClick"
   >
@@ -14,6 +18,7 @@
           flat
           textCenter
           :iconSize="28"
+          :class="avaibilityClass"
         />
         <div v-else style="height: 34px" />
         <q-separator />
@@ -24,6 +29,7 @@
           flat
           textCenter
           :iconSize="28"
+          :class="avaibilityClass"
         />
         <div v-else style="height: 34px" />
       </div>
@@ -59,7 +65,9 @@
     >
       {{ matchFormatedDate }}
     </q-tooltip> -->
-    <q-badge color="grey" floating style="margin-top: -5px">{{ matchFormatedDate }}</q-badge>
+    <q-badge color="grey" floating style="margin-top: -5px">{{
+      matchFormatedDate
+    }}</q-badge>
   </q-card>
 </template>
 
@@ -87,11 +95,23 @@ export default class TournamentBracketMatch extends Vue {
     return moment(this.match.date).format('DD/MM/YY');
   }
 
-  get frameClass() {
-    if (!this.isAllowedToEditMatchScore) return '';
+  get avaibility() {
+    console.log(moment().isAfter(moment(this.match.date)));
+    if (this.match.date) return true;
+    else return false;
+  }
 
-    if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
-    return 'matchNewScoreFrame';
+  get avaibilityClass() {
+    if (this.avaibility) return 'matchNotAvaibleYet';
+  }
+
+  get frameClass() {
+    if (!this.avaibility) {
+      if (!this.isAllowedToEditMatchScore) return '';
+
+      if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
+      return 'matchNewScoreFrame';
+    }
   }
 
   get tooltipContent() {
