@@ -11,12 +11,13 @@ First, create and install a slack bot based on prepared manifest file in Your wo
 1. Visit this page: https://api.slack.com/apps and click "Create New App"
 2. Select "From an app manifest" option, then pick your slack's workspace
 3. Copy [this manifest](slack-bot-manifest.yaml) file into input, next and create
-4. On app page click "Install to Workspace", You need to allow permissions for Your Slack's workspace.
+4. On app page click "Install to Workspace", You need to allow permissions for Your Slack's workspace
 
 Then connect slack's bot with app server.
 
 1. On Slack's bot webpage visit "OAuth & Permissions" tab
 2. Copy "Bot User OAuth Token" to server [environment variables](server/.env) as SLACK_APP_TOKEN value
+3. After restarting server, every day, members of the matches on that day will be notified in DM
 
 ## Development
 
