@@ -63,7 +63,7 @@ A sample file with these settings is named `.env.example` in each directory. You
 
 - slack
 
-  - `SLACK_APP_TOKEN` - Slack Bot User OAuth Token, more details in [Add Slack's bot](#Add-Slack's-bot) section,
+  - `SLACK_APP_TOKEN` - Slack Bot User OAuth Token, more details in [Add Slack's bot](#Add-Slacks-bot) section,
   - `SLACK_NOTIFY_TIME_MINUTES` - minutes of the time at which the slack notification will be sent,
   - `SLACK_NOTIFY_TIME_HOURS` - hour of the time at which the slack notification will be sent,
 
@@ -79,7 +79,7 @@ First, create and install a slack bot based on prepared manifest file in Your wo
 Then connect slack's bot with app server.
 
 1. On Slack's bot webpage visit "OAuth & Permissions" tab
-2. Copy "Bot User OAuth Token" to server [environment variables](server/.env) as SLACK_APP_TOKEN value
+2. Copy "Bot User OAuth Token" to server environment variables in `server/.env` as SLACK_APP_TOKEN value
 3. After restarting server, every day, members of the matches on that day will be notified in DM
 
 ## Development
