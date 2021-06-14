@@ -4,6 +4,69 @@ It's the best tournament application for make fun in companies
 
 ## Getting started
 
+### Settings
+
+Before running application You need to create setting files.\
+Setting files should are located in `web-app` and `server` directory as `.env` files.
+A sample file with these settings is named `.env.example` in each directory. You can copy it as a new file named `.env` and update it.
+
+#### Web applications settings (`web-app/.env`):
+
+- server connection:
+
+  - `HOST` - IP address of tournament api server,
+  - `PORT` - PORT of tournament api server,
+  - `SSL` - PORT of tournament api server,
+
+- default locale:
+
+  - `DEFAULT_LOCALE` - code of default language in application, it can be changed by the user in the application, available languages: `PL`, `EN`,
+
+#### Server settings (`server/.env`):
+
+- server connection:
+
+  - `NODE_ENV` - variable indicating the operating mode, available options: `production` (logging is kept to a minimum) and `development` (more logs in console/endpoint),
+  - `PORT` - port on which the server will listen,
+  - `FRONTEND_HOST` - host on which frontend app will be setted up,
+  - `FRONTEND_PORT` - port on which frontend app will listen,
+  - `SSL` - if true server will use https,
+
+- winston - logger
+
+  More deatils in [winston-daily-rotate-file](https://github.com/winstonjs/winston-daily-rotate-file#options) documentation.
+
+  - `LOG_FILE_MAX_SIZE` - maximum size of the file after which it will rotate,
+  - `LOG_MAX_FILES_NUMBER` - maximum number of logs to keep,
+
+- database
+
+  There are two types of database connections. First is development(DEV), and second is production(PROD - just replace DEV). The server will automatically select the connection type by looking at the variable `NODE_ENV`.
+
+  - `DB_DEV_USERNAME` - database username,
+  - `DB_DEV_PASSWORD` - database password,
+  - `DB_DEV_DATABASE` - database name,
+  - `DB_DEV_HOST` - database host,
+  - `DB_DEV_PORT` - database port,
+
+- JWT cookie
+
+  - `JWT_COOKIE_EXPIRES_IN_HOURS` - hours to expiry of the JTW cookie,
+
+- azure organization
+
+  - `CLIENT_SECRET` - ,
+  - `CLIENT_ID` - ,
+  - `OBJECT_ID` - ,
+  - `TENANT_ID` - ,
+  - `AUTHORITY_URL` - ,
+
+- slack
+
+  - `SLACK_APP_TOKEN` - Slack Bot User OAuth Token, more details in [Add Slack's bot](#Add-Slack's-bot) section,
+  - `SLACK_NOTIFY_TIME_MINUTES` - minutes of the time at which the slack notification will be sent,
+  - `SLACK_NOTIFY_TIME_HOURS` - hour of the time at which the slack notification will be sent,
+
 ### Add Slack's bot
 
 First, create and install a slack bot based on prepared manifest file in Your workspace.
