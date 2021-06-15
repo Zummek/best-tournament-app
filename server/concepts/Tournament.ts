@@ -1,8 +1,8 @@
 /* eslint-disable no-continue */
-import tournamentGenerator from "tournament-generator";
-import moment from "moment";
-import _ from "lodash";
-import schedule from "node-schedule";
+import tournamentGenerator from 'tournament-generator';
+import moment from 'moment';
+import _ from 'lodash';
+import schedule from 'node-schedule';
 import ITournament, {
   MatchWithoutMS,
   TeamWithoutMS,
@@ -12,19 +12,17 @@ import ITournament, {
   Team as ITeam,
   Match as IMatch,
   TournamentType,
-} from "../../shared/types/Tournament";
-import User from "../../shared/types/User";
-import TeamRepository from "../database/repositories/TeamRepository";
+} from '../../shared/types/Tournament';
+import User from '../../shared/types/User';
+import TeamRepository from '../database/repositories/TeamRepository';
 // eslint-disable-next-line import/no-cycle
-import TournamentRepository, {
-  MatchRoundRobinCreate,
-} from "../database/repositories/TournamentRepository";
-import AppError from "../utils/appError";
-import Match from "./Match";
-import Slack from "./Slack";
-import MSOrganization from "./MSOrganization";
-import isToday from "../utils/isToday";
-import todaysMatchMessage from "../utils/slackMessages/todaysMatchMessage";
+import TournamentRepository from '../database/repositories/TournamentRepository';
+import AppError from '../utils/appError';
+import Match from './Match';
+import Slack from './Slack';
+import MSOrganization from './MSOrganization';
+import isToday from '../utils/isToday';
+import todaysMatchMessage from '../utils/slackMessages/todaysMatchMessage';
 
 interface SingleEliminationMatchCreator extends MatchWithoutMS {
   childTeamsAmount?: number;
@@ -57,10 +55,9 @@ export default class Tournament implements TournamentWithoutMS {
     this.name = data.name;
     this.ownerId = data.ownerId;
     this.teams = data.teams;
-    this.matches =
-      data.matches instanceof Match
-        ? data.matches
-        : data.matches.map((match) => new Match(match));
+    this.matches = data.matches instanceof Match
+      ? data.matches
+      : data.matches.map((match) => new Match(match));
     this.isFinished = data.isFinished;
     this.type = data.type;
     this.startDate = data.startDate;
@@ -70,7 +67,7 @@ export default class Tournament implements TournamentWithoutMS {
     const teams = await TeamRepository.createMany(data.teams);
 
     if (teams.length !== data.teams.length)
-      throw new AppError("Failed to register all teams", 400);
+      throw new AppError('Failed to register all teams', 400);
 
     let newMatches = [];
 
@@ -80,12 +77,12 @@ export default class Tournament implements TournamentWithoutMS {
       startingDate: data.startDate,
     };
 
-    if (data.type === "round-robin")
+    if (data.type === 'round-robin')
       newMatches = Tournament.generateRoundRobinMatches(teams, matchesDateInfo);
     else
       newMatches = Tournament.generateEmptySingleEliminationMatches(
         teams.length - 1,
-        matchesDateInfo
+        matchesDateInfo,
       );
 
     const tournament = await TournamentRepository.create({
@@ -98,7 +95,7 @@ export default class Tournament implements TournamentWithoutMS {
       startDate: data.startDate,
     });
 
-    if (data.type === "single-elimination") {
+    if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
       TournamentRepository.updateMatches(tournament);
     }
@@ -120,7 +117,7 @@ export default class Tournament implements TournamentWithoutMS {
     const firstRoundTeamsAmount = teams.length * 2 - minPowerTwo;
     const teamsToAssign = _.shuffle(teams);
     const matchesForFirstRound = matches.slice(
-      matches.length - firstRoundTeamsAmount / 2
+      matches.length - firstRoundTeamsAmount / 2,
     );
     matches[0].childTeamsAmount = teams.length;
 
@@ -173,7 +170,7 @@ export default class Tournament implements TournamentWithoutMS {
     if (!tournament) return null;
     const enrichedTournament = await Tournament.enrichWithMSUsers(
       tournament,
-      token
+      token,
     );
     return enrichedTournament;
   }
@@ -193,34 +190,32 @@ export default class Tournament implements TournamentWithoutMS {
       for (const match of tournament.matches) {
         if (!match.isFinished) continue;
         // eslint-disable-next-line no-nested-ternary
-        const teamIdentifierLetter =
-          team.id === match.teamA?.id
-            ? "a"
-            : team.id === match.teamB?.id
-            ? "b"
+        const teamIdentifierLetter = team.id === match.teamA?.id
+          ? 'a'
+          : team.id === match.teamB?.id
+            ? 'b'
             : undefined;
         if (!teamIdentifierLetter) continue;
-        const oppositeTeamIdentifierLetter =
-          teamIdentifierLetter === "a" ? "b" : "a";
+        const oppositeTeamIdentifierLetter = teamIdentifierLetter === 'a' ? 'b' : 'a';
         if (
-          match.score.final[teamIdentifierLetter] >
-          match.score.final[oppositeTeamIdentifierLetter]
+          match.score.final[teamIdentifierLetter]
+          > match.score.final[oppositeTeamIdentifierLetter]
         ) {
           points += 3;
           wins++;
           continue;
         }
         if (
-          match.score.final[teamIdentifierLetter] ===
-          match.score.final[oppositeTeamIdentifierLetter]
+          match.score.final[teamIdentifierLetter]
+          === match.score.final[oppositeTeamIdentifierLetter]
         ) {
           points++;
           draws++;
           continue;
         }
         if (
-          match.score.final[teamIdentifierLetter] <
-          match.score.final[oppositeTeamIdentifierLetter]
+          match.score.final[teamIdentifierLetter]
+          < match.score.final[oppositeTeamIdentifierLetter]
         ) {
           loses++;
           continue;
@@ -241,7 +236,7 @@ export default class Tournament implements TournamentWithoutMS {
     const data = await TournamentRepository.getAll(page, pageSize);
     const enrichedTournaments = await Tournament.enrichTournamentsWithMSUsers(
       data.tournaments,
-      token
+      token,
     );
 
     return {
@@ -253,11 +248,11 @@ export default class Tournament implements TournamentWithoutMS {
   public static async delete(tournamentId: string, currentUserId: string) {
     const tournament = await TournamentRepository.getById(tournamentId);
     if (!tournament)
-      throw new AppError("Tournament with such ID does not exist", 404);
+      throw new AppError('Tournament with such ID does not exist', 404);
     if (currentUserId !== tournament.ownerId) {
       throw new AppError(
-        "You are not an owner of given tournament. Only owner of specified tournament can delete it",
-        403
+        'You are not an owner of given tournament. Only owner of specified tournament can delete it',
+        403,
       );
     }
 
@@ -277,30 +272,28 @@ export default class Tournament implements TournamentWithoutMS {
 
   public static findNextInstanceInDaysArray(
     daysArray: Array<number>,
-    currentDate: Date
+    currentDate: Date,
   ) {
     // iterate the array of days and find all possible matches
-    const tests = daysArray.map((day) =>
-      Tournament.isThisDateInFuture(day, currentDate)
-    );
+    const tests = daysArray.map((day) => Tournament.isThisDateInFuture(day, currentDate));
 
     // select the first matching day of this week, ignoring subsequent ones, by finding the first moment object
     const thisWeek = tests.find((sample) => sample instanceof moment);
 
     // but if there are none, we'll return the first valid day of next week (again, assuming the days are sorted)
     return (
-      thisWeek || moment(currentDate).add(1, "weeks").isoWeekday(daysArray[0])
+      thisWeek || moment(currentDate).add(1, 'weeks').isoWeekday(daysArray[0])
     );
   }
 
   private static generateRoundRobinMatches(
     teams: Required<TeamWithoutMS>[],
-    matchesDateInfo: MatchesDateInfo
+    matchesDateInfo: MatchesDateInfo,
   ): Match[] {
-    const { data } = tournamentGenerator([...teams], { type: "single-round" });
+    const { data } = tournamentGenerator([...teams], { type: 'single-round' });
 
     const days = matchesDateInfo.matchDays.sort(
-      (a: number, b: number) => a - b
+      (a: number, b: number) => a - b,
     );
     let currentDate = matchesDateInfo.startingDate;
     let frequencyCounter = 0;
@@ -311,7 +304,7 @@ export default class Tournament implements TournamentWithoutMS {
 
       const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(
         days,
-        currentDate
+        currentDate,
       );
       const nextMatchDate = new Date(nextMatchDateMoment.toISOString());
 
@@ -329,10 +322,10 @@ export default class Tournament implements TournamentWithoutMS {
 
   private static generateEmptySingleEliminationMatches(
     matchAmount: number,
-    matchesDateInfo: MatchesDateInfo
+    matchesDateInfo: MatchesDateInfo,
   ): Match[] {
     const days = matchesDateInfo.matchDays.sort(
-      (a: number, b: number) => a - b
+      (a: number, b: number) => a - b,
     );
     let currentDate = matchesDateInfo.startingDate;
     let frequencyCounter = 0;
@@ -347,7 +340,7 @@ export default class Tournament implements TournamentWithoutMS {
 
       const nextMatchDateMoment = Tournament.findNextInstanceInDaysArray(
         days,
-        currentDate
+        currentDate,
       );
       const nextMatchDate = new Date(nextMatchDateMoment.toISOString());
 
@@ -365,28 +358,28 @@ export default class Tournament implements TournamentWithoutMS {
     data: TournamentApi.UpdateMatchOutcomes,
     tournamentId: string,
     matchId: string,
-    currentUserId: string
+    currentUserId: string,
   ) {
     if (data.teamA < 0 || data.teamB < 0)
-      throw new AppError("Score can not be negative", 404);
+      throw new AppError('Score can not be negative', 404);
 
     const tournament = await TournamentRepository.getById(tournamentId);
-    if (!tournament) throw new AppError("Tournament does not exits", 404);
+    if (!tournament) throw new AppError('Tournament does not exits', 404);
 
-    if (tournament.type === "single-elimination" && data.teamA === data.teamB)
+    if (tournament.type === 'single-elimination' && data.teamA === data.teamB)
       throw new AppError(
-        "Scores can not be the same in single-elimination tournament",
-        400
+        'Scores can not be the same in single-elimination tournament',
+        400,
       );
 
     const rawMatch = tournament.matches.find(
-      (match) => String(match.id) === matchId
+      (match) => String(match.id) === matchId,
     );
-    if (!rawMatch) throw new AppError("Match does not exits", 404);
+    if (!rawMatch) throw new AppError('Match does not exits', 404);
 
     // TODO: possibility to change score in sigle elimination by owner (it may influence matches tree)
-    if (tournament.type === "single-elimination" && rawMatch.isFinished)
-      throw new AppError("The Match has finished", 400);
+    if (tournament.type === 'single-elimination' && rawMatch.isFinished)
+      throw new AppError('The Match has finished', 400);
 
     const match = new Match(rawMatch);
 
@@ -401,25 +394,25 @@ export default class Tournament implements TournamentWithoutMS {
       match.isFinished = true;
     } else if (assignedTeam) {
       if (match.isFinished)
-        throw new AppError("Match was finished (owner set score) before", 400);
-      if (assignedTeam === "teamA") {
+        throw new AppError('Match was finished (owner set score) before', 400);
+      if (assignedTeam === 'teamA') {
         if (match.score.reportedByA.a !== -1 || match.isFinished)
-          throw new AppError("The match result has already been reported", 400);
+          throw new AppError('The match result has already been reported', 400);
         match.score.reportedByA = {
           a: data.teamA,
           b: data.teamB,
         };
-      } else if (assignedTeam === "teamB") {
+      } else if (assignedTeam === 'teamB') {
         if (match.score.reportedByB.a !== -1 || match.isFinished)
-          throw new AppError("The match result has already been reported", 400);
+          throw new AppError('The match result has already been reported', 400);
         match.score.reportedByB = {
           a: data.teamA,
           b: data.teamB,
         };
       }
       if (
-        JSON.stringify(match.score.reportedByA) ===
-        JSON.stringify(match.score.reportedByB)
+        JSON.stringify(match.score.reportedByA)
+        === JSON.stringify(match.score.reportedByB)
       ) {
         match.score.final = {
           a: match.score.reportedByA.a,
@@ -428,13 +421,13 @@ export default class Tournament implements TournamentWithoutMS {
         match.isFinished = true;
       }
     } else {
-      throw new AppError("You are not authorized to update this match", 403);
+      throw new AppError('You are not authorized to update this match', 403);
     }
 
     if (match.isFinished === true) {
-      if (tournament.type === "single-elimination") {
+      if (tournament.type === 'single-elimination') {
         const nextMatch = tournament.matches.find(
-          (m) => match.id === m.childMatchAId || match.id === m.childMatchBId
+          (m) => match.id === m.childMatchAId || match.id === m.childMatchBId,
         );
 
         if (nextMatch) {
@@ -447,12 +440,12 @@ export default class Tournament implements TournamentWithoutMS {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           TournamentRepository.markAsFinished(tournament.id!);
         }
-      } else if (tournament.type === "round-robin") {
+      } else if (tournament.type === 'round-robin') {
         let tournamentIsFinishedFlag = true;
         for (let i = 0; i < tournament.matches.length; i++) {
           if (
-            !tournament.matches[i].isFinished &&
-            tournament.matches[i].id !== match.id
+            !tournament.matches[i].isFinished
+            && tournament.matches[i].id !== match.id
           ) {
             tournamentIsFinishedFlag = false;
             break;
@@ -472,7 +465,7 @@ export default class Tournament implements TournamentWithoutMS {
   public static async enrichWithMSUsers(
     tournament: Tournament,
     token: string,
-    allUsersPrepared?: User[]
+    allUsersPrepared?: User[],
   ): Promise<ITournament> {
     let allUsers: User[] = [];
 
@@ -485,7 +478,7 @@ export default class Tournament implements TournamentWithoutMS {
       // TODO: poniższa linijka nie powinna miec prawa bytu ale w przypadku gdy
       // nie przechowujemy userów wszystko może się stać - do przemyślenia
       if (!user) {
-        throw new AppError("Something went wrong", 500);
+        throw new AppError('Something went wrong', 500);
       }
 
       return user;
@@ -533,15 +526,15 @@ export default class Tournament implements TournamentWithoutMS {
 
   public static async enrichTournamentsWithMSUsers(
     tournaments: TournamentWithoutMS[],
-    token: string
+    token: string,
   ): Promise<ITournament[]> {
     const allUsers = await MSOrganization.getAllUsers(token);
     const enrichedTournaments = [];
 
     for (let i = 0; i < tournaments.length; i++) {
-      // eslint-disable-next-line no-await-in-loop
       enrichedTournaments.push(
-        await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers)
+        // eslint-disable-next-line no-await-in-loop
+        await Tournament.enrichWithMSUsers(tournaments[i], token, allUsers),
       );
     }
 
@@ -553,26 +546,26 @@ export default class Tournament implements TournamentWithoutMS {
     rule.minute = process.env.SLACK_NOTIFY_TIME_MINUTES || 30;
     rule.hour = process.env.SLACK_NOTIFY_TIME_HOURS || 7;
 
-    schedule.scheduleJob("todaysMatchesNotifi", rule, async () => {
+    schedule.scheduleJob('todaysMatchesNotifi', rule, async () => {
       const activeRawTournaments = await TournamentRepository.getAllActive();
       const token = await MSOrganization.getApplicationToken();
       const activeTournaments = await Tournament.enrichTournamentsWithMSUsers(
         activeRawTournaments,
-        token
+        token,
       );
 
       activeTournaments.forEach(async (tournament) => {
         const usersEmails: string[] = [];
         const todaysMatches = tournament.matches.filter(
-          (match) => match.isFinished === false && isToday(match.date)
+          (match) => match.isFinished === false && isToday(match.date),
         );
 
         todaysMatches.forEach(async (todaysMatch) => {
           usersEmails.push(
-            ...(todaysMatch.teamA?.members.map((member) => member.email) || [])
+            ...(todaysMatch.teamA?.members.map((member) => member.email) || []),
           );
           usersEmails.push(
-            ...(todaysMatch.teamB?.members.map((member) => member.email) || [])
+            ...(todaysMatch.teamB?.members.map((member) => member.email) || []),
           );
         });
 
@@ -580,7 +573,7 @@ export default class Tournament implements TournamentWithoutMS {
         const channelId = await Slack.openConversation(userChannels);
         await Slack.sendMessage(
           channelId,
-          todaysMatchMessage(tournament, todaysMatches)
+          todaysMatchMessage(tournament, todaysMatches),
         );
       });
     });
