@@ -252,10 +252,9 @@ export default class TournamentCreator extends Vue {
           teams: this.teams,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: this.activeTournamentType!,
-          // TODO:
-          // dateToSubmit
-          // this.days
-          // this.frequency
+          startDate: dateToSubmit,
+          matchDays: this.days,
+          frequency: this.frequency,
         });
 
         void this.$router.push({
