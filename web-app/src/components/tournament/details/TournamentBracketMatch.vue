@@ -1,7 +1,11 @@
 <template>
   <q-card
     class="q-my-sm"
-    :class="[frameClass, { matchAsButton: isAllowedToEditMatchScore }]"
+    :class="[
+      avaibilityClass,
+      frameClass,
+      { matchAsButton: isAllowedToEditMatchScore },
+    ]"
     style="width: 250px; height: 81px"
     @click="scoreActionOnClick"
   >
@@ -14,6 +18,7 @@
           flat
           textCenter
           :iconSize="28"
+          :class="avaibilityClass"
         />
         <div v-else style="height: 34px" />
         <q-separator />
@@ -24,6 +29,7 @@
           flat
           textCenter
           :iconSize="28"
+          :class="avaibilityClass"
         />
         <div v-else style="height: 34px" />
       </div>
@@ -45,6 +51,9 @@
           {{ match.score.final.b !== -1 ? match.score.final.b : '-' }}
         </div>
       </div>
+      <q-badge color="blue-grey-3" floating style="margin-top: -5px;"
+        >{{ matchFormatedDate }}
+      </q-badge>
     </q-card-section>
     <q-tooltip
       v-if="isAllowedToEditMatchScore"
@@ -60,7 +69,7 @@
 import { Match } from 'app/../shared/types/Tournament';
 import store from '../../../store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-// import moment from 'moment';
+import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
 import TeamComponent from './TeamComponent.vue';
 import API from 'src/services/API';
@@ -76,19 +85,25 @@ export default class TournamentBracketMatch extends Vue {
   @Prop({ type: Boolean, required: true }) readonly isOwner!: boolean;
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
 
-  // get matchFormatedDate() {
-  //   return (
-  //     moment(this.match.date).format('L') +
-  //     ' ' +
-  //     moment(this.match.date).format('LT')
-  //   );
-  // }
+  get matchFormatedDate() {
+    return moment(this.match.date).format('DD/MM/YY');
+  }
+
+  get avaibility() {
+    return !moment().isAfter(moment(this.match.date));
+  }
+
+  get avaibilityClass() {
+    if (this.avaibility) return 'matchNotAvaibleYet';
+  }
 
   get frameClass() {
-    if (!this.isAllowedToEditMatchScore) return '';
+    if (!this.avaibility) {
+      if (!this.isAllowedToEditMatchScore) return '';
 
-    if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
-    return 'matchNewScoreFrame';
+      if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
+      return 'matchNewScoreFrame';
+    }
   }
 
   get tooltipContent() {
@@ -145,6 +160,7 @@ export default class TournamentBracketMatch extends Vue {
 
   get isAllowedToEditMatchScore() {
     return (
+      !this.avaibility &&
       !this.match.isFinished &&
       ((this.getAssignedTeam &&
         !this.isMyTeamAlreadyReportedScore &&

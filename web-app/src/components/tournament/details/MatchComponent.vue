@@ -1,7 +1,11 @@
 <template>
   <q-card
     class="q-pa-sm-xs q-mb-md"
-    :class="[frameClass, { matchAsButton: isAllowedToEditMatchScore }]"
+    :class="[
+      avaibilityClass,
+      frameClass,
+      { matchAsButton: isAllowedToEditMatchScore },
+    ]"
     :style="small ? 'min-width: 300px' : 'min-width: 500px'"
     @click="scoreActionOnClick"
   >
@@ -12,8 +16,10 @@
           flat
           :smallIcon="small"
           :textCenter="small"
+          :class="avaibilityClass"
         />
         <team-component
+          :class="avaibilityClass"
           v-if="small"
           textCenter
           smallIcon
@@ -29,17 +35,22 @@
         style="width: 100px"
         class="q-ma-auto q-mx-sm column self-center justify-center"
       >
-        <!-- <div class="matchDate">{{ matchFormatedDate }}</div> -->
+        <div class="matchDate">{{ matchFormatedDate }}</div>
         <div style="text-align: center">
           <div v-if="!getMatchStatus" class="score q-mx-auto">
             {{ formatedScore }}
           </div>
-          <div v-if-else class="status q-mx-auto">{{ getMatchStatus }}</div>
+          <div v-else class="status q-mx-auto">{{ getMatchStatus }}</div>
         </div>
       </div>
 
       <div v-if="!small" style="flex: 1; min-width: 190px">
-        <team-component :team="match.teamB" flat inverted />
+        <team-component
+          :team="match.teamB"
+          flat
+          inverted
+          :class="avaibilityClass"
+        />
       </div>
     </q-card-section>
     <q-tooltip
@@ -56,7 +67,7 @@
 import { Match } from 'app/../shared/types/Tournament';
 import store from '../../../store';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-// import moment from 'moment';
+import moment from 'moment';
 import ScoreInputDialog from './ScoreInputDialog.vue';
 import TeamComponent from '../details/TeamComponent.vue';
 import API from 'src/services/API';
@@ -73,19 +84,25 @@ export default class MatchComponent extends Vue {
   @Prop({ type: String, required: true }) readonly tournamentId!: string;
   @Prop({ type: Boolean, default: false }) readonly small!: boolean;
 
-  // get matchFormatedDate() {
-  //   return (
-  //     moment(this.match.date).format('L') +
-  //     ' ' +
-  //     moment(this.match.date).format('LT')
-  //   );
-  // }
+  get matchFormatedDate() {
+    return moment(this.match.date).format('DD/MM/YY');
+  }
+
+  get avaibility() {
+    return moment().isAfter(moment(this.match.date));
+  }
+
+  get avaibilityClass() {
+    if (!this.avaibility) return 'matchNotAvaibleYet';
+  }
 
   get frameClass() {
-    if (!this.isAllowedToEditMatchScore) return '';
+    if (this.avaibility) {
+      if (!this.isAllowedToEditMatchScore) return '';
 
-    if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
-    return 'matchNewScoreFrame';
+      if (this.isOwner && this.hasConflict) return 'matchConflictsFrame';
+      return 'matchNewScoreFrame';
+    }
   }
 
   get tooltipContent() {
@@ -148,6 +165,7 @@ export default class MatchComponent extends Vue {
   get isAllowedToEditMatchScore() {
     return (
       !this.match.isFinished &&
+      this.avaibility &&
       ((this.getAssignedTeam && !this.isMyTeamAlreadyReportedScore) ||
         (this.isOwner && this.hasConflict))
     );
