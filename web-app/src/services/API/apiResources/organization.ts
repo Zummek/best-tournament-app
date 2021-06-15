@@ -21,3 +21,9 @@ export const getUserPhoto = async (id: string) => {
   );
   return userPhotoResponse.data.data.photo;
 };
+export const getMyPhoto = async () => {
+  const myPhotoResponse = await axiosInstance.get<types.GetUserPhotoResponse>(
+    'v1/organization/users/me/photo'
+  );
+  return myPhotoResponse.data.data.photo;
+};
