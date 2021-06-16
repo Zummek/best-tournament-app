@@ -15,6 +15,7 @@
       push
       outline
       size="12px"
+      @click="logout"
       v-close-popup
     />
   </div>
@@ -33,5 +34,11 @@ import store from 'src/store';
 })
 export default class UserPanel extends Vue {
   private currentUser: User = store.state.currentUser;
+
+  private async logout() {
+    store.commit('currentUser/logOut');
+    this.$cookies.remove('jwt');
+    await this.$router.replace('/login');
+  }
 }
 </script>

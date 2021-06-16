@@ -72,9 +72,9 @@ export default class MSOrganization {
           Authorization: token,
         },
       });
-      return photo.data.toString('base64');
+      return 'data:image/png;base64, ' + photo.data.toString('base64');
     } catch (err) {
-      return 'https://cdn.quasar.dev/img/boy-avatar.png';
+      return null;
     }
   }
 }
