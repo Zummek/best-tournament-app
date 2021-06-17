@@ -172,10 +172,10 @@ export default class MatchComponent extends Vue {
   }
 
   get getMatchStatus() {
-    if (this.isMyTeamAlreadyReportedScore)
-      return this.$t('tournament.match.scorePendingApproval');
     if (this.hasConflict)
       return this.$t('tournament.match.ownerMustResolveConflict');
+    if (this.isMyTeamAlreadyReportedScore)
+      return this.$t('tournament.match.scorePendingApproval');
   }
 
   private resolveConflict() {

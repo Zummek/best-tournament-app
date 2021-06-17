@@ -5,7 +5,7 @@ const createTournament = catchAsync(
   async (req, res) => {
     const currentUserId = req.decoded.userMSId;
 
-    const tournament = await Tournament.create(req.body, currentUserId);
+    const tournament = await Tournament.create(req.body, currentUserId, `Bearer ${req.cookies.jwt}`);
 
     res.status(201).json({
       data: {

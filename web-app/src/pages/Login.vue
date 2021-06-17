@@ -69,8 +69,6 @@ export default class Login extends Vue {
         'currentUser/decodeTokenAndStore',
         this.$cookies.get('jwt')
       );
-      // const response = await api.organization.getUsers();
-      // await api.organization.getUserPhoto(response[0].id);
       this.$q.loading.hide();
       await this.$router.replace({ name: 'TournamentsList' });
     }

@@ -21,7 +21,7 @@ export interface GetUsersResponse {
 
 export interface GetUserPhotoResponse {
   data: {
-    photo: string;
+    photo: string | null;
   };
 }
 

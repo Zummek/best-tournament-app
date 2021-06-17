@@ -33,7 +33,7 @@ export default class TournamentList extends Vue {
   private query = '';
   private pagination: IPagination = {
     page: 1,
-    rowsPerPage: 2,
+    rowsPerPage: 6,
     rowsNumber: 0,
   };
   private columns: QTable['columns'] = [
@@ -58,9 +58,8 @@ export default class TournamentList extends Vue {
   async tournaments() {
     const tournamentsResponse = await api.tournament.getAllTournaments(
       this.pagination.page,
-      2
+      this.pagination.rowsPerPage
     );
-    // console.log(tournamentsResponse);
     this.pagination.rowsNumber = tournamentsResponse.totalRows;
     return tournamentsResponse.tournaments;
   }

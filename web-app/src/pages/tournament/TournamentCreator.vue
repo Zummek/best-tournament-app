@@ -247,6 +247,11 @@ export default class TournamentCreator extends Vue {
     const dateToSubmit = new Date(Date.parse(this.startDateString));
     if (this.validation()) {
       try {
+        this.teams.forEach(team => {
+          team.members.forEach(member => {
+            member.avatarSrc = undefined;
+          });
+        });
         const responseData = await API.tournament.createTournament({
           name: this.tournamentName,
           teams: this.teams,
@@ -294,9 +299,13 @@ export default class TournamentCreator extends Vue {
   private async getUsers() {
     this.users = await API.organization.getUsers();
 
-    this.users.forEach(function(user) {
-      user.avatarSrc = 'https://cdn.quasar.dev/img/boy-avatar.png';
-    });
+    this.users.forEach(user => (user.avatarSrc = 'default-avatar.png'));
+
+    for (const user of this.users) {
+      void API.organization.getUserPhoto(user.id).then(avatar => {
+        if (avatar) user.avatarSrc = avatar;
+      });
+    }
   }
 }
 </script>

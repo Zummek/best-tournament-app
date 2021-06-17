@@ -31,10 +31,7 @@
           <q-field borderless :label="$t('tournament.organizer')" stack-label>
             <template v-slot:control>
               <q-chip>
-                <q-avatar>
-                  <!-- <img :src="tournament.owner.avatarSrc" /> -->
-                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-                </q-avatar>
+                <user-avatar :user="tournament.owner" />
                 {{ tournament.owner.firstName }}
                 {{ tournament.owner.lastName }}
               </q-chip>
@@ -106,16 +103,18 @@ import { Vue, Component } from 'vue-property-decorator';
 import Tournament from '../../../../shared/types/Tournament';
 import MatchComponent from '../../components/tournament/details/MatchComponent.vue';
 import TournamentBracket from '../../components/tournament/details/TournamentBracket.vue';
-// import moment from 'moment';
+import moment from 'moment';
 import API from 'src/services/API';
 import store from 'src/store';
 import ScoreTable from './../../components/tournament/details/ScoreTable.vue';
+import UserAvatar from '../../components/UserAvatar.vue';
 
 @Component({
   components: {
     MatchComponent,
     TournamentBracket,
     ScoreTable,
+    UserAvatar,
   },
 })
 export default class TournamentDetails extends Vue {
@@ -124,8 +123,8 @@ export default class TournamentDetails extends Vue {
   private isLoading = true;
   private tab = 'matches';
 
-  private async created() {
-    await this.getTournamentDetails();
+  private created() {
+    void this.getTournamentDetails();
   }
 
   get isOwner() {
@@ -182,6 +181,7 @@ export default class TournamentDetails extends Vue {
     }
 
     if (this.tournament.type === 'round-robin') this.sortMatches();
+
     this.isLoading = false;
   }
 
@@ -190,35 +190,39 @@ export default class TournamentDetails extends Vue {
       // sort array by isFinished and Date
       this.tournament.matches.sort((a, b) => {
         if (a.isFinished && b.isFinished) {
-          return 0;
-          // if (moment(a.date).diff(b.date) > 0) return -1;
-          // else return 1;
-        } else if (!a.isFinished && b.isFinished) return 1;
-        else if (a.isFinished && !b.isFinished) return -1;
+          // return 0;
+          if (moment(a.date).diff(b.date) > 0) return -1;
+          else return 1;
+        } else if (!a.isFinished && b.isFinished) return -1;
+        else if (a.isFinished && !b.isFinished) return 1;
         else if (!a.isFinished && !b.isFinished) {
-          return 0;
-          // if (moment(a.date).diff(b.date) > 0) return -1;
-          // else return 1;
+          // return 0;
+          if (moment(a.date).diff(b.date) > 0) return 1;
+          else return -1;
         }
 
         return 0;
       });
 
       // add next three matches or witout score to the top
-      /*let maxMatchesOnTop = 3;
-      for (
-        let i = 0;
-        this.tournament.matches.length > i && maxMatchesOnTop;
-        i++
-      ) {
-        const match = this.tournament.matches[i];
+      // let maxMatchesOnTop = 3;
+      // for (
+      //   let i = 0;
+      //   this.tournament.matches.length > i && maxMatchesOnTop;
+      //   i++
+      // ) {
+      //   const match = this.tournament.matches[i];
+      //   console.log(
+      //     "moment().diff(match.date, 'days')",
+      //     moment().diff(match.date, 'days')
+      //   );
 
-        if (!match.isFinished && moment().diff(match.date, 'days') === 0) {
-          maxMatchesOnTop--;
-          this.tournament.matches.splice(i, 1);
-          this.tournament.matches.unshift(match);
-        }
-      }*/
+      //   if (!match.isFinished && moment().diff(match.date, 'days') === 0) {
+      //     maxMatchesOnTop--;
+      //     this.tournament.matches.splice(i, 1);
+      //     this.tournament.matches.unshift(match);
+      //   }
+      // }
     }
   }
 }

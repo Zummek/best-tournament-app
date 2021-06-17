@@ -1,7 +1,6 @@
 <template>
   <q-avatar v-bind="avatarProps">
-    <img v-if="userPhoto.startsWith('https')" :src="userPhoto" />
-    <img v-else :src="'data:image/png;base64, ' + userPhoto" />
+    <img :src="userPhoto" />
   </q-avatar>
 </template>
 
@@ -20,12 +19,14 @@ export default class UserAvatar extends Vue {
   @Prop({ type: Object, required: true }) readonly user!: User;
   @Prop({ type: Object, required: false }) readonly avatarProps!: AvatarProps;
 
-  private userPhoto = 'https://cdn.quasar.dev/img/boy-avatar.png';
+  private userPhoto = 'default-avatar.png';
 
-  private async mounted() {
-    const response = await api.organization.getUserPhoto(this.user.id);
-    if (response !== 'https://cdn.quasar.dev/img/boy-avatar.png') {
-      this.userPhoto = response;
+  private created() {
+    if (this.user.avatarSrc) this.userPhoto = this.user.avatarSrc;
+    else {
+      void api.organization.getUserPhoto(this.user.id).then(avatar => {
+        if (avatar) this.userPhoto = avatar;
+      });
     }
   }
 }

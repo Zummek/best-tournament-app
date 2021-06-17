@@ -63,7 +63,7 @@ export default class Tournament implements TournamentWithoutMS {
     this.startDate = data.startDate;
   }
 
-  public static async create(data: TournamentApi.Create, ownerId: string) {
+  public static async create(data: TournamentApi.Create, ownerId: string, token: string) {
     const teams = await TeamRepository.createMany(data.teams);
 
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
@@ -88,6 +88,18 @@ export default class Tournament implements TournamentWithoutMS {
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
       TournamentRepository.updateMatches(tournament);
+    }
+
+    const minutes = process.env.SLACK_NOTIFY_TIME_MINUTES || 30;
+    const hours = process.env.SLACK_NOTIFY_TIME_HOURS || 7;
+    const notifiTime = moment(`${hours}:${minutes}`, 'HH:mm');
+    if (isToday(tournament.startDate) && moment().isAfter(notifiTime, 'hours')) {
+      const enrichedTournament = await Tournament.enrichWithMSUsers(
+        tournament,
+        token,
+      );
+
+      Tournament.sendTodayMatchesNotification(enrichedTournament);
     }
 
     return tournament;
@@ -254,7 +266,7 @@ export default class Tournament implements TournamentWithoutMS {
     // returns: matching moment or false
     const currentDayNum = moment(currentDate).isoWeekday();
 
-    if (currentDayNum < targetDayNum) {
+    if (currentDayNum <= targetDayNum) {
       return moment(currentDate).isoWeekday(targetDayNum);
     }
     return false;
@@ -288,7 +300,7 @@ export default class Tournament implements TournamentWithoutMS {
 
       if (frequencyCounter >= matchesDateInfo.frequency) {
         frequencyCounter = 0;
-        currentDate = nextMatchDate;
+        currentDate = new Date(nextMatchDateMoment.add(1, 'days').toISOString());
       }
       return Match.getNewInstance({
         teamA: match.homeTeam,
@@ -316,7 +328,7 @@ export default class Tournament implements TournamentWithoutMS {
 
       if (frequencyCounter >= matchesDateInfo.frequency) {
         frequencyCounter = 0;
-        currentDate = nextMatchDate;
+        currentDate = new Date(nextMatchDateMoment.add(1, 'days').toISOString());
       }
 
       newMatches[i].date = nextMatchDate;
@@ -524,28 +536,35 @@ export default class Tournament implements TournamentWithoutMS {
         token,
       );
 
-      activeTournaments.forEach(async (tournament) => {
-        const usersEmails: string[] = [];
-        const todaysMatches = tournament.matches.filter(
-          (match) => match.isFinished === false && isToday(match.date),
-        );
+      activeTournaments.forEach(async (tournament) => Tournament.sendTodayMatchesNotification(tournament));
+    });
+  }
 
-        todaysMatches.forEach(async (todaysMatch) => {
-          usersEmails.push(
-            ...(todaysMatch.teamA?.members.map((member) => member.email) || []),
-          );
-          usersEmails.push(
-            ...(todaysMatch.teamB?.members.map((member) => member.email) || []),
-          );
-        });
+  private static async sendTodayMatchesNotification(tournament: ITournament) {
+    const usersEmails: string[] = [];
+    const todaysMatches = tournament.matches.filter(
+      (match) => match.isFinished === false && isToday(match.date),
+    );
 
-        const userChannels = await Slack.getUsersIds(usersEmails);
+    todaysMatches.forEach(async (todaysMatch) => {
+      usersEmails.push(
+        ...(todaysMatch.teamA?.members.map((member) => member.email) || []),
+      );
+      usersEmails.push(
+        ...(todaysMatch.teamB?.members.map((member) => member.email) || []),
+      );
+    });
+
+    if (usersEmails.length > 2) {
+      const userChannels = await Slack.getUsersIds(usersEmails);
+
+      if (userChannels.length > 2) {
         const channelId = await Slack.openConversation(userChannels);
         await Slack.sendMessage(
           channelId,
           todaysMatchMessage(tournament, todaysMatches),
         );
-      });
-    });
+      }
+    }
   }
 }
