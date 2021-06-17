@@ -193,32 +193,36 @@ export default class TournamentDetails extends Vue {
           // return 0;
           if (moment(a.date).diff(b.date) > 0) return -1;
           else return 1;
-        } else if (!a.isFinished && b.isFinished) return 1;
-        else if (a.isFinished && !b.isFinished) return -1;
+        } else if (!a.isFinished && b.isFinished) return -1;
+        else if (a.isFinished && !b.isFinished) return 1;
         else if (!a.isFinished && !b.isFinished) {
           // return 0;
-          if (moment(a.date).diff(b.date) > 0) return -1;
-          else return 1;
+          if (moment(a.date).diff(b.date) > 0) return 1;
+          else return -1;
         }
 
         return 0;
       });
 
       // add next three matches or witout score to the top
-      let maxMatchesOnTop = 3;
-      for (
-        let i = 0;
-        this.tournament.matches.length > i && maxMatchesOnTop;
-        i++
-      ) {
-        const match = this.tournament.matches[i];
+      // let maxMatchesOnTop = 3;
+      // for (
+      //   let i = 0;
+      //   this.tournament.matches.length > i && maxMatchesOnTop;
+      //   i++
+      // ) {
+      //   const match = this.tournament.matches[i];
+      //   console.log(
+      //     "moment().diff(match.date, 'days')",
+      //     moment().diff(match.date, 'days')
+      //   );
 
-        if (!match.isFinished && moment().diff(match.date, 'days') === 0) {
-          maxMatchesOnTop--;
-          this.tournament.matches.splice(i, 1);
-          this.tournament.matches.unshift(match);
-        }
-      }
+      //   if (!match.isFinished && moment().diff(match.date, 'days') === 0) {
+      //     maxMatchesOnTop--;
+      //     this.tournament.matches.splice(i, 1);
+      //     this.tournament.matches.unshift(match);
+      //   }
+      // }
     }
   }
 }
