@@ -8,6 +8,7 @@
   >
     <q-route-tab
       :to="{ name: 'News' }"
+      disable
       :label="$t('mainLayout.tab.news')"
       name="News"
       :style="$q.screen.lt.sm ? '' : 'max-width:130px'"
