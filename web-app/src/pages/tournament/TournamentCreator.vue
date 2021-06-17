@@ -294,9 +294,12 @@ export default class TournamentCreator extends Vue {
   private async getUsers() {
     this.users = await API.organization.getUsers();
 
+    this.users.forEach(user => (user.avatarSrc = 'default-avatar.png'));
+
     for (const user of this.users) {
-      const avatar = await API.organization.getUserPhoto(user.id);
-      user.avatarSrc = avatar || 'default-avatar.png';
+      void API.organization.getUserPhoto(user.id).then(avatar => {
+        if (avatar) user.avatarSrc = avatar;
+      });
     }
   }
 }

@@ -21,11 +21,12 @@ export default class UserAvatar extends Vue {
 
   private userPhoto = 'default-avatar.png';
 
-  private async created() {
+  private created() {
     if (this.user.avatarSrc) this.userPhoto = this.user.avatarSrc;
     else {
-      const response = await api.organization.getUserPhoto(this.user.id);
-      if (response) this.userPhoto = response;
+      void api.organization.getUserPhoto(this.user.id).then(avatar => {
+        if (avatar) this.userPhoto = avatar;
+      });
     }
   }
 }
