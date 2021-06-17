@@ -266,7 +266,7 @@ export default class Tournament implements TournamentWithoutMS {
     // returns: matching moment or false
     const currentDayNum = moment(currentDate).isoWeekday();
 
-    if (currentDayNum < targetDayNum) {
+    if (currentDayNum <= targetDayNum) {
       return moment(currentDate).isoWeekday(targetDayNum);
     }
     return false;
@@ -300,7 +300,7 @@ export default class Tournament implements TournamentWithoutMS {
 
       if (frequencyCounter >= matchesDateInfo.frequency) {
         frequencyCounter = 0;
-        currentDate = nextMatchDate;
+        currentDate = new Date(nextMatchDateMoment.add(1, 'days').toISOString());
       }
       return Match.getNewInstance({
         teamA: match.homeTeam,
@@ -328,7 +328,7 @@ export default class Tournament implements TournamentWithoutMS {
 
       if (frequencyCounter >= matchesDateInfo.frequency) {
         frequencyCounter = 0;
-        currentDate = nextMatchDate;
+        currentDate = new Date(nextMatchDateMoment.add(1, 'days').toISOString());
       }
 
       newMatches[i].date = nextMatchDate;
