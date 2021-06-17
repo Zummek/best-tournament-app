@@ -72,7 +72,7 @@ export default class MSOrganization {
           Authorization: token,
         },
       });
-      return 'data:image/png;base64, ' + photo.data.toString('base64');
+      return `data:image/png;base64, ${photo.data.toString('base64')}`;
     } catch (err) {
       return null;
     }
