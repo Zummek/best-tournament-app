@@ -4,9 +4,6 @@ import VueCookies from 'vue-cookies';
 import { get, isNil } from 'lodash';
 import { Notify } from 'quasar';
 
-const CancelToken = axios.CancelToken;
-export const CancelTokenSource = CancelToken.source();
-
 Vue.use(VueCookies);
 
 const baseURL = process.env.SSL

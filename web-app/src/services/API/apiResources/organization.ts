@@ -1,4 +1,4 @@
-import axiosInstance, { CancelTokenSource } from '../axiosInstance';
+import axiosInstance from '../axiosInstance';
 import * as types from './types';
 
 export const getAzureADApplicationLogo = async () => {
@@ -17,19 +17,13 @@ export const getUsers = async () => {
 
 export const getUserPhoto = async (id: string) => {
   const userPhotoResponse = await axiosInstance.get<types.GetUserPhotoResponse>(
-    `v1/organization/users/${encodeURIComponent(id)}/photo`,
-    {
-      cancelToken: CancelTokenSource.token,
-    }
+    `v1/organization/users/${encodeURIComponent(id)}/photo`
   );
   return userPhotoResponse.data.data.photo;
 };
 export const getMyPhoto = async () => {
   const myPhotoResponse = await axiosInstance.get<types.GetUserPhotoResponse>(
-    'v1/organization/users/me/photo',
-    {
-      cancelToken: CancelTokenSource.token,
-    }
+    'v1/organization/users/me/photo'
   );
   return myPhotoResponse.data.data.photo;
 };

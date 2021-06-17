@@ -25,14 +25,9 @@ import TournamentListDesktop from '../../components/tournament/list/TournamentLi
 import { IPagination } from '../../components/models';
 import api from '../../services/API/index';
 import { QTable } from 'quasar';
-import { CancelTokenSource } from 'src/services/API/axiosInstance';
 
 @Component({
   components: { TournamentListMobile, TournamentListDesktop },
-  beforeRouteLeave: (to, from, next) => {
-    CancelTokenSource.cancel();
-    next();
-  },
 })
 export default class TournamentList extends Vue {
   private query = '';
