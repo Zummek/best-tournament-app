@@ -38,6 +38,7 @@ export default class UserPanel extends Vue {
   private async logout() {
     store.commit('currentUser/logOut');
     this.$cookies.remove('jwt');
+    this.$cookies.remove('validation_token');
     await this.$router.replace('/login');
   }
 }
