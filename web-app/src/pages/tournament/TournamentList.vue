@@ -58,9 +58,8 @@ export default class TournamentList extends Vue {
   async tournaments() {
     const tournamentsResponse = await api.tournament.getAllTournaments(
       this.pagination.page,
-      2
+      6
     );
-    // console.log(tournamentsResponse);
     this.pagination.rowsNumber = tournamentsResponse.totalRows;
     return tournamentsResponse.tournaments;
   }

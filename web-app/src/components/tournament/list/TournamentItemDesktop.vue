@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-xl col-sm-12 col-md-6 col-lg-4">
+  <div class="q-pa-md col-sm-12 col-md-6 col-lg-4">
     <q-btn
       :to="{ name: 'TournamentDetails', params: { id: tournament.id } }"
       no-caps
