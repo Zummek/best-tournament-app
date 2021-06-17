@@ -31,11 +31,7 @@
           <q-field borderless :label="$t('tournament.organizer')" stack-label>
             <template v-slot:control>
               <q-chip>
-                <q-avatar>
-                  <img
-                    :src="tournament.owner.avatarSrc || 'default-avatar.png'"
-                  />
-                </q-avatar>
+                <user-avatar :user="tournament.owner" />
                 {{ tournament.owner.firstName }}
                 {{ tournament.owner.lastName }}
               </q-chip>
@@ -111,12 +107,14 @@ import moment from 'moment';
 import API from 'src/services/API';
 import store from 'src/store';
 import ScoreTable from './../../components/tournament/details/ScoreTable.vue';
+import UserAvatar from '../../components/UserAvatar.vue';
 
 @Component({
   components: {
     MatchComponent,
     TournamentBracket,
     ScoreTable,
+    UserAvatar,
   },
 })
 export default class TournamentDetails extends Vue {
@@ -125,8 +123,8 @@ export default class TournamentDetails extends Vue {
   private isLoading = true;
   private tab = 'matches';
 
-  private async created() {
-    await this.getTournamentDetails();
+  private created() {
+    void this.getTournamentDetails();
   }
 
   get isOwner() {
@@ -182,12 +180,8 @@ export default class TournamentDetails extends Vue {
       return;
     }
 
-    const ownerAvatar = await API.organization.getUserPhoto(
-      this.tournament.owner.id
-    );
-    if (ownerAvatar) this.tournament.owner.avatarSrc = ownerAvatar;
-
     if (this.tournament.type === 'round-robin') this.sortMatches();
+
     this.isLoading = false;
   }
 
