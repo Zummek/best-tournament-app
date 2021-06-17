@@ -63,7 +63,7 @@ export default class Tournament implements TournamentWithoutMS {
     this.startDate = data.startDate;
   }
 
-  public static async create(data: TournamentApi.Create, ownerId: string) {
+  public static async create(data: TournamentApi.Create, ownerId: string, token: string) {
     const teams = await TeamRepository.createMany(data.teams);
 
     if (teams.length !== data.teams.length) throw new AppError('Failed to register all teams', 400);
@@ -88,6 +88,18 @@ export default class Tournament implements TournamentWithoutMS {
     if (data.type === 'single-elimination') {
       Tournament.setSingleEliminationMatches(tournament);
       TournamentRepository.updateMatches(tournament);
+    }
+
+    const minutes = process.env.SLACK_NOTIFY_TIME_MINUTES || 30;
+    const hours = process.env.SLACK_NOTIFY_TIME_HOURS || 7;
+    const notifiTime = moment(`${hours}:${minutes}`, 'HH:mm');
+    if (isToday(tournament.startDate) && moment().isAfter(notifiTime, 'hours')) {
+      const enrichedTournament = await Tournament.enrichWithMSUsers(
+        tournament,
+        token,
+      );
+
+      Tournament.sendTodayMatchesNotification(enrichedTournament);
     }
 
     return tournament;
@@ -543,11 +555,16 @@ export default class Tournament implements TournamentWithoutMS {
       );
     });
 
-    const userChannels = await Slack.getUsersIds(usersEmails);
-    const channelId = await Slack.openConversation(userChannels);
-    await Slack.sendMessage(
-      channelId,
-      todaysMatchMessage(tournament, todaysMatches),
-    );
+    if (usersEmails.length > 2) {
+      const userChannels = await Slack.getUsersIds(usersEmails);
+
+      if (userChannels.length > 2) {
+        const channelId = await Slack.openConversation(userChannels);
+        await Slack.sendMessage(
+          channelId,
+          todaysMatchMessage(tournament, todaysMatches),
+        );
+      }
+    }
   }
 }
