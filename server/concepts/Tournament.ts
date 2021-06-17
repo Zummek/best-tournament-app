@@ -524,28 +524,30 @@ export default class Tournament implements TournamentWithoutMS {
         token,
       );
 
-      activeTournaments.forEach(async (tournament) => {
-        const usersEmails: string[] = [];
-        const todaysMatches = tournament.matches.filter(
-          (match) => match.isFinished === false && isToday(match.date),
-        );
-
-        todaysMatches.forEach(async (todaysMatch) => {
-          usersEmails.push(
-            ...(todaysMatch.teamA?.members.map((member) => member.email) || []),
-          );
-          usersEmails.push(
-            ...(todaysMatch.teamB?.members.map((member) => member.email) || []),
-          );
-        });
-
-        const userChannels = await Slack.getUsersIds(usersEmails);
-        const channelId = await Slack.openConversation(userChannels);
-        await Slack.sendMessage(
-          channelId,
-          todaysMatchMessage(tournament, todaysMatches),
-        );
-      });
+      activeTournaments.forEach(async (tournament) => Tournament.sendTodayMatchesNotification(tournament));
     });
+  }
+
+  private static async sendTodayMatchesNotification(tournament: ITournament) {
+    const usersEmails: string[] = [];
+    const todaysMatches = tournament.matches.filter(
+      (match) => match.isFinished === false && isToday(match.date),
+    );
+
+    todaysMatches.forEach(async (todaysMatch) => {
+      usersEmails.push(
+        ...(todaysMatch.teamA?.members.map((member) => member.email) || []),
+      );
+      usersEmails.push(
+        ...(todaysMatch.teamB?.members.map((member) => member.email) || []),
+      );
+    });
+
+    const userChannels = await Slack.getUsersIds(usersEmails);
+    const channelId = await Slack.openConversation(userChannels);
+    await Slack.sendMessage(
+      channelId,
+      todaysMatchMessage(tournament, todaysMatches),
+    );
   }
 }
