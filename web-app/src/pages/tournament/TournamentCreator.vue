@@ -247,6 +247,11 @@ export default class TournamentCreator extends Vue {
     const dateToSubmit = new Date(Date.parse(this.startDateString));
     if (this.validation()) {
       try {
+        this.teams.forEach(team => {
+          team.members.forEach(member => {
+            member.avatarSrc = undefined;
+          });
+        });
         const responseData = await API.tournament.createTournament({
           name: this.tournamentName,
           teams: this.teams,
