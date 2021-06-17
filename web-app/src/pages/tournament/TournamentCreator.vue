@@ -160,6 +160,7 @@ import FrequencySelector from '../../components/tournament/creator/FrequencySele
 import { Team, TournamentType } from '../../../../shared/types/Tournament';
 import EventBus from '../../services/EventBus';
 import API from 'src/services/API';
+import { CancelTokenSource } from 'src/services/API/axiosInstance';
 
 @Component({
   components: {
@@ -170,6 +171,10 @@ import API from 'src/services/API';
     DaysOfPlay,
     FrequencySelector,
     StartDateSelector,
+  },
+  beforeRouteLeave: (to, from, next) => {
+    CancelTokenSource.cancel();
+    next();
   },
 })
 export default class TournamentCreator extends Vue {

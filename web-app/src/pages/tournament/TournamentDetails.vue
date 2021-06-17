@@ -108,6 +108,7 @@ import API from 'src/services/API';
 import store from 'src/store';
 import ScoreTable from './../../components/tournament/details/ScoreTable.vue';
 import UserAvatar from '../../components/UserAvatar.vue';
+import { CancelTokenSource } from 'src/services/API/axiosInstance';
 
 @Component({
   components: {
@@ -115,6 +116,10 @@ import UserAvatar from '../../components/UserAvatar.vue';
     TournamentBracket,
     ScoreTable,
     UserAvatar,
+  },
+  beforeRouteLeave: (to, from, next) => {
+    CancelTokenSource.cancel();
+    next();
   },
 })
 export default class TournamentDetails extends Vue {
